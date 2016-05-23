@@ -25,6 +25,7 @@ class DB
         }
         catch (PDOException $e)
         {
+            // die($e->getMessage());
             return null;
         }
         return $dbh;

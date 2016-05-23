@@ -1,5 +1,5 @@
 <?php
-require_once '../../path.php';
+require_once dirname(__FILE__) . '/../../path.php';
 
 require_once 'LiveModifyCmd.php';
 require_once SERVICE_PATH . '/Cmd.php';

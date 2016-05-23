@@ -139,6 +139,226 @@ class CliLiveData
     }
 
 
+
+    /**
+     * Gets 直播标题.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+    
+    /**
+     * Sets 直播标题.
+     *
+     * @param string $title the title
+     *
+     * @return self
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+    
+    /**
+     * Gets 封面.
+     *
+     * @return string
+     */
+    public function getCover()
+    {
+        return $this->cover;
+    }
+    
+    /**
+     * Sets 封面.
+     *
+     * @param string $cover the cover
+     *
+     * @return self
+     */
+    public function setCover($cover)
+    {
+        $this->cover = $cover;
+    }
+    
+    /**
+     * Gets 聊天室ID.
+     *
+     * @return string
+     */
+    public function getChatRoomId()
+    {
+        return $this->chatRoomId;
+    }
+    
+    /**
+     * Sets 聊天室ID.
+     *
+     * @param string $chatRoomId the chat room id
+     *
+     * @return self
+     */
+    public function setChatRoomId($chatRoomId)
+    {
+        $this->chatRoomId = $chatRoomId;
+    }
+    
+    /**
+     * Gets 主播信息.
+     *
+     * @return CliUserInfo
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+    
+    /**
+     * Sets 主播信息.
+     *
+     * @param CliUserInfo $host the host
+     *
+     * @return self
+     */
+    public function setHost(CliUserInfo $host)
+    {
+        $this->host = $host;
+    }
+    
+    /**
+     * Gets 地理信息.
+     *
+     * @return CliLbs
+     */
+    public function getLbs()
+    {
+        return $this->lbs;
+    }
+    
+    /**
+     * Sets 地理信息.
+     *
+     * @param CliLbs $lbs the lbs
+     *
+     * @return self
+     */
+    public function setLbs(CliLbs $lbs)
+    {
+        $this->lbs = $lbs;
+    }
+    
+    /**
+     * Gets 点赞人数.
+     *
+     * @return int
+     */
+    public function getAdmireCount()
+    {
+        return $this->admireCount;
+    }
+    
+    /**
+     * Sets 点赞人数.
+     *
+     * @param int $admireCount the admire count
+     *
+     * @return self
+     */
+    public function setAdmireCount($admireCount)
+    {
+        $this->admireCount = $admireCount;
+    }
+    
+    /**
+     * Gets 直播时长.
+     *
+     * @return int
+     */
+    public function getTimeSpan()
+    {
+        return $this->timeSpan;
+    }
+    
+    /**
+     * Sets 直播时长.
+     *
+     * @param int $timeSpan the time span
+     *
+     * @return self
+     */
+    public function setTimeSpan($timeSpan)
+    {
+        $this->timeSpan = $timeSpan;
+    }
+    
+    /**
+     * Gets 观看人数.
+     *
+     * @return int
+     */
+    public function getWatchCount()
+    {
+        return $this->watchCount;
+    }
+    
+    /**
+     * Sets 观看人数.
+     *
+     * @param int $watchCount the watch count
+     *
+     * @return self
+     */
+    public function setWatchCount($watchCount)
+    {
+        $this->watchCount = $watchCount;
+    }
+    
+    /**
+     * Gets 创建时间.
+     *
+     * @return int
+     */
+    public function getCreateTime()
+    {
+        return $this->createTime;
+    }
+    
+    /**
+     * Sets 创建时间.
+     *
+     * @param int $createTime the create time
+     *
+     * @return self
+     */
+    public function setCreateTime($createTime)
+    {
+        $this->createTime = $createTime;
+    }
+    
+    /**
+     * Gets av房间ID.
+     *
+     * @return int
+     */
+    public function getAvRoomId()
+    {
+        return $this->avRoomId;
+    }
+    
+    /**
+     * Sets av房间ID.
+     *
+     * @param int $avRoomId the av room id
+     *
+     * @return self
+     */
+    public function setAvRoomId($avRoomId)
+    {
+        $this->avRoomId = $avRoomId;
+    }
 }
 
 ?>

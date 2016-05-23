@@ -5,7 +5,7 @@
  * 开始直播接口
  */
 
-require_once '../../path.php';
+require_once dirname(__FILE__) . '/../../path.php';
 
 require_once 'LiveModifyCmd.php';
 require_once SERVICE_PATH . '/Cmd.php';
@@ -122,7 +122,7 @@ class LiveStartCmd extends Cmd
             return new CmdResp(ERR_REQ_DATA, 'Chat room id should be string.');
         }
         $cliLiveData->setChatRoomId($req['chatRoomId']);
-        $tihs->record = $cliLiveData->toLiveRecord();
+        $this->record = $cliLiveData->toLiveRecord();
         return new CmdResp(ERR_SUCCESS, '');
     }
 

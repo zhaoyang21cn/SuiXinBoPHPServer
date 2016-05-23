@@ -8,21 +8,21 @@ require_once LIB_PATH . '/db/DB.php';
  */
 class LiveRecord
 {
-    public static FIELD_TITLE = 'title';
-    public static FIELD_COVER = 'cover';
-    public static FIELD_CHAT_ROOM_ID = 'chat_room_id';
-    public static FIELD_HOST_UID = 'host_uid';
-    public static FIELD_HOST_AVATAR = 'host_avatar';
-    public static FIELD_HOST_USERNAME = 'host_username';
-    public static FIELD_LONGITUDE = 'longitude';
-    public static FIELD_LATITUDE = 'latitude';
-    public static FIELD_ADDRESS = 'address';
-    public static FIELD_ADMIRE_COUNT = 'admire_count';
-    public static FIELD_WATCH_COUNT = 'watch_count';
-    public static FIELD_TIME_SPAN = 'time_span';
-    public static FIELD_AV_ROOM_ID = 'av_room_id';
-    private static FIELD_CREATE_TIME = 'create_time';
-    private static FIELD_MODIFY_TIME = 'modify_time';
+    const FIELD_TITLE = 'title';
+    const FIELD_COVER = 'cover';
+    const FIELD_CHAT_ROOM_ID = 'chat_room_id';
+    const FIELD_HOST_UID = 'host_uid';
+    const FIELD_HOST_AVATAR = 'host_avatar';
+    const FIELD_HOST_USERNAME = 'host_username';
+    const FIELD_LONGITUDE = 'longitude';
+    const FIELD_LATITUDE = 'latitude';
+    const FIELD_ADDRESS = 'address';
+    const FIELD_ADMIRE_COUNT = 'admire_count';
+    const FIELD_WATCH_COUNT = 'watch_count';
+    const FIELD_TIME_SPAN = 'time_span';
+    const FIELD_AV_ROOM_ID = 'av_room_id';
+    const FIELD_CREATE_TIME = 'create_time';
+    const FIELD_MODIFY_TIME = 'modify_time';
 
     /**
      * 直播标题
@@ -92,7 +92,7 @@ class LiveRecord
     private $createTime;
     /**
      * av房间ID
-     * @var INT
+     * @var int
      */
     private $avRoomId = 0;
 
@@ -151,19 +151,21 @@ class LiveRecord
             {
                 $params[] = ':' . $k;
             }
-            $sql .= ' VALUES (' . implode(',', $params) . ')';
+            $sql .= ' VALUES (' . implode(', ', $params) . ')';
             $stmt = $dbh->prepare($sql);
-            foreach ($fields as $k => $v)
-            {
-                $type = self::getType($k);
-                $stmt->bindParam(':' . $k, $v, $type);
-            }
-            $result = $stmt->execute();
+            // foreach ($fields as $k => $v)
+            // {
+            //     $type = self::getType($k);
+            //     // echo ':' . $k . '= ' . $v . "\r\n";
+            //     $stmt->bindParam(':' . $k, $v, $type);
+            // }
+            // die($sql);
+            $result = $stmt->execute($fields);
             if (!$result)
             {
                 return -1;
             }
-            return $dbh->getLastInsertId();
+            return $dbh->lastInsertId();
         }
         catch (PDOException $e)
         {
@@ -223,7 +225,7 @@ class LiveRecord
             {
                 return -1;
             }
-            return $stmt->fetchOne()['total'];
+            return $stmt->fetch()['total'];
         }
         catch (PDOException $e)
         {
@@ -271,7 +273,7 @@ class LiveRecord
             {
                 return -1;
             }
-            $row = $stmt->fetchOne();
+            $row = $stmt->fetch();
             if (empty($row))
             {
                 return 0;
@@ -334,7 +336,7 @@ class LiveRecord
                 return array();
             }
             $list = array();
-            foreach ($rows => $row)
+            foreach ($rows as $row)
             {
                 $record = new LiveRecord();
                 $record->InitFromDBFields($row);
@@ -369,6 +371,7 @@ class LiveRecord
             case self::FIELD_WATCH_COUNT:
             case self::FIELD_ADMIRE_COUNT:
             case self::FIELD_TIME_SPAN:
+            case self::FIELD_AV_ROOM_ID:
                 return PDO::PARAM_INT;
             case self::FIELD_CREATE_TIME:
             case self::FIELD_MODIFY_TIME:
@@ -391,7 +394,7 @@ class LiveRecord
         $list = array();
         if (is_null($dbh))
         {
-            return null;
+            return -1;
         }
         try
         {
@@ -399,21 +402,22 @@ class LiveRecord
             $fields = array();
             foreach ($data as $k => $v)
             {
-                $type = self::getType($k);
                 $placeHolder = ':' . $k;
-                $fields[] = $k . ' = ' . $placeHolder;
-                $params[$placeHolder] = $v;
+                $fields[] = $k . '=' . $placeHolder;
             }
             $sql .= implode(',', $fields);
             $sql .= ' WHERE host_uid = :host_uid';
             $stmt = $dbh->prepare($sql);
-            foreach ($params as $k => $v)
+            foreach ($data as $k => $v)
             {
                 $type = self::getType($k);
-                $stmt->bindParam(':' . $k, $v, $type);
+                $stmt->bindParam(":" . $k, $v, $type);
+                // $stmt->bindParam(':' . $k, $v, $type);
             }
             $hostUidType = self::getType(self::FIELD_HOST_UID);
-            $stmt->bindParam(':host_uid', $hostUid, $hostUidType);
+            $stmt->bindParam(":host_uid", $hostUid, $hostUidType);
+            // var_dump($sql);die;
+
             $result = $stmt->execute();
             if (!$result)
             {
@@ -721,7 +725,7 @@ class LiveRecord
     /**
      * Gets av房间ID.
      *
-     * @return INT
+     * @return int
      */
     public function getAvRoomId()
     {
@@ -731,11 +735,11 @@ class LiveRecord
     /**
      * Sets av房间ID.
      *
-     * @param INT $avRoomId the av room id
+     * @param int $avRoomId the av room id
      *
      * @return self
      */
-    public function setAvRoomId(INT $avRoomId)
+    public function setAvRoomId($avRoomId)
     {
         $this->avRoomId = $avRoomId;
     }

@@ -28,25 +28,24 @@ class UserAvRoom
 	 * @param  string $uid 
 	 * @return int      成功：true, 出错：false
 	 */
-	public function create($uid)
+	public function create()
 	{
 		$dbh = DB::getPDOHandler();
-        $list = array();
         if (is_null($dbh))
         {
             return false;
         }
         try
         {
-            $sql = 'INSERT INTO t_live_record (uid) VALUES (:uid)';
+            $sql = 'INSERT INTO t_user_av_room (uid) VALUES (:uid)';
             $stmt = $dbh->prepare($sql);
-            $stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
+            $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
             $result = $stmt->execute();
             if (!$result)
             {
                 return false;
             }
-            $this->id = $dbh->getLastInsertId();
+            $this->id = $dbh->lastInsertId();
             return true;
         }
         catch (PDOException $e)
@@ -72,13 +71,13 @@ class UserAvRoom
         {
             $sql = 'SELECT id FROM t_user_av_room WHERE uid = :uid';
             $stmt = $dbh->prepare($sql);
-            $stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
+            $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
             $result = $stmt->execute();
             if (!$result)
             {
                 return -1;
             }
-           	$row = $stmt->fetchOne();
+           	$row = $stmt->fetch();
            	if (empty($row))
            	{
            		return 0;
