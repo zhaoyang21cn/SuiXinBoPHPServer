@@ -173,6 +173,33 @@ class LiveRecord
         }
     }
 
+    public function delete()
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            return false;
+        }
+        try
+        {
+            $sql = 'DELETE FROM t_live_record WHERE host_uid = ?';
+            $stmt = $dbh->prepare($sql);
+            $hostUid = $this->hostUid;
+            $stmt->bindParam(1, $hostUid, PDO::PARAM_STR);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                return false;
+            }
+            return true;
+        }
+        catch (PDOException $e)
+        {
+            return false;
+        }
+        return false;
+    }
+
     /**
      * 删除不活跃的直播
      * @param  int $inactiveSeconds 不活跃的秒数
@@ -398,26 +425,25 @@ class LiveRecord
         }
         try
         {
+            $data[self::FIELD_MODIFY_TIME] = date('Y-m-d H:i:s');
             $sql = 'UPDATE t_live_record SET ';
             $fields = array();
             foreach ($data as $k => $v)
             {
-                $placeHolder = ':' . $k;
-                $fields[] = $k . '=' . $placeHolder;
+                $fields[] = $k . '=' . ':' . $k;
             }
-            $sql .= implode(',', $fields);
+            $sql .= implode(', ', $fields);
             $sql .= ' WHERE host_uid = :host_uid';
             $stmt = $dbh->prepare($sql);
             foreach ($data as $k => $v)
             {
                 $type = self::getType($k);
-                $stmt->bindParam(":" . $k, $v, $type);
-                // $stmt->bindParam(':' . $k, $v, $type);
+                // Should use $data[$k]
+                $stmt->bindParam(':' . $k, $data[$k], $type);
             }
             $hostUidType = self::getType(self::FIELD_HOST_UID);
-            $stmt->bindParam(":host_uid", $hostUid, $hostUidType);
-            // var_dump($sql);die;
-
+            $stmt->bindParam(
+                ':' . self::FIELD_HOST_UID, $hostUid, $hostUidType);
             $result = $stmt->execute();
             if (!$result)
             {

@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . '/../../path.php';
 require_once 'LiveModifyCmd.php';
 require_once SERVICE_PATH . '/Cmd.php';
 require_once SERVICE_PATH . '/CmdResp.php';
-require_once ROOT_PATH . 'ErrorNo.php';
+require_once ROOT_PATH . '/ErrorNo.php';
 require_once MODEL_PATH . '/LiveRecord.php';
 require_once CLIENT_DATA_PATH . '/CliLiveData.php';
 require_once LIB_PATH . '/db/DB.php';
@@ -37,12 +37,12 @@ class LiveEndCmd extends LiveModifyCmd
             LiveRecord::FIELD_TIME_SPAN => $this->timeSpan,
             LiveRecord::FIELD_ADMIRE_COUNT => $this->admireCount,
         );
-        $count = LiveRecord::updateByHostUid($this->uid, $fields);
-        if ($count <= 0)
+        $ret = $record->delete();
+        if (!$ret)
         {
             return new CmdResp(ERR_SERVER, 'Server internal error');
         }
-        $resp = array('record' => $record->toJsonArray());
+        $resp = array('record' => $cliRecord->toJsonArray());
         return new CmdResp(ERR_SUCCESS, '', $resp);
     }
 }

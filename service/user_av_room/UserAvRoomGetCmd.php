@@ -5,7 +5,7 @@ require_once dirname(__FILE__) . '/../../path.php';
 require_once SERVICE_PATH . '/Cmd.php';
 require_once SERVICE_PATH . '/CmdResp.php';
 require_once ROOT_PATH . '/ErrorNo.php';
-require_once MODEL_PATH . '//UserAvRoom.php';
+require_once MODEL_PATH . '/UserAvRoom.php';
 
 /**
  * Date: 2016/4/22

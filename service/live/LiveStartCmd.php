@@ -12,6 +12,7 @@ require_once SERVICE_PATH . '/Cmd.php';
 require_once SERVICE_PATH . '/CmdResp.php';
 require_once ROOT_PATH . '/ErrorNo.php';
 require_once MODEL_PATH . '/LiveRecord.php';
+require_once MODEL_PATH . '/UserAvRoom.php';
 require_once CLIENT_DATA_PATH . '/CliLiveData.php';
 require_once CLIENT_DATA_PATH . '/CliUserInfo.php';
 require_once CLIENT_DATA_PATH . '/CliLbs.php';
@@ -128,6 +129,16 @@ class LiveStartCmd extends Cmd
 
     public function handle()
     {
+        $avRoom = new UserAvRoom($this->record->getHostUid());
+        $cnt = $avRoom->load();
+        if ($cnt < 0)
+        {
+            return new CmdResp(ERR_SERVER, 'Server internal error');
+        }
+        if ($cnt === 0)
+        {
+            return new CmdResp(ERR_LIVE_NO_AV_ROOM_ID, 'The user doesn\'t have av room id');
+        }
         $id = $this->record->save();
         if ($id < 0)
         {

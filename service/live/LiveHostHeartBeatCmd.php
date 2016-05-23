@@ -53,19 +53,25 @@ class LiveHostHeartBeatCmd extends LiveModifyCmd
 
     public function handle()
     {
+        $record = new LiveRecord();
+        $cnt = $record->loadByHostUid($this->uid);
+        if ($cnt < 0)
+        {
+            return new CmdResp(ERR_SERVER, 'Server internal error');
+        }
+        if ($cnt === 0)
+        {
+            return new CmdResp(ERR_USER_NO_LIVE, 'The user is not in live');
+        }
         $fields = array(
             LiveRecord::FIELD_WATCH_COUNT => $this->watchCount,
             LiveRecord::FIELD_TIME_SPAN => $this->timeSpan,
             LiveRecord::FIELD_ADMIRE_COUNT => $this->admireCount,
         );
-        $count = LiveRecord::updateByHostUid($this->uid, $fields);
-        if ($count < 0)
+        $cnt = LiveRecord::updateByHostUid($this->uid, $fields);
+        if ($cnt < 0)
         {
             return new CmdResp(ERR_SERVER, 'Server internal error');
-        }
-        if ($count === 0)
-        {
-            return new CmdResp(ERR_USER_NO_LIVE, 'The user is not in live');
         }
         return new CmdResp(ERR_SUCCESS, '');
     }
