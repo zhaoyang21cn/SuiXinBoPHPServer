@@ -3,7 +3,7 @@
  * Date: 2016/4/29
  */
 
-require_once  __DIR__ . '/../path.php';
+require_once  __DIR__ . '/../Path.php';
 require_once MODEL_PATH . '/LiveRecord.php';
 
 function clear()

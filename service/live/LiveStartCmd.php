@@ -5,7 +5,7 @@
  * 开始直播接口
  */
 
-require_once dirname(__FILE__) . '/../../path.php';
+require_once dirname(__FILE__) . '/../../Path.php';
 
 require_once 'LiveModifyCmd.php';
 require_once SERVICE_PATH . '/Cmd.php';

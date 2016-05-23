@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../path.php';
+require_once dirname(__FILE__) . '/../Path.php';
 require_once LIB_PATH . '/db/DB.php';
 
 /**

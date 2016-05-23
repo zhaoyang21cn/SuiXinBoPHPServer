@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../path.php';
+require_once dirname(__FILE__) . '/../Path.php';
 require_once SERVICE_PATH . '/Router.php';
 require_once SERVICE_PATH . '/Cmd.php';
 require_once SERVICE_PATH . '/CmdResp.php';

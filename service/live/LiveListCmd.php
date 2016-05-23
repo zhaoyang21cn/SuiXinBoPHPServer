@@ -5,7 +5,7 @@
  * Date: 2016/4/22
  */
 
-require_once dirname(__FILE__) . '/../../path.php';
+require_once dirname(__FILE__) . '/../../Path.php';
 
 require_once 'LiveModifyCmd.php';
 require_once SERVICE_PATH . '/Cmd.php';
