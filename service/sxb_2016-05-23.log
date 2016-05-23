@@ -1,0 +1,17 @@
+[2016-05-23 11:11:08][INFO] request data: {"admireCount": 50, "watchCount": 500, "uid": "user1008", "timeSpan": 50}
+[2016-05-23 11:11:37][INFO] request data: {"uid": "user1002"}
+[2016-05-23 11:18:40][INFO] request data: {"uid": "user1002"}
+[2016-05-23 11:19:41][INFO] request data: {"uid": "user1002"}
+[2016-05-23 11:22:00][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]request data: {"uid": "user1002"}
+[2016-05-23 11:22:46][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]request data: {"uid": "user1002"}
+[2016-05-23 11:23:22][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]request data: {"uid": "user1002"}
+[2016-05-23 11:24:16][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]request data: {"uid": "user1002"}
+[2016-05-23 11:24:34][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]request data: {"uid": "user1002"}
+[2016-05-23 11:25:13][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]request data: {"uid": "user1002"}
+[2016-05-23 11:27:39][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]request data: {"uid": "user1002"}
+[2016-05-23 11:28:26][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]request data: {"uid": "user1002"}
+[2016-05-23 11:28:26][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]response time: 0 secs, svc = user_av_room, cmd = get
+[2016-05-23 11:28:26][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]response data: {"errorCode":90000,"errorInfo":"Server internal error"}
+[2016-05-23 11:28:31][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]request data: {"uid": "user1002"}
+[2016-05-23 11:28:31][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]response time: 0 secs, svc = user_av_room, cmd = get
+[2016-05-23 11:28:31][INFO] [file: D:\wamp\www\sxb\index.php][function: handle]response data: {"errorCode":90000,"errorInfo":"Server internal error"}
