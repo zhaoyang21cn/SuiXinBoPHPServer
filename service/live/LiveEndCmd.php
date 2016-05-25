@@ -1,4 +1,8 @@
 <?php
+/**
+ * 直播结束接口
+ * Date: 2016/4/22
+ */
 require_once dirname(__FILE__) . '/../../Path.php';
 
 require_once 'LiveModifyCmd.php';

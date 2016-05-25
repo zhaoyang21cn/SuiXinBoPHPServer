@@ -98,20 +98,20 @@ class LiveRecord
 
     private function InitFromDBFields($fields)
     {
-        $this->createTime = strtotime($fields['create_time']);
-        $this->title = $fields['title'];
-        $this->cover = $fields['cover'];
-        $this->longitude = (float)$fields['longitude'];
-        $this->latitude = (float)$fields['latitude'];
-        $this->address = $fields['address'];
-        $this->hostUid = $fields['host_uid'];
-        $this->hostAvatar = $fields['host_avatar'];
-        $this->hostUserName = $fields['host_username'];
-        $this->admireCount = (int)$fields['admire_count'];
-        $this->chatRoomId = $fields['chat_room_id'];
-        $this->avRoomId = (int)$fields['av_room_id'];
-        $this->timeSpan = (int)$fields['time_span'];
-        $this->watchCount = (int)$fields['watch_count'];
+        $this->createTime = strtotime($fields[self::FIELD_CREATE_TIME]);
+        $this->title = $fields[self::FIELD_TITLE];
+        $this->cover = $fields[self::FIELD_COVER];
+        $this->longitude = (float)$fields[self::FIELD_LONGITUDE];
+        $this->latitude = (float)$fields[self::FIELD_LATITUDE];
+        $this->address = $fields[self::FIELD_ADDRESS];
+        $this->hostUid = $fields[self::FIELD_HOST_UID];
+        $this->hostAvatar = $fields[self::FIELD_HOST_AVATAR];
+        $this->hostUserName = $fields[self::FIELD_HOST_USERNAME];
+        $this->admireCount = (int)$fields[self::FIELD_ADMIRE_COUNT];
+        $this->chatRoomId = $fields[self::FIELD_CHAT_ROOM_ID];
+        $this->avRoomId = (int)$fields[self::FIELD_AV_ROOM_ID];
+        $this->timeSpan = (int)$fields[self::FIELD_TIME_SPAN];
+        $this->watchCount = (int)$fields[self::FIELD_WATCH_COUNT];
     }
 
 
@@ -124,7 +124,7 @@ class LiveRecord
         $dbh = DB::getPDOHandler();
         if (is_null($dbh))
         {
-            return false;
+            return -1;
         }
         $fields = array(
             self::FIELD_TITLE => $this->title,
@@ -173,6 +173,10 @@ class LiveRecord
         }
     }
 
+    /**
+     * 从数据库删除直播记录
+     * @return bool 成功：true, 失败：false
+     */
     public function delete()
     {
         $dbh = DB::getPDOHandler();
@@ -182,7 +186,8 @@ class LiveRecord
         }
         try
         {
-            $sql = 'DELETE FROM t_live_record WHERE host_uid = ?';
+            $sql = 'DELETE FROM t_live_record WHERE ' .  
+                   self::FIELD_HOST_UID . ' = ?';
             $stmt = $dbh->prepare($sql);
             $hostUid = $this->hostUid;
             $stmt->bindParam(1, $hostUid, PDO::PARAM_STR);
@@ -201,9 +206,9 @@ class LiveRecord
     }
 
     /**
-     * 删除不活跃的直播
-     * @param  int $inactiveSeconds 不活跃的秒数
-     * @return                   
+     * 删除不活跃的记录
+     * @param  int $inactiveSeconds 多久没更新
+     * @return bool 成功：true; 失败：false.
      */
     public static function deleteInactiveRecord($inactiveSeconds)
     {
@@ -214,7 +219,8 @@ class LiveRecord
         }
         try
         {
-            $sql = 'DELETE FROM t_live_record WHERE modify_time < ?';
+            $sql = 'DELETE FROM t_live_record WHERE ' . 
+                   self::FIELD_MODIFY_TIME .  ' < ?';
             $stmt = $dbh->prepare($sql);
             $lastModifyTime = date('Y-m-d H:i:s', time() - inactiveSeconds);
             $stmt->bindParam(1, $lastModifyTime, PDO::PARAM_STR);
@@ -292,7 +298,8 @@ class LiveRecord
         try
         {
             $sql = 'SELECT ' . implode(',', $fields) . 
-                   ' FROM t_live_record WHERE host_uid = :host_uid ';
+                   ' FROM t_live_record WHERE ' . 
+                   self::FIELD_HOST_UID . ' = :host_uid ';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':host_uid', $hostUid, PDO::PARAM_STR);
             $result = $stmt->execute();
@@ -433,7 +440,7 @@ class LiveRecord
                 $fields[] = $k . '=' . ':' . $k;
             }
             $sql .= implode(', ', $fields);
-            $sql .= ' WHERE host_uid = :host_uid';
+            $sql .= ' WHERE ' . self::FIELD_HOST_UID . ' = :host_uid';
             $stmt = $dbh->prepare($sql);
             foreach ($data as $k => $v)
             {

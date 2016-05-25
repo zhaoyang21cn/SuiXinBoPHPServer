@@ -6,31 +6,31 @@ require_once LIB_PATH . '/db/DB.php';
 class UserAvRoom
 {
 
-	/**
-	 * Uid
-	 * @var string
-	 */
-	private $uid;
-	/**
-	 * Av房间ID
-	 * @var int
-	 */
-	private $id = -1;
+    /**
+     * Uid
+     * @var string
+     */
+    private $uid;
+    /**
+     * Av房间ID
+     * @var int
+     */
+    private $id = -1;
 
-	public function __construct($uid)
-	{
-		$this->uid = $uid;
-	}
+    public function __construct($uid)
+    {
+        $this->uid = $uid;
+    }
 
 
-	/**
-	 * 创建 AvRoomId
-	 * @param  string $uid 
-	 * @return int      成功：true, 出错：false
-	 */
-	public function create()
-	{
-		$dbh = DB::getPDOHandler();
+    /**
+     * 创建 AvRoomId
+     * @param  string $uid 
+     * @return int      成功：true, 出错：false
+     */
+    public function create()
+    {
+        $dbh = DB::getPDOHandler();
         if (is_null($dbh))
         {
             return false;
@@ -53,15 +53,15 @@ class UserAvRoom
             return false;
         }
         return false;
-	}
+    }
 
-	/**
-	 * 从数据库加载
-	 * @return int 记录存在：1，不存在：0，出错：-1
-	 */
-	public function load()
-	{
-		$dbh = DB::getPDOHandler();
+    /**
+     * 从数据库加载
+     * @return int 记录存在：1，不存在：0，出错：-1
+     */
+    public function load()
+    {
+        $dbh = DB::getPDOHandler();
         $list = array();
         if (is_null($dbh))
         {
@@ -77,22 +77,22 @@ class UserAvRoom
             {
                 return -1;
             }
-           	$row = $stmt->fetch();
-           	if (empty($row))
-           	{
-           		return 0;
-           	}
-           	$this->id = $row['id'];
-           	return 1;
+            $row = $stmt->fetch();
+            if (empty($row))
+            {
+                return 0;
+            }
+            $this->id = $row['id'];
+            return 1;
         }
         catch (PDOException $e)
         {
             return -1;
         }
         return -1;
-	}
+    }
 
-	// Getter and Setters
+    // Getter and Setters
 
     /**
      * Gets Av房间ID.
