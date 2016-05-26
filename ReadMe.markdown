@@ -7,6 +7,7 @@
 PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能运行), MySQL >= 5.5.3，Apache/Nginx服务器。
 
 ### 1.2 下载源码和文档
+
 从https://github.com/zhaoyang21cn/SuiXinBoPHPServer下载得到zip文件，解压到服务器文档目录下
 （比如apache DOCUMENT_ROOT），并且更改目录名为sxb。
 
@@ -15,7 +16,11 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 在lib/db/DBConfig.php填写数据库用户名和密码; 开通腾讯云COS服务，得到对应的APPID、SecretKey和SecretID。
 然后填写deps/cos-php-sdk/Conf.php中对应的部分(不开通COS也能跑，只是客户端无法上传图片到COS)。
 
-## 2 目录结构
+### 1.4 数据库建表建库
+
+执行sxb_db.sql文件中的sql。
+
+## 2. 目录结构
 ![参考directory.png](https://github.com/zhaoyang21cn/SuiXinBoPHPServer/blob/master/directory.png)
 
 ### 2.1 service 
@@ -55,4 +60,4 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 依赖库，主要是其他项目或者SDK，比如腾讯云COS SDK。
 
 ### 2.6 cron 
-后台定时任务。清理90秒没有发心跳包的直播记录。
+后台定时任务。清理90秒没有发心跳包的直播记录。可以crontab定时执行。
