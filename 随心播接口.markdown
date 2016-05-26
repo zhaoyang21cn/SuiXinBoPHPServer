@@ -16,7 +16,7 @@
 
 ### 1.2 请求URL
 
-http://182.254.234.225/sxb/index.php?svc=live&cmd=start
+http://localhost/sxb/index.php?svc=live&cmd=start
 
 
 ### 1.3 请求包示例
@@ -90,7 +90,7 @@ LBS对象说明:
 
 ### 2.2 请求URL
 
-http://182.254.234.225/sxb/index.php?svc=live&cmd=list
+http://localhost/sxb/index.php?svc=live&cmd=list
 
 ### 2.3 请求包示例
 
@@ -195,7 +195,7 @@ LiveRecordItem对象说明：
 
 ### 3.2 请求URL
 
-http://182.254.234.225/sxb/index.php?svc=live&cmd=host_heartbeat
+http://localhost/sxb/index.php?svc=live&cmd=host_heartbeat
 
 ### 3.3 请求包示例
 
@@ -238,7 +238,7 @@ http://182.254.234.225/sxb/index.php?svc=live&cmd=host_heartbeat
 
 ### 4.2 请求URL
 
-http://182.254.234.225/sxb/index.php?svc=live&cmd=end
+http://localhost/sxb/index.php?svc=live&cmd=end
 
 ### 4.3 请求包示例
 
@@ -301,7 +301,7 @@ http://182.254.234.225/sxb/index.php?svc=live&cmd=end
 
 ### 5.2 请求URL
 
-http://182.254.234.225/sxb/index.php?svc=user_av_room&cmd=get
+http://localhost/sxb/index.php?svc=user_av_room&cmd=get
 
 ### 5.3 请求包示例
 
@@ -347,7 +347,7 @@ http://182.254.234.225/sxb/index.php?svc=user_av_room&cmd=get
 
 ### 6.2 请求URL
 
-http://182.254.234.225/sxb/index.php?svc=cos&cmd=get_sign
+http://localhost/sxb/index.php?svc=cos&cmd=get_sign
 
 ### 6.3 请求包示例
 
