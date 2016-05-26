@@ -1,8 +1,19 @@
 # 随心播后台说明
 
-## 1. 运行环境
+## 1. 环境部署
 
-PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能运行), MySQL >= 5.5.3
+### 1.1 搭建环境
+
+PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能运行), MySQL >= 5.5.3，Apache/Nginx服务器。
+
+### 1.2 下载源码和文档
+从https://github.com/zhaoyang21cn/SuiXinBoPHPServer下载得到zip文件，解压到服务器文档目录下
+（比如apache DOCUMENT_ROOT），并且更改目录名为sxb。
+
+### 1.3 修改配置
+
+在lib/db/DBConfig.php填写数据库用户名和密码; 开通腾讯云COS服务，得到对应的APPID、SecretKey和SecretID。
+然后填写deps/cos-php-sdk/Conf.php中对应的部分(不开通COS也能跑，只是客户端无法上传图片到COS)。
 
 ## 2 目录结构
 ![参考directory.png](https://github.com/zhaoyang21cn/SuiXinBoPHPServer/blob/master/directory.png)

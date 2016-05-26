@@ -1,0 +1,380 @@
+## 0 Response公共字段说明
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+| errorCode | Integer | 必填| 错误码。  |
+| errorInfo | String | 必填 | 错误信息。  |
+| data | Object |可选 | 返回数据内容。  |
+
+注：如果接口本身没有数据需要返回，则无data字段。
+
+
+## 1 开始直播
+
+### 1.1 功能说明
+
+开始直播。
+
+### 1.2 请求URL
+
+http://182.254.234.225/sxb/index.php?svc=live&cmd=start
+
+
+### 1.3 请求包示例
+
+```
+{
+    "title": "测试直播",
+    "cover": "http://aa.com",
+    "chatRoomId": "1",
+    "avRoomId": 1,
+    "host": {
+        "uid": "user1000",
+        "avatar": "http://r.plures.net/lg/images/star/live/topbar-logo-large.png",
+        "username": "用户名"
+    },
+    "lbs": {
+        "longitude": 1.2,
+        "latitude": 2.1,
+        "address": "上海"
+    }
+}
+```
+
+### 1.4 请求包字段说明
+
+请求字段:
+
+| 字段 | 类型 | 选项 | 说明 |
+|---------|---------|---------|
+| host | Object | 必填 | 主播信息，是一个UserInfo对象。  |
+| cover | String(128) | 选填 | 封面图片URL地址。  |
+| title | String(50) | 选填 | 直播主题。  |
+| lbs | Object | 选填 | 地理信息，是一个LBS对象。  |
+| chatRoomId | String | 必填 | 地理信息。  |
+| avRoomId | Integer | 必填 | 地理信息。  |
+
+UserInfo对象说明:
+
+| 字段 | 类型 | 选项 | 说明 |
+|---------|---------|---------|
+| uid | String | 必填 | 主播uid。  |
+| avatar | String(128) | 选填 | 头像URL。  |
+| username | String(50) | 选填 | 用户名。  |
+
+LBS对象说明:
+
+| 字段 | 类型 | 选项 | 说明 |
+|---------|---------|---------|
+| longtitude | Double | 选填 | 经度。  |
+| latitude | Double | 选填 | 纬度。  |
+| address | String(100) | 选填 | 地址。  |
+
+### 1.5 返回包示例
+
+```
+{
+    "errorInfo": "",
+    "errorCode": 0
+}
+```
+
+### 1.6 返回包专有字段说明
+
+无
+
+## 2 直播列表
+
+### 2.1 功能说明
+
+获取当前直播列表。
+
+### 2.2 请求URL
+
+http://182.254.234.225/sxb/index.php?svc=live&cmd=list
+
+### 2.3 请求包示例
+
+```
+{
+    "pageIndex": 0,
+    "pageSize": 10
+}
+```
+
+### 2.4 请求包字段说明
+
+| 字段 | 类型 | 选项 | 说明 |
+|---------|---------|---------|
+| pageIndex | Integer | 必填 | 第几页，从0开始。 |
+| pageSize | Integer | 必填 | 每页大小，最多不能超过50。  |
+
+### 2.5 返回报示例
+
+```
+{
+    "data": {
+        "recordList": [
+            {
+                "admireCount": 0, 
+                "avRoomId": 1, 
+                "chatRoomId": "1", 
+                "cover": "http://aa.com", 
+                "createTime": 1461828170, 
+                "host": {
+                    "avatar": "http://r.plures.net/lg/images/star/live/topbar-logo-large.png", 
+                    "uid": "user1001", 
+                    "username": "a"
+                }, 
+                "lbs": {
+                    "address": "zzzzzzzzzzzzzzzzzz", 
+                    "latitude": 2.1, 
+                    "longitude": 1.2
+                }, 
+                "timeSpan": 0, 
+                "title": "xxxxxxxxxxxx", 
+                "watchCount": 0
+            }, 
+            {
+                "admireCount": 0, 
+                "avRoomId": 1, 
+                "chatRoomId": "1", 
+                "cover": "http://aa.com", 
+                "createTime": 1461828170, 
+                "host": {
+                    "avatar": "http://r.plures.net/lg/images/star/live/topbar-logo-large.png", 
+                    "uid": "user1003", 
+                    "username": "b"
+                }, 
+                "lbs": {
+                    "address": "ssssssssssssssssssss", 
+                    "latitude": 2.1, 
+                    "longitude": 1.2
+                }, 
+                "timeSpan": 0, 
+                "title": "abccccccccccccccccccc", 
+                "watchCount": 0
+            }
+        ], 
+        "totalItem": 18
+    }, 
+    "errorCode": 0, 
+    "errorInfo": ""
+}
+```
+
+
+### 2.6 返回包专有字段说明
+
+data中字段：
+
+| 字段|类型 |说明 |
+|---------|---------|---------|
+| recordList | Array | 直播记录列表，列表的每条记录是一个LiveRecordItem对象。|
+| totalItem | Integer | 总数. |
+
+LiveRecordItem对象说明：
+
+| 字段|类型 |说明 |
+|---------|---------|---------|
+| createTime | Integer | 创建时间，Unix时间戳。 |
+| host | Object | 主播信息。  |
+| cover | String(128) | 封面图片URL地址。  |
+| title | String(50) | 直播主题。  |
+| lbs | Object | 地理信息。  |
+| admireCount | Integer | 点赞人数。 |
+| chatRoomId | String | 聊天室ID。 |
+| avRoomId | Integer | AV Room ID。 |
+| timeSpan | Integer | 直播时长，单位秒。 |
+| watchCount | Integer | 观看人数。 |
+
+## 3 主播心跳包
+
+### 3.1 功能说明
+
+主播定期心跳上报数据。
+
+### 3.2 请求URL
+
+http://182.254.234.225/sxb/index.php?svc=live&cmd=host_heartbeat
+
+### 3.3 请求包示例
+
+```
+{
+    "uid": "user1000",
+    "watchCount": 100,
+    "admireCount": 10,
+	"timeSpan": 100
+}
+```
+
+### 3.4 请求包字段说明
+
+| 字段 | 类型 | 选项 | 说明 |
+|---------|---------|---------|
+| uid | String | 必填 | 主播uid。  |
+| watchCount | Integer | 必填 | 观看人数。 |
+| admireCount | Integer | 必填 | 点赞数。  |
+| timeSpan | Integer | 必填 | 直播时长，单位秒。  |
+
+### 3.5 返回包示例
+
+```
+{
+    "errorInfo": "",
+    "errorCode": 0
+}
+```
+
+### 3.6 返回包专有字段说明
+
+无
+
+## 4 直播结束
+
+### 4.1 功能说明
+
+直播结束的时候，修改直播列表记录，并返回本次直播详情。
+
+### 4.2 请求URL
+
+http://182.254.234.225/sxb/index.php?svc=live&cmd=end
+
+### 4.3 请求包示例
+
+```
+{
+    "hostUid": "user1000"
+}
+```
+
+### 4.4 请求包字段说明
+
+
+| 字段 | 类型 | 选项 | 说明 |
+|---------|---------|---------|
+| hostUid | String | 必填 | 主播uid。  |
+
+### 4.5 返回报示例
+
+```
+{
+    "data": {
+        "record": {
+            "admireCount": 0, 
+            "avRoomId": 1, 
+            "chatRoomId": "1", 
+            "cover": "http://aa.com", 
+            "createTime": 1234567, 
+            "host": {
+                "avatar": "http://r.plures.net/lg/images/star/live/topbar-logo-large.png", 
+                "uid": "user1001", 
+                "username": "walalalalala"
+            }, 
+            "lbs": {
+                "address": "0", 
+                "latitude": 2.1, 
+                "longitude": 1.2
+            }, 
+            "timeSpan": 0, 
+            "title": "kkkkkkkk", 
+            "watchCount": 0
+        }
+    }, 
+    "errorCode": 0, 
+    "errorInfo": ""
+}
+```
+### 4.6 返回包专有字段说明
+
+| 字段|类型 |说明 |
+|---------|---------|---------|
+|record|Object|直播记录，是一个LiveRecordItem对象。|
+
+
+
+## 5 获取av room ID
+
+### 5.1 功能说明
+
+获取用户对应的聊天室ID。
+
+### 5.2 请求URL
+
+http://182.254.234.225/sxb/index.php?svc=user_av_room&cmd=get
+
+### 5.3 请求包示例
+
+```
+{
+    "uid": "user1000"
+}
+```
+
+### 5.4 请求包字段说明
+
+
+| 字段 | 类型 | 选项 | 说明 |
+|---------|---------|---------|
+| uid | String | 必填 | uid。  |
+
+### 5.5 返回包示例
+
+```
+{
+    "data": {
+        "avRoomId": 20003
+    }, 
+    "errorCode": 0, 
+    "errorInfo": ""
+}
+```
+
+### 5.6 返回包专有字段说明
+
+
+| 字段|类型 |说明 |
+|---------|---------|---------|
+| avRoomId | Integer | AV Room ID。 |
+
+
+## 6 获取COS签名
+
+### 6.1 功能说明
+
+获取COS签名，以便上传文件到COS。
+
+
+### 6.2 请求URL
+
+http://182.254.234.225/sxb/index.php?svc=cos&cmd=get_sign
+
+### 6.3 请求包示例
+
+```
+{}
+```
+
+### 6.4 请求包字段说明
+
+无。没有请求参数。
+
+### 6.6 返回包示例
+
+```
+{
+    "data": {
+        "sign": "cos sign return here"
+    }, 
+    "errorCode": 0, 
+    "errorInfo": ""
+}
+```
+
+### 6.6 返回包专有字段说明
+
+
+| 字段|类型 |说明 |
+|---------|---------|---------|
+| sign | String | 签名。 |
+
