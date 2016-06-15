@@ -45,7 +45,7 @@ http://localhost/sxb/index.php?svc=live&cmd=start
 请求字段:
 
 | 字段 | 类型 | 选项 | 说明 |
-|---------|---------|---------|
+|---------|---------|---------|---------|
 | host | Object | 必填 | 主播信息，是一个UserInfo对象。  |
 | cover | String(128) | 选填 | 封面图片URL地址。  |
 | title | String(50) | 选填 | 直播主题。  |
@@ -56,7 +56,7 @@ http://localhost/sxb/index.php?svc=live&cmd=start
 UserInfo对象说明:
 
 | 字段 | 类型 | 选项 | 说明 |
-|---------|---------|---------|
+|---------|---------|---------|---------|
 | uid | String | 必填 | 主播uid。  |
 | avatar | String(128) | 选填 | 头像URL。  |
 | username | String(50) | 选填 | 用户名。  |
@@ -64,7 +64,7 @@ UserInfo对象说明:
 LBS对象说明:
 
 | 字段 | 类型 | 选项 | 说明 |
-|---------|---------|---------|
+|---------|---------|---------|---------|
 | longtitude | Double | 选填 | 经度。  |
 | latitude | Double | 选填 | 纬度。  |
 | address | String(100) | 选填 | 地址。  |
@@ -104,7 +104,7 @@ http://localhost/sxb/index.php?svc=live&cmd=list
 ### 2.4 请求包字段说明
 
 | 字段 | 类型 | 选项 | 说明 |
-|---------|---------|---------|
+|---------|---------|---------|---------|
 | pageIndex | Integer | 必填 | 第几页，从0开始。 |
 | pageSize | Integer | 必填 | 每页大小，最多不能超过50。  |
 
@@ -211,7 +211,7 @@ http://localhost/sxb/index.php?svc=live&cmd=host_heartbeat
 ### 3.4 请求包字段说明
 
 | 字段 | 类型 | 选项 | 说明 |
-|---------|---------|---------|
+|---------|---------|---------|---------|
 | uid | String | 必填 | 主播uid。  |
 | watchCount | Integer | 必填 | 观看人数。 |
 | admireCount | Integer | 必填 | 点赞数。  |
@@ -252,7 +252,7 @@ http://localhost/sxb/index.php?svc=live&cmd=end
 
 
 | 字段 | 类型 | 选项 | 说明 |
-|---------|---------|---------|
+|---------|---------|---------|---------|
 | hostUid | String | 必填 | 主播uid。  |
 
 ### 4.5 返回报示例
@@ -315,7 +315,7 @@ http://localhost/sxb/index.php?svc=user_av_room&cmd=get
 
 
 | 字段 | 类型 | 选项 | 说明 |
-|---------|---------|---------|
+|---------|---------|---------|---------|
 | uid | String | 必填 | uid。  |
 
 ### 5.5 返回包示例
