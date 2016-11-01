@@ -18,12 +18,21 @@ require_once LIB_PATH . '/db/DB.php';
 
 class LiveListCmd extends Cmd
 {
+    private $appid;
     private $pageIndex;
     private $pageSize;
 
     public function parseInput()
     {
-
+        //var_dump($this->req['appid']);
+        if (isset($this->req['appid']) && is_int($this->req['appid']))
+        {
+            $this->appid = $this->req['appid'];
+        }
+        else
+        {
+            $this->appid = 0;
+        }
         if (!isset($this->req['pageIndex']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of page index');
@@ -52,12 +61,12 @@ class LiveListCmd extends Cmd
 
         $offset = $this->pageIndex * $this->pageSize;
         $limit = $this->pageSize;
-        $recordList = LiveRecord::getList($offset, $limit);
+        $recordList = LiveRecord::getList($this->appid, $offset, $limit);
         if (is_null($recordList))
         {
             return new CmdResp(ERR_SERVER, 'Server internal error');
         }
-        $totalCount = LiveRecord::getCount($offset, $limit);
+        $totalCount = LiveRecord::getCount($this->appid);
         if ($totalCount < 0)
         {
             return new CmdResp(ERR_SERVER, 'Server internal error');

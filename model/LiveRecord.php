@@ -9,6 +9,7 @@ require_once LIB_PATH . '/db/DB.php';
 class LiveRecord
 {
     const FIELD_TITLE = 'title';
+    const FIELD_APPID = 'appid';
     const FIELD_COVER = 'cover';
     const FIELD_CHAT_ROOM_ID = 'chat_room_id';
     const FIELD_HOST_UID = 'host_uid';
@@ -29,6 +30,11 @@ class LiveRecord
      * @var string
      */
     private $title = '';
+    /**
+     * 直播appid
+     * @var int
+     */
+    private $appid = 0;
     /**
      * 封面
      * @var string
@@ -100,6 +106,7 @@ class LiveRecord
     {
         $this->createTime = strtotime($fields[self::FIELD_CREATE_TIME]);
         $this->title = $fields[self::FIELD_TITLE];
+        $this->appid = $fields[self::FIELD_APPID];
         $this->cover = $fields[self::FIELD_COVER];
         $this->longitude = (float)$fields[self::FIELD_LONGITUDE];
         $this->latitude = (float)$fields[self::FIELD_LATITUDE];
@@ -128,6 +135,7 @@ class LiveRecord
         }
         $fields = array(
             self::FIELD_TITLE => $this->title,
+            self::FIELD_APPID => $this->appid,
             self::FIELD_COVER => $this->cover,
             self::FIELD_CHAT_ROOM_ID => $this->chatRoomId,
             self::FIELD_AV_ROOM_ID => $this->avRoomId,
@@ -186,7 +194,7 @@ class LiveRecord
         }
         try
         {
-            $sql = 'DELETE FROM t_live_record WHERE ' .  
+            $sql = 'DELETE FROM t_live_record WHERE ' .
                    self::FIELD_HOST_UID . ' = ?';
             $stmt = $dbh->prepare($sql);
             $hostUid = $this->hostUid;
@@ -219,10 +227,10 @@ class LiveRecord
         }
         try
         {
-            $sql = 'DELETE FROM t_live_record WHERE ' . 
+            $sql = 'DELETE FROM t_live_record WHERE ' .
                    self::FIELD_MODIFY_TIME .  ' < ?';
             $stmt = $dbh->prepare($sql);
-            $lastModifyTime = date('Y-m-d H:i:s', time() - inactiveSeconds);
+            $lastModifyTime = date('Y-m-d H:i:s', time() - $inactiveSeconds);
             $stmt->bindParam(1, $lastModifyTime, PDO::PARAM_STR);
             $result = $stmt->execute();
             if (!$result)
@@ -241,8 +249,13 @@ class LiveRecord
      * 获取直播总数
      * @return int 直播总数，出错返回负数
      */
-    public static function getCount()
+    public static function getCount($appid)
     {
+        if ($appid == 0) {
+            $whereSql = "";
+        }else{
+            $whereSql = " WHERE appid = $appid ";
+        }
         $dbh = DB::getPDOHandler();
         $list = array();
         if (is_null($dbh))
@@ -251,7 +264,7 @@ class LiveRecord
         }
         try
         {
-            $sql = 'SELECT COUNT(*) as total FROM t_live_record';
+            $sql = "SELECT COUNT(*) as total FROM t_live_record $whereSql";
             $stmt = $dbh->prepare($sql);
             $result = $stmt->execute();
             if (!$result)
@@ -282,6 +295,7 @@ class LiveRecord
         $fields = array(
             self::FIELD_CREATE_TIME,
             self::FIELD_TITLE,
+            self::FIELD_APPID,
             self::FIELD_COVER,
             self::FIELD_LONGITUDE,
             self::FIELD_LATITUDE,
@@ -297,8 +311,8 @@ class LiveRecord
         );
         try
         {
-            $sql = 'SELECT ' . implode(',', $fields) . 
-                   ' FROM t_live_record WHERE ' . 
+            $sql = 'SELECT ' . implode(',', $fields) .
+                   ' FROM t_live_record WHERE ' .
                    self::FIELD_HOST_UID . ' = :host_uid ';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':host_uid', $hostUid, PDO::PARAM_STR);
@@ -329,8 +343,13 @@ class LiveRecord
      * @param  integer $limit
      * @return array  LiveRecord对象数组,出错返回null
      */
-    public static function getList($offset = 0, $limit = 50)
+    public static function getList($appid, $offset = 0, $limit = 50)
     {
+        if ($appid == 0) {
+            $whereSql = "";
+        }else{
+            $whereSql = " WHERE appid = $appid ";
+        }
         $dbh = DB::getPDOHandler();
         $list = array();
         if (is_null($dbh))
@@ -340,6 +359,7 @@ class LiveRecord
         $fields = array(
             self::FIELD_CREATE_TIME,
             self::FIELD_TITLE,
+            self::FIELD_APPID,
             self::FIELD_COVER,
             self::FIELD_LONGITUDE,
             self::FIELD_LATITUDE,
@@ -355,9 +375,11 @@ class LiveRecord
         );
         try
         {
-            $sql = 'SELECT ' . implode(',', $fields) . 
-                   ' FROM t_live_record ORDER BY id DESC LIMIT ' . 
+            $sql = 'SELECT ' . implode(',', $fields) .
+                   ' FROM t_live_record ' . $whereSql . ' ORDER BY id DESC LIMIT ' .
                    (int)$offset . ',' . (int)$limit;
+//var_dump($sql);
+//exit(0);
             $stmt = $dbh->prepare($sql);
             $result = $stmt->execute();
             if (!$result)
@@ -390,6 +412,7 @@ class LiveRecord
         switch ($field)
         {
             case self::FIELD_TITLE:
+            case self::FIELD_APPID:
             case self::FIELD_COVER:
             case self::FIELD_CHAT_ROOM_ID:
             case self::FIELD_HOST_UID:
@@ -420,7 +443,7 @@ class LiveRecord
      * 根据主播Uid更新数据
      * @param  string $hostUid 主播Uid
      * @param  LiveDynamicData $data   直播动态数据
-     * @return int  成功：更新记录数;出错：-1      
+     * @return int  成功：更新记录数;出错：-1
      */
     public static function updateByHostUid($hostUid, $data)
     {
@@ -478,7 +501,7 @@ class LiveRecord
     {
         return $this->title;
     }
-    
+
     /**
      * Sets 直播标题.
      *
@@ -490,7 +513,29 @@ class LiveRecord
     {
         $this->title = $title;
     }
-    
+
+    /**
+     * Gets 直播appid.
+     *
+     * @return string
+     */
+    public function getAppid()
+    {
+        return $this->appid;
+    }
+
+    /**
+     * Sets 直播标题.
+     *
+     * @param string $appid the appid
+     *
+     * @return self
+     */
+    public function setAppid($appid)
+    {
+        $this->appid = $appid;
+    }
+
     /**
      * Gets 封面.
      *
@@ -500,7 +545,7 @@ class LiveRecord
     {
         return $this->cover;
     }
-    
+
     /**
      * Sets 封面.
      *
@@ -512,7 +557,7 @@ class LiveRecord
     {
         $this->cover = $cover;
     }
-    
+
     /**
      * Gets 聊天室ID.
      *
@@ -522,7 +567,7 @@ class LiveRecord
     {
         return $this->chatRoomId;
     }
-    
+
     /**
      * Sets 聊天室ID.
      *
@@ -534,7 +579,7 @@ class LiveRecord
     {
         $this->chatRoomId = $chatRoomId;
     }
-    
+
     /**
      * Gets 主播UID.
      *
@@ -544,7 +589,7 @@ class LiveRecord
     {
         return $this->hostUid;
     }
-    
+
     /**
      * Sets 主播UID.
      *
@@ -556,7 +601,7 @@ class LiveRecord
     {
         $this->hostUid = $hostUid;
     }
-    
+
     /**
      * Gets 主播头像.
      *
@@ -566,7 +611,7 @@ class LiveRecord
     {
         return $this->hostAvatar;
     }
-    
+
     /**
      * Sets 主播头像.
      *
@@ -578,7 +623,7 @@ class LiveRecord
     {
         $this->hostAvatar = $hostAvatar;
     }
-    
+
     /**
      * Gets 主播用户名.
      *
@@ -588,7 +633,7 @@ class LiveRecord
     {
         return $this->hostUserName;
     }
-    
+
     /**
      * Sets 主播用户名.
      *
@@ -600,7 +645,7 @@ class LiveRecord
     {
         $this->hostUserName = $hostUserName;
     }
-    
+
     /**
      * Gets 经度.
      *
@@ -610,7 +655,7 @@ class LiveRecord
     {
         return $this->longitude;
     }
-    
+
     /**
      * Sets 经度.
      *
@@ -622,7 +667,7 @@ class LiveRecord
     {
         $this->longitude = $longitude;
     }
-    
+
     /**
      * Gets 纬度.
      *
@@ -632,7 +677,7 @@ class LiveRecord
     {
         return $this->latitude;
     }
-    
+
     /**
      * Sets 纬度.
      *
@@ -644,7 +689,7 @@ class LiveRecord
     {
         $this->latitude = $latitude;
     }
-    
+
     /**
      * Gets 地址.
      *
@@ -654,7 +699,7 @@ class LiveRecord
     {
         return $this->address;
     }
-    
+
     /**
      * Sets 地址.
      *
@@ -666,7 +711,7 @@ class LiveRecord
     {
         $this->address = $address;
     }
-    
+
     /**
      * Gets 点赞人数.
      *
@@ -676,7 +721,7 @@ class LiveRecord
     {
         return $this->admireCount;
     }
-    
+
     /**
      * Sets 点赞人数.
      *
@@ -688,7 +733,7 @@ class LiveRecord
     {
         $this->admireCount = $admireCount;
     }
-    
+
     /**
      * Gets 直播时长.
      *
@@ -698,7 +743,7 @@ class LiveRecord
     {
         return $this->timeSpan;
     }
-    
+
     /**
      * Sets 直播时长.
      *
@@ -710,7 +755,7 @@ class LiveRecord
     {
         $this->timeSpan = $timeSpan;
     }
-    
+
     /**
      * Gets 观看人数.
      *
@@ -720,7 +765,7 @@ class LiveRecord
     {
         return $this->watchCount;
     }
-    
+
     /**
      * Sets 观看人数.
      *
@@ -732,7 +777,7 @@ class LiveRecord
     {
         $this->watchCount = $watchCount;
     }
-    
+
     /**
      * Gets 创建时间.
      *
@@ -742,7 +787,7 @@ class LiveRecord
     {
         return $this->createTime;
     }
-    
+
     /**
      * Sets 创建时间.
      *
@@ -754,7 +799,7 @@ class LiveRecord
     {
         $this->createTime = $createTime;
     }
-    
+
     /**
      * Gets av房间ID.
      *
@@ -764,7 +809,7 @@ class LiveRecord
     {
         return $this->avRoomId;
     }
-    
+
     /**
      * Sets av房间ID.
      *

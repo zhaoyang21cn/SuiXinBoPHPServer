@@ -42,7 +42,7 @@ class UserAvRoomGetCmd extends Cmd
             }
         }
         $id = $this->userAvRoom->getId();
-        return new CmdResp(ERR_SUCCESS, '', array('id' => $id));
+        return new CmdResp(ERR_SUCCESS, '', array('avRoomId' => (int)$id));
     }
 
 }

@@ -10,11 +10,16 @@ require 'CliLbs.php';
 
 class CliLiveData
 {
-	/**
-	 * 直播标题
-	 * @var string
-	 */
+    /**
+     * 直播标题
+     * @var string
+     */
     private $title = '';
+    /**
+     * 直播的appid
+     * @var int
+     */
+    private $appid = 0;
     /**
      * 封面
      * @var string
@@ -27,7 +32,7 @@ class CliLiveData
     private $chatRoomId = '';
     /**
      * 主播信息
-     * @var CliUserInfo 
+     * @var CliUserInfo
      */
     private $host;
     /**
@@ -63,12 +68,13 @@ class CliLiveData
 
     /**
      * 转化成Json数组
-     * @return array 
+     * @return array
      */
     public function toJsonArray()
     {
     	return array(
     		'title' => $this->title,
+            //'appid' => $this->appid,
     		'cover' => $this->cover,
     		'chatRoomId' => $this->chatRoomId,
     		'host' => $this->host->toJsonArray(),
@@ -82,13 +88,14 @@ class CliLiveData
     }
 
     /**
-     * 转化成服务端Model层 LiveRecord 数据类	
-     * @return LiveRecord 
+     * 转化成服务端Model层 LiveRecord 数据类
+     * @return LiveRecord
      */
     public function toLiveRecord()
     {
     	$record = new LiveRecord();
-    	$record->setTitle($this->title);
+        $record->setTitle($this->title);
+        $record->setAppid($this->appid);
     	$record->setCover($this->cover);
     	$record->setChatRoomId($this->chatRoomId);
     	$record->setHostUid($this->host->getUid());
@@ -109,18 +116,19 @@ class CliLiveData
     	{
     		$record->setCreateTime(strtotime($this->createTime));
     	}
-    	
+
     	return $record;
     }
 
 
     /**
      * 根据LiveRecord Model对象初始化
-     * @param LiveRecord $record 
+     * @param LiveRecord $record
      */
     public function InitFromLiveRecord($record)
     {
-    	$this->setTitle($record->getTitle());
+        $this->setTitle($record->getTitle());
+        $this->setAppid($record->getAppid());
     	$this->setCover($record->getCover());
     	$this->setChatRoomId($record->getChatRoomId());
     	$this->host = new CliUserInfo();
@@ -135,7 +143,8 @@ class CliLiveData
     	$this->setTimeSpan($record->getTimeSpan());
     	$this->setWatchCount($record->getWatchCount());
     	$this->setAvRoomId($record->getAvRoomId());
-    	$this->setCreateTime(strtotime($record->getCreateTime()));
+    	//$this->setCreateTime(strtotime($record->getCreateTime()));
+    	$this->setCreateTime($record->getCreateTime());
     }
 
 
@@ -149,7 +158,7 @@ class CliLiveData
     {
         return $this->title;
     }
-    
+
     /**
      * Sets 直播标题.
      *
@@ -161,7 +170,29 @@ class CliLiveData
     {
         $this->title = $title;
     }
-    
+
+    /**
+     * Gets 直播appid.
+     *
+     * @return int
+     */
+    public function getAppid()
+    {
+        return $this->appid;
+    }
+
+    /**
+     * Sets 直播appid.
+     *
+     * @param int $appid the appid
+     *
+     * @return self
+     */
+    public function setAppid($appid)
+    {
+        $this->appid = $appid;
+    }
+
     /**
      * Gets 封面.
      *
@@ -171,7 +202,7 @@ class CliLiveData
     {
         return $this->cover;
     }
-    
+
     /**
      * Sets 封面.
      *
@@ -183,7 +214,7 @@ class CliLiveData
     {
         $this->cover = $cover;
     }
-    
+
     /**
      * Gets 聊天室ID.
      *
@@ -193,7 +224,7 @@ class CliLiveData
     {
         return $this->chatRoomId;
     }
-    
+
     /**
      * Sets 聊天室ID.
      *
@@ -205,7 +236,7 @@ class CliLiveData
     {
         $this->chatRoomId = $chatRoomId;
     }
-    
+
     /**
      * Gets 主播信息.
      *
@@ -215,7 +246,7 @@ class CliLiveData
     {
         return $this->host;
     }
-    
+
     /**
      * Sets 主播信息.
      *
@@ -227,7 +258,7 @@ class CliLiveData
     {
         $this->host = $host;
     }
-    
+
     /**
      * Gets 地理信息.
      *
@@ -237,7 +268,7 @@ class CliLiveData
     {
         return $this->lbs;
     }
-    
+
     /**
      * Sets 地理信息.
      *
@@ -249,7 +280,7 @@ class CliLiveData
     {
         $this->lbs = $lbs;
     }
-    
+
     /**
      * Gets 点赞人数.
      *
@@ -259,7 +290,7 @@ class CliLiveData
     {
         return $this->admireCount;
     }
-    
+
     /**
      * Sets 点赞人数.
      *
@@ -271,7 +302,7 @@ class CliLiveData
     {
         $this->admireCount = $admireCount;
     }
-    
+
     /**
      * Gets 直播时长.
      *
@@ -281,7 +312,7 @@ class CliLiveData
     {
         return $this->timeSpan;
     }
-    
+
     /**
      * Sets 直播时长.
      *
@@ -293,7 +324,7 @@ class CliLiveData
     {
         $this->timeSpan = $timeSpan;
     }
-    
+
     /**
      * Gets 观看人数.
      *
@@ -303,7 +334,7 @@ class CliLiveData
     {
         return $this->watchCount;
     }
-    
+
     /**
      * Sets 观看人数.
      *
@@ -315,7 +346,7 @@ class CliLiveData
     {
         $this->watchCount = $watchCount;
     }
-    
+
     /**
      * Gets 创建时间.
      *
@@ -325,7 +356,7 @@ class CliLiveData
     {
         return $this->createTime;
     }
-    
+
     /**
      * Sets 创建时间.
      *
@@ -337,7 +368,7 @@ class CliLiveData
     {
         $this->createTime = $createTime;
     }
-    
+
     /**
      * Gets av房间ID.
      *
@@ -347,7 +378,7 @@ class CliLiveData
     {
         return $this->avRoomId;
     }
-    
+
     /**
      * Sets av房间ID.
      *

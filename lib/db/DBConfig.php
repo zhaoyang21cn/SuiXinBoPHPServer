@@ -2,13 +2,14 @@
 /**
  * DB配置
  */
-class DBConfig
+ class DBConfig
 {
-	const HOST = 'localhost';
-	const USER = 'your-user';
-	const PASSWORD = 'your-password';
-	const DATABASE = 'sxb_db';
-	const CHARSET = 'utf8mb4';
-}
+    const HOST = 'localhost';
+    const USER = 'your-user-name';
+    const PASSWORD = 'your-pass-word';
 
+    // DB NAME
+    const DATABASE = 'sxb_db';
+    const CHARSET = 'utf8mb4';
+}
 ?>

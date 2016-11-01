@@ -10,7 +10,7 @@ class Conf
     const API_COSAPI_END_POINT = 'http://web.file.myqcloud.com/files/v1/';
     //请到http://console.qcloud.com/cos去获取你的appid、sid、skey
     const APPID = 'your-appid';
-    const SECRET_ID = 'your-scret-id';
+    const SECRET_ID = 'your-secret-id';
     const SECRET_KEY = 'your-secret-key';
 
 

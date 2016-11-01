@@ -78,12 +78,21 @@ class LiveStartCmd extends Cmd
             }
             $cliLiveData->setTitle($req['title']);
         }
+        // 检查appid
+        if (isset($req['appid']) && is_int($req['appid']))
+        {
+            $cliLiveData->setAppid($req['appid']);
+        }
+        else
+        {
+            $cliLiveData->setAppid(0);
+        }
 
+        $lbs = new CliLbs();//change by helloyang; move in there;
         // 检查LBS
         if (isset($req['lbs']) && is_array($req['lbs']))
         {
             $lbsInReq = $req['lbs'];
-            $lbs = new CliLbs();
             if (is_double($lbsInReq['longitude']))
             {
                 $lbs->setLongitude($lbsInReq['longitude']);
@@ -100,8 +109,8 @@ class LiveStartCmd extends Cmd
                 }
                 $lbs->setAddress($lbsInReq['address']);
             }
-            $cliLiveData->setLbs($lbs);
         }
+        $cliLiveData->setLbs($lbs);//change by helloyang
         // 检查 av room id
         if (!isset($req['avRoomId']))
         {
@@ -124,21 +133,23 @@ class LiveStartCmd extends Cmd
         }
         $cliLiveData->setChatRoomId($req['chatRoomId']);
         $this->record = $cliLiveData->toLiveRecord();
+//var_dump($this->record);
+//exit(0);
         return new CmdResp(ERR_SUCCESS, '');
     }
 
     public function handle()
     {
-        $avRoom = new UserAvRoom($this->record->getHostUid());
-        $cnt = $avRoom->load();
-        if ($cnt < 0)
-        {
-            return new CmdResp(ERR_SERVER, 'Server internal error');
-        }
-        if ($cnt === 0)
-        {
-            return new CmdResp(ERR_LIVE_NO_AV_ROOM_ID, 'The user doesn\'t have av room id');
-        }
+        // $avRoom = new UserAvRoom($this->record->getHostUid());
+        // $cnt = $avRoom->load();
+        // if ($cnt < 0)
+        // {
+        //     return new CmdResp(ERR_SERVER, 'Server internal error');
+        // }
+        // if ($cnt === 0)
+        // {
+        //     return new CmdResp(ERR_LIVE_NO_AV_ROOM_ID, 'The user doesn\'t have av room id');
+        // }
         $id = $this->record->save();
         if ($id < 0)
         {

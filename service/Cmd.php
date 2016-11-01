@@ -20,6 +20,9 @@ abstract class Cmd
         }
         // 最大递归层数为12
         $this->req = json_decode($data, true, 12);
+        //var_dump($this->req);
+        //var_dump($data);
+        //exit(0);
         return is_null($this->req) ? false : true;
     }
 

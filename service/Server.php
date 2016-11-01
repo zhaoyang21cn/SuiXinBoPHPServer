@@ -24,8 +24,8 @@ class Server
 
     public function handle()
     {
-        $handler = new FileLogHandler(basename(__DIR__) . '/sxb_' . date('Y-m-d') . '.log');
-        // $handler = new FileLogHandler('/data/log/sxb/sxb_' . date('Y-m-d') . '.log');
+        // $handler = new FileLogHandler(basename(__DIR__) . '/sxb_' . date('Y-m-d') . '.log');
+        $handler = new FileLogHandler('/data/log/sxb/sxb_' . date('Y-m-d') . '.log');
         Log::init($handler);
         if (!isset($_REQUEST['svc']) || !isset($_REQUEST['cmd']))
         {
