@@ -21,9 +21,10 @@ http://localhost/sxb/index.php?svc=live&cmd=start
 
 ### 1.3 请求包示例
 
-```
+```json
 {
     "title": "测试直播",
+    "appid": 125119786,
     "cover": "http://aa.com",
     "chatRoomId": "1",
     "avRoomId": 1,
@@ -49,9 +50,10 @@ http://localhost/sxb/index.php?svc=live&cmd=start
 | host | Object | 必填 | 主播信息，是一个UserInfo对象。  |
 | cover | String(128) | 选填 | 封面图片URL地址。  |
 | title | String(50) | 选填 | 直播主题。  |
+| appid | Integer | 选填 | 该直播所属的appid。  |
 | lbs | Object | 选填 | 地理信息，是一个LBS对象。  |
-| chatRoomId | String | 必填 | 地理信息。  |
-| avRoomId | Integer | 必填 | 地理信息。  |
+| chatRoomId | String | 必填 | 聊天室ID。  |
+| avRoomId | Integer | 必填 | 聊天室ID。如果没有,需要通过第五个接口获取.  |
 
 UserInfo对象说明:
 
@@ -71,7 +73,7 @@ LBS对象说明:
 
 ### 1.5 返回包示例
 
-```
+```json
 {
     "errorInfo": "",
     "errorCode": 0
@@ -94,8 +96,9 @@ http://localhost/sxb/index.php?svc=live&cmd=list
 
 ### 2.3 请求包示例
 
-```
+```json
 {
+    "appid": 125119786,
     "pageIndex": 0,
     "pageSize": 10
 }
@@ -105,12 +108,13 @@ http://localhost/sxb/index.php?svc=live&cmd=list
 
 | 字段 | 类型 | 选项 | 说明 |
 |---------|---------|---------|---------|
+| appid | Integer | 选填 | 用户的appid,该接口会返回这个appid下的直播列表,不填会返回所有appid下的直播列表 |
 | pageIndex | Integer | 必填 | 第几页，从0开始。 |
 | pageSize | Integer | 必填 | 每页大小，最多不能超过50。  |
 
 ### 2.5 返回报示例
 
-```
+```json
 {
     "data": {
         "recordList": [
@@ -199,7 +203,7 @@ http://localhost/sxb/index.php?svc=live&cmd=host_heartbeat
 
 ### 3.3 请求包示例
 
-```
+```json
 {
     "uid": "user1000",
     "watchCount": 100,
@@ -219,7 +223,7 @@ http://localhost/sxb/index.php?svc=live&cmd=host_heartbeat
 
 ### 3.5 返回包示例
 
-```
+```json
 {
     "errorInfo": "",
     "errorCode": 0
@@ -242,7 +246,7 @@ http://localhost/sxb/index.php?svc=live&cmd=end
 
 ### 4.3 请求包示例
 
-```
+```json
 {
     "hostUid": "user1000"
 }
@@ -257,7 +261,7 @@ http://localhost/sxb/index.php?svc=live&cmd=end
 
 ### 4.5 返回报示例
 
-```
+```json
 {
     "data": {
         "record": {
@@ -297,7 +301,7 @@ http://localhost/sxb/index.php?svc=live&cmd=end
 
 ### 5.1 功能说明
 
-获取用户对应的聊天室ID。
+获取用户对应的聊天室ID。假如该用户没有对应的聊天室ID,则会创建一个.
 
 ### 5.2 请求URL
 
@@ -305,7 +309,7 @@ http://localhost/sxb/index.php?svc=user_av_room&cmd=get
 
 ### 5.3 请求包示例
 
-```
+```json
 {
     "uid": "user1000"
 }
@@ -320,7 +324,7 @@ http://localhost/sxb/index.php?svc=user_av_room&cmd=get
 
 ### 5.5 返回包示例
 
-```
+```json
 {
     "data": {
         "avRoomId": 20003
@@ -351,7 +355,7 @@ http://localhost/sxb/index.php?svc=cos&cmd=get_sign
 
 ### 6.3 请求包示例
 
-```
+```json
 {}
 ```
 
@@ -361,7 +365,7 @@ http://localhost/sxb/index.php?svc=cos&cmd=get_sign
 
 ### 6.6 返回包示例
 
-```
+```json
 {
     "data": {
         "sign": "cos sign return here"
