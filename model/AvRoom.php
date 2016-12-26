@@ -3,7 +3,7 @@
 require_once dirname(__FILE__) . '/../Path.php';
 require_once LIB_PATH . '/db/DB.php';
 
-class UserAvRoom
+class AvRoom
 {
 
     /**
@@ -21,7 +21,8 @@ class UserAvRoom
     {
         $this->uid = $uid;
     }
-    
+
+
     /**
      * 创建 AvRoomId
      * @param  string $uid 
@@ -36,7 +37,7 @@ class UserAvRoom
         }
         try
         {
-            $sql = 'INSERT INTO t_user_av_room (uid) VALUES (:uid)';
+            $sql = 'INSERT INTO t_av_room (uid) VALUES (:uid)';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
             $result = $stmt->execute();
@@ -68,7 +69,7 @@ class UserAvRoom
         }
         try
         {
-            $sql = 'SELECT id FROM t_user_av_room WHERE uid = :uid';
+            $sql = 'SELECT id FROM t_av_room WHERE uid = :uid';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
             $result = $stmt->execute();
@@ -103,7 +104,7 @@ class UserAvRoom
         return $this->id;
     }
 
-	public function exitRoom()
+	public function exitAvRoom()
 	{
         $dbh = DB::getPDOHandler();
         $list = array();
@@ -113,7 +114,7 @@ class UserAvRoom
         }
         try
         {
-            $sql = 'DELETE FROM t_user_av_room_test WHERE uid = :uid';
+            $sql = 'DELETE FROM t_av_room WHERE uid = :uid';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
             $result = $stmt->execute();
@@ -128,6 +129,34 @@ class UserAvRoom
         }
 		return 0;
     }
+
+	static public function updateLastUpdateTimeByUid($uid, $time)
+	{
+		$dbh = DB::getPDOHandler();
+		if (is_null($dbh))
+		{
+			return false;
+		}
+		try
+		{
+			$sql = 'update t_av_room set last_update_time=:time where uid=:uid';
+			$stmt = $dbh->prepare($sql);
+			$stmt->bindParam(':time', $time, PDO::PARAM_INT);
+			$stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
+			$result = $stmt->execute();
+				return new CmdResp(ERR_SERVER, 'Server error'.$uid.$time.$stmt);
+			if (!$result)
+			{
+				return false;
+			}
+			return true;
+		}
+		catch (PDOException $e)
+		{
+			return false;
+		}
+		return false;
+	}
 }
 
 ?>

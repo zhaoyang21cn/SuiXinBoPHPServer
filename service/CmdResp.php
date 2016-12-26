@@ -52,12 +52,12 @@ class CmdResp
     {
         $data = $this->data;
         $result = array();
+        $result['errorCode'] = $this->getErrorCode();
+        $result['errorInfo'] = $this->getErrorInfo();
         if (is_array($data))
         {
             $result['data'] = $data;
         }
-        $result['errorCode'] = $this->getErrorCode();
-        $result['errorInfo'] = $this->getErrorInfo();
         return $result;
     }
 
