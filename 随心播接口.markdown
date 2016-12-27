@@ -1,3 +1,632 @@
+##版本2.0
+
+## 0 Response公共字段说明
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+| errorCode | Integer | 必填| 错误码。  |
+| errorInfo | String | 必填 | 错误信息。  |
+| data | Object |可选 | 返回数据内容。  |
+
+注：如果接口本身没有数据需要返回，则无data字段。
+
+## 1 注册接口
+
+### 1.1 功能说明
+
+向服务器注册app用户
+
+### 1.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=account&cmd=regist
+
+### 1.3 请求包示例
+
+```
+{
+    "id": "test_user",
+    "pwd":"123456"
+} 
+```
+
+### 1.4 请求包字段说明
+
+请求字段:
+
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|id  |String  |必填  |用户id|
+|pwd |String  |必填  |密码(明文)|
+
+### 1.5 返回包示例
+
+```
+{
+    "errorCode":0,
+    "errorInfo":""
+}
+```
+### 1.6 返回包专有字段说明
+无
+
+## 2 登录接口
+
+### 2.1 功能说明
+
+向业务服务器登录并获取userSig
+
+### 2.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=account&cmd=login
+
+### 2.3 请求包示例
+
+```
+{
+    "id": "test_user",
+    "pwd":"123456"
+} 
+```
+
+### 1.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|id  |String  |必填  |用户id|
+|pwd |String  |必填  |密码(明文)|
+
+### 1.5 返回包示例
+
+```
+{
+    "errorCode": 0,
+    "errorInfo": "",
+    "data":
+    {
+        "userSig": "eJxljlFPgzAUhd-5FU1fZ7S0FIaJD2NuEe0yZBgXXxqEshVcaaA4nfG-O3HJSLxvJ9*Xc*6XBQCACVtdpllWd8pw86kFBNcAInhxhlrLnKeGkyb-B8WHlo3gaWFE00ObUooRGjoyF8rIQp4MI1rDu-aYzkqbV7zf*etwjgW2TygeKnLTw8XsaRoGaxpVrPH3QbbvQnfhF6urmCYhmW8jfKfcZLpxRpWyiZlP5Gzi3C8D9KKX5cEfMRZqnRyUF1dxWd5G64etm4rH3Hvesde3*mYwaeROnB4a4zFyiUcG9F00raxVL2BkUxsT9HvQ*rZ*AKUkXfI_",
+        "token": "用户token"
+    }
+}
+
+```
+
+### 1.6 返回包专有字段说明
+
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|userSig | String | 必填 | userSig用于IM登录 |
+|token   | String | 必填 | 用户唯一标识(后续请求携带) |
+
+## 3 注销接口
+
+### 3.1 功能说明
+
+通知业务服务器用户离线
+
+### 3.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=account&cmd=logout
+
+### 3.3 请求包示例
+
+```
+{
+    "token": "用户token"
+} 
+```
+
+### 3.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token   |String  |必填  |用户token|
+
+### 3.5 返回包示例
+
+```
+{
+    "errorCode":0,
+    "errorInfo":""
+}
+  
+```
+### 3.6 返回包专有字段说明
+无
+
+## 4 创建房间
+
+### 4.1 功能说明
+
+申请创建直播房间
+
+### 4.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=live&cmd=create
+
+### 4.3 请求包示例
+
+```
+{
+    "token": "用户token",
+    "type":"live"
+} 
+```
+
+### 4.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token   |String  |必填  |用户token|
+|type    |String  |必填  |房间类型(live:直播)|
+
+### 4.5 返回包示例
+
+```
+{
+    "errorCode": 0,
+    "errorInfo": "",
+    "data":
+    {
+        "roomnum": 123,
+        "groupid": "123"
+    }
+}
+
+```
+### 4.6 返回包专有字段说明
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|roomnum |Integer |必填  |房间id(服务器分配的唯一房间id)|
+|groupid |String  |选填  |IM群组id|
+
+## 5 上报房间
+
+### 5.1 功能说明
+
+房间创建成功后上报房间信息
+
+### 5.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=live&cmd=reportroom
+
+### 5.3 请求包示例
+
+```
+{
+　　"token": "用户token",
+　　"room":{
+　　    "title": "标题",
+　　    "roomnum":18,
+　　    "type":"live",
+　　    "groupid":"18",
+　　    "cover":"http://cover.png",
+　　    "appid": [appid],
+　　}
+　　"lbs":{
+　　    "latitude":22.1234,
+　　    "longitude":114.2312,
+　　    "address":"高新南一道",　　
+　　}
+ }
+```
+
+### 5.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token   |String  |必填  |用户token|
+|room    |Object  |必填  |房间信息|
+|lbs     |Object  |选填  |位置信息|
+|title   |String  |选填  |标题|
+|type    |String  |必填  |房间类型|
+|roomnum |Integer |必填  |房间id|
+|groupid |String  |必填  |群组id|
+|cover   |String  |选填  |封面地址|
+|host    |String  |必填  |主播ID|
+|latitude    |float   |选填  |纬度|
+|longitude   |floag   |选填  |经度|
+|address     |String  |选填  |位置描述|
+
+### 5.5 返回包示例
+
+```
+{
+    "errorCode": 0,
+    "errorInfo": ""
+}
+```
+### 5.6 返回包专有字段说明
+无
+
+## 6 房间列表
+
+### 6.1 功能说明
+
+拉取房间列表
+
+### 6.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=live&cmd=roomlist
+
+### 6.3 请求包示例
+
+```
+{
+　　"token":"用户token",
+　　"type":live
+　　"index":0,
+　　"size":10,
+　　"appid": 1400019352
+ }
+```
+
+### 6.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token   |String  |必填  |用户token|
+|type    |Integer |选填  |房间类型(没有表示全部)|
+|index   |Integer |必填  |起始房间位置(从0开始)|
+|size    |Integer |必填  |列表长度|
+|appid   |Integer |选填  ||
+
+### 6.5 返回包示例
+
+```
+{
+　　"errorCode": 0,
+　　"errorInfo": "",
+　　"data":{
+　　    "total":100,
+　　    "rooms":[
+　　        {
+　　　　　　　　　　"uid":"[uid]"
+　　            "info":{
+　　                "title": "标题",
+　　                "roomnum":18,
+　　                "type":"live",
+　　                "groupid":"18",
+　　                "cover":"http://cover.png",
+　　                }
+　　           "lbs":{
+　　                "latitude":22.1234,
+　　                "longitude":114.2312,
+　　                "address":"高新南一道",
+　　               }
+　　           },
+　　          {
+　　　　　　　　　　"uid":"[uid]"
+　　            "info":{
+　　                "title": "标题",
+　　                "roomnum":19,
+　　                "type":"live",
+　　                "groupid":"19",
+　　                "cover":"http://cover.png",
+　　                }      
+　　               }
+　　           "lbs":{
+　　                "latitude":22.1234,
+　　                "longitude":114.2312,
+　　                "address":"高新南一道",
+　　               }
+　　           },　　　　　　　
+　　    ]
+　　}
+ }
+```
+### 6.6 返回包专有字段说明
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|total   |Integer |必填  |房间总数|
+|rooms   |Array   |必填  |房间信息数组|
+房间信息
+|info    |Object  |必填  |房间具体信息|
+|uid     |String  |必填  |主播id|
+|lbs     |Object  |非必填 |位置信息|
+info字段
+|title   |String  |非必填 |标题|
+|type    |String  |必填  |房间类型|
+|roomnum |Integer |必填  |房间id|
+|groupid |String  |必填  |群组id|
+|cover   |String  |非必填 |封面地址|
+lbs信息
+|latitude    |float   |非必填 |纬度|
+|longitude   |floag   |非必填 |经度|
+|address |String  |非必填 |位置描述|
+
+## 7 点播列表
+
+### 7.1 功能说明
+
+拉取点播列表
+
+### 7.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=live&cmd=recordlist
+
+### 7.3 请求包示例
+
+```
+{
+　　"token":"用户token",
+　　"type":0,
+　　"index":0,
+　　"size":10
+ }
+```
+
+### 7.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token   |String  |必填  |用户token|
+|type    |Integer |必填  |类型过滤|
+|index   |Integer |必填  |起始房间位置(从0开始)|
+|size    |Integer |必填  |列表长度|
+
+### 7.5 返回包示例
+
+```
+{
+　　"errorCode": 0,
+　　"errorInfo": "",
+　　"data":{
+　　    "total":100,
+　　    "videos":[
+　　        {
+　　           "uid":"[uid]",
+　　           "cover":"http://cover.png",
+　　           "videoId":"[videoid]",
+　　           "playurl":"[playurl]"
+　　        },
+　　    ]
+　　}
+ }
+```
+### 7.6 返回包专有字段说明
+
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|total   |Integer |必填  |房间总数|
+|videos  |Array   |必填  |视频信息数组|
+视频信息
+|uid String  |必填  |主播id|
+|playid  |String  |必填  |点播id|
+|playurl |String  |必填  |播放地址|
+|cover   |String  |选填  |封面地址|
+
+
+## 8 房间退出
+
+### 8.1 功能说明
+
+主播房间结束后上报
+
+### 8.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=live&cmd=exitroom
+
+### 8.3 请求包示例
+
+```
+{
+　　"token": "用户token",
+　　"roomnum":18,
+　　"type":"live"
+}
+```
+
+### 8.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token   |String  |必填  |用户token|
+|roomnum |Integer |必填  |房间id|
+|type    |String  |必填  |房间类型|
+
+### 8.5 返回包示例
+
+```
+{
+　　"errorCode": 0,
+　　"errorInfo": ""
+}
+```
+### 8.6 返回包专有字段说明
+无
+
+## 9 视频上报
+
+### 9.1 功能说明
+
+主播录制完视频上报信息，用于点播
+
+### 9.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=live&cmd=reportrecord
+
+### 9.3 请求包示例
+
+```
+{
+　　"token": "用户token",
+　　"videoid":"[videoid]",
+　　"playurl":"[playurl]",
+　　"type":0,
+　　"cover":"http://cover.png"
+ }
+```
+
+### 9.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token   |String  |必填  |用户token|
+|videoId |String | 必填  |点播id|
+|playurl |String  |必填  |播放地址|
+|type    |Integer| 必填  |类型|
+|cover   |String  |选填  |封面地址|
+
+### 9.5 返回包示例
+
+```
+{
+　　"errorCode": 0,
+　　"errorInfo": "",
+}
+```
+### 9.6 返回包专有字段说明
+无
+
+## 10 上报入房成员ID
+
+### 10.1 功能说明
+
+上报自己ID 角色
+
+### 10.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=live&cmd=reportmemid
+
+### 10.3 请求包示例
+
+```
+{
+　　"token": "用户token",
+　　"id": "willguo",
+　　"roomnum":18,
+　　"role":1,
+　　"operate"0
+}
+```
+
+### 10.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token  |String  |必填  |用户token|
+|id     |String  |必填  |自己id|
+|roomnum |Integer |必填  |房间号id|
+|role    |int   |必填   |主播 1 成员 0 上麦成员 2|
+|Operate |int   |必填  |进入房间0  退出房间1[进房退房判断]|
+
+### 10.5 返回包示例
+
+```
+{
+　　"errorCode": 0,
+　　"errorInfo": ""
+}
+```
+### 10.6 返回包专有字段说明
+无
+
+## 11 获取房间内成员ID列表
+
+### 11.1 功能说明
+
+拉取获取房间内成员ID列表
+
+### 11.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=live&cmd=roomidlist
+
+### 11.3 请求包示例
+
+```
+{
+　　"token":"用户token",
+　　"roomnum":18,
+　　"index":0,
+　　"size":10
+ }
+```
+
+### 11.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token   |String  |必填  |用户token|
+|index   |Integer |必填  |起始位置(从0开始)|
+|size    |Integer |必填  |列表长度|
+
+### 11.5 返回包示例
+
+```
+{
+　　"errorCode": 0,
+　　"errorInfo": "",
+　　"data":{
+　　    "total":100,
+　　    "idlist":[
+　　        {
+　　           "id":"willduo",
+　　           "role":1,
+　　        },
+　　    ]
+　　}
+ }
+```
+### 11.6 返回包专有字段说明
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|total   |Integer |必填  |id总数|
+|idlist  |Array   |必填  |房间id信息数组|
+|id     |String  |必填  |id|
+|role    |int 必填  |1主播 0成员 2 视频成员|
+
+## 12 心跳上报
+
+### 12.1 功能说明
+
+用户在房间内定时进行心跳(10s)上报
+
+### 12.2 请求URL
+
+http://服务器地址/sxb/index.php?svc=live&cmd=heartbeat
+
+### 12.3 请求包示例
+
+```
+{
+　　"token":"[token]",
+　　"roomnum":123,
+　　"role":1
+ }
+```
+
+### 12.4 请求包字段说明
+
+请求字段:
+| 字段|类型 |选项|说明 |
+|---------|---------|---------|---------|
+|token   |String  |必填  |用户token|
+|roomnum  |Integer |必填  |房间id|
+|role    |int       |必填  |1 主播 0观众 2 上麦观众 |
+### 12.5 返回包示例
+
+```
+{
+　　"errorCode": 0,
+　　"errorInfo": ""
+}
+```
+### 12.6 返回包专有字段说明
+无
+
+
+----------------------------------------
+##版本1.0
+
 ## 0 Response公共字段说明
 | 字段|类型 |选项|说明 |
 |---------|---------|---------|---------|
@@ -21,10 +650,9 @@ http://localhost/sxb/index.php?svc=live&cmd=start
 
 ### 1.3 请求包示例
 
-```json
+```
 {
     "title": "测试直播",
-    "appid": 125119786,
     "cover": "http://aa.com",
     "chatRoomId": "1",
     "avRoomId": 1,
@@ -50,10 +678,9 @@ http://localhost/sxb/index.php?svc=live&cmd=start
 | host | Object | 必填 | 主播信息，是一个UserInfo对象。  |
 | cover | String(128) | 选填 | 封面图片URL地址。  |
 | title | String(50) | 选填 | 直播主题。  |
-| appid | Integer | 选填 | 该直播所属的appid。  |
 | lbs | Object | 选填 | 地理信息，是一个LBS对象。  |
-| chatRoomId | String | 必填 | 聊天室ID。  |
-| avRoomId | Integer | 必填 | 聊天室ID。如果没有,需要通过第五个接口获取.  |
+| chatRoomId | String | 必填 | 地理信息。  |
+| avRoomId | Integer | 必填 | 地理信息。  |
 
 UserInfo对象说明:
 
@@ -73,7 +700,7 @@ LBS对象说明:
 
 ### 1.5 返回包示例
 
-```json
+```
 {
     "errorInfo": "",
     "errorCode": 0
@@ -96,9 +723,8 @@ http://localhost/sxb/index.php?svc=live&cmd=list
 
 ### 2.3 请求包示例
 
-```json
+```
 {
-    "appid": 125119786,
     "pageIndex": 0,
     "pageSize": 10
 }
@@ -108,13 +734,12 @@ http://localhost/sxb/index.php?svc=live&cmd=list
 
 | 字段 | 类型 | 选项 | 说明 |
 |---------|---------|---------|---------|
-| appid | Integer | 选填 | 用户的appid,该接口会返回这个appid下的直播列表,不填会返回所有appid下的直播列表 |
 | pageIndex | Integer | 必填 | 第几页，从0开始。 |
 | pageSize | Integer | 必填 | 每页大小，最多不能超过50。  |
 
 ### 2.5 返回报示例
 
-```json
+```
 {
     "data": {
         "recordList": [
@@ -203,12 +828,12 @@ http://localhost/sxb/index.php?svc=live&cmd=host_heartbeat
 
 ### 3.3 请求包示例
 
-```json
+```
 {
     "uid": "user1000",
     "watchCount": 100,
     "admireCount": 10,
-	"timeSpan": 100
+    "timeSpan": 100
 }
 ```
 
@@ -223,7 +848,7 @@ http://localhost/sxb/index.php?svc=live&cmd=host_heartbeat
 
 ### 3.5 返回包示例
 
-```json
+```
 {
     "errorInfo": "",
     "errorCode": 0
@@ -246,7 +871,7 @@ http://localhost/sxb/index.php?svc=live&cmd=end
 
 ### 4.3 请求包示例
 
-```json
+```
 {
     "hostUid": "user1000"
 }
@@ -261,7 +886,7 @@ http://localhost/sxb/index.php?svc=live&cmd=end
 
 ### 4.5 返回报示例
 
-```json
+```
 {
     "data": {
         "record": {
@@ -301,7 +926,7 @@ http://localhost/sxb/index.php?svc=live&cmd=end
 
 ### 5.1 功能说明
 
-获取用户对应的聊天室ID。假如该用户没有对应的聊天室ID,则会创建一个.
+获取用户对应的聊天室ID。
 
 ### 5.2 请求URL
 
@@ -309,7 +934,7 @@ http://localhost/sxb/index.php?svc=user_av_room&cmd=get
 
 ### 5.3 请求包示例
 
-```json
+```
 {
     "uid": "user1000"
 }
@@ -324,7 +949,7 @@ http://localhost/sxb/index.php?svc=user_av_room&cmd=get
 
 ### 5.5 返回包示例
 
-```json
+```
 {
     "data": {
         "avRoomId": 20003
@@ -355,7 +980,7 @@ http://localhost/sxb/index.php?svc=cos&cmd=get_sign
 
 ### 6.3 请求包示例
 
-```json
+```
 {}
 ```
 
@@ -365,7 +990,7 @@ http://localhost/sxb/index.php?svc=cos&cmd=get_sign
 
 ### 6.6 返回包示例
 
-```json
+```
 {
     "data": {
         "sign": "cos sign return here"

@@ -13,8 +13,21 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 
 ### 1.3 修改配置
 
-在lib/db/DBConfig.php填写数据库用户名和密码; 开通腾讯云COS服务，得到对应的APPID、SecretKey和SecretID。
+1. 在lib/db/DBConfig.php填写数据库用户名和密码; 开通腾讯云COS服务，得到对应的APPID、SecretKey和SecretID。
 然后填写deps/cos-php-sdk/Conf.php中对应的部分(不开通COS也能跑，只是客户端无法上传图片到COS)。
+
+2. 修改deps/sig目录权限，使得其他用户就有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录
+将用于生成和校验sig的公私钥放置于此目录，如果用户自定义置于其他目录，则需要修改server/account/AccountLoginCmd.php
+文件中代码：
+	$private_key = DEPS_PATH . '/sig/private_key';
+	$public_key = DEPS_PATH . '/sig/public_key';
+为自定义路径，保证这些文件至少具有可读权限
+
+3. 修改deps/bin/tls_licence_tools具有可执行权限
+
+4. 调整server/account/AccountLoginCmd.php代码：
+	const APPID = '1400019352';
+为自己的appid
 
 ### 1.4 数据库建表建库
 
@@ -25,7 +38,7 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 
 ### 2.1 service 
 
-服务层，也就是接口层，主要包括：直播服务、AV房间服务、COS服务。每个服务（亦即模块）下是各个子接口。详细可参看协议文档。
+服务层，也就是接口层，主要包括：账号管理，直播服务、AV房间服务、COS服务。每个服务（亦即模块）下是各个子接口。详细可参看协议文档。
 
 #### 2.1.1 直播服务
 
@@ -57,7 +70,13 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 
 ### 2.5 deps 
 
-依赖库，主要是其他项目或者SDK，比如腾讯云COS SDK。
+依赖库和依赖程序和文件，主要是其他项目或者SDK，比如腾讯云COS SDK。
 
 ### 2.6 cron 
 后台定时任务。清理90秒没有发心跳包的直播记录。可以crontab定时执行。
+
+## 3. 特殊说明
+ 下载之后安装后确认
+ 1. sig目录其他用户一定要有读写可执行权限
+ 2. deps/bin/tls_licence_tools签名程序一定可执行权限
+ 3. 调整为自己的appid和私钥公钥路径

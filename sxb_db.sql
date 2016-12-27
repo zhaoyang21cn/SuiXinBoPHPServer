@@ -25,8 +25,8 @@ USE `sxb_db`;
 -- --------------------------------------------------------
 
 --
--- 表的结构 `t_live_record`
---
+-- 版本1.0的直播记录表的结构 `t_live_record`
+-- 说明：如果不使用版本1.0的接口，那么t_live_record表可以不创建
 
 CREATE TABLE IF NOT EXISTS `t_live_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `t_live_record` (
   `time_span` int(11) NOT NULL DEFAULT 0 COMMENT '直播时长',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
   `modify_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `appid` int(11) NOT NULL DEFAULT 0 COMMENT 'appid',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_host_uid` (`host_uid`),
   KEY `idx_modify_time` (`modify_time`)
@@ -53,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `t_live_record` (
 -- --------------------------------------------------------
 
 --
--- 表的结构 `t_user_av_room`
+-- 版本1.0 表的结构 `t_user_av_room`
 --
 
 CREATE TABLE IF NOT EXISTS `t_user_av_room` (
@@ -63,15 +64,90 @@ CREATE TABLE IF NOT EXISTS `t_user_av_room` (
   UNIQUE KEY `uid` (`uid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=10001 ;
 
+-- --------------------------------------------------------
+
 --
--- 转存表中的数据 `t_user_av_room`
+-- 版本2.0的直播记录表的结构 `t_new_live_record`
+-- 说明：相对版本1.0的有字段的删减
+
+CREATE TABLE IF NOT EXISTS `t_new_live_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `title` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标题',
+  `cover` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '封面URL',
+  `host_uid` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '主播UID',
+  `longitude` double NOT NULL DEFAULT 0 COMMENT '经度',
+  `latitude` double NOT NULL DEFAULT 0 COMMENT '纬度',
+  `address` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '地址',
+  `av_room_id` int(11) NOT NULL DEFAULT 0 COMMENT 'av房间ID',
+  `chat_room_id` varchar(50) NOT NULL COMMENT '聊天室ID',
+  `admire_count` int(11) NOT NULL DEFAULT 0 COMMENT '点赞人数',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  `modify_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `appid` int(11) NOT NULL DEFAULT 0 COMMENT 'appid',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_host_uid` (`host_uid`),
+  KEY `idx_modify_time` (`modify_time`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='新版直播记录表' AUTO_INCREMENT=14 ;
+
+-- --------------------------------------------------------
+
+--
+-- 版本2.0 账号管理表的结构 `t_account`
 --
 
-INSERT INTO `t_user_av_room` (`id`, `uid`) VALUES
-(10000, 'user1002');
+CREATE TABLE IF NOT EXISTS `t_account` (
+ `uid`                varchar(50)   NOT  NULL COMMENT '用户名',          
+ `pwd`                varchar(50)   NOT  NULL  COMMENT '用户密码',         
+ `token`              varchar(50)   DEFAULT NULL COMMENT '用户token',           
+ `state`              tinyint(1)    NOT  NULL DEFAULT  0   COMMENT '登录状态',            
+ `user_sig`           varchar(512)  DEFAULT NULL COMMENT 'sig',        
+ `register_time`      int(11)       NOT  NULL DEFAULT  0   COMMENT '注册时间戳',             
+ `login_time`         int(11)       NOT  NULL DEFAULT  0   COMMENT '登录时间戳',            
+ `logout_time`        int(11)       NOT  NULL DEFAULT  0   COMMENT '退出时间戳',           
+ `last_request_time`  int(11)       NOT  NULL DEFAULT  0   COMMENT '最新请求时间戳',          
+  PRIMARY KEY (`uid`)
+);
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- --------------------------------------------------------
 
-ALTER TABLE `t_live_record` ADD `appid` int(11) NOT NULL DEFAULT 0 COMMENT 'appid';
+--
+-- 版本2.0 创建房间表的结构 `t_av_room`
+--
+
+CREATE TABLE IF NOT EXISTS `t_av_room` (
+ `id`                int(11)      NOT  NULL  AUTO_INCREMENT  COMMENT '房间ID',
+ `uid`               varchar(50)  NOT  NULL  COMMENT '房间主播名',                  
+ `last_update_time`  int(11)      NOT  NULL DEFAULT  0  COMMENT '心跳时间戳',                       
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uid` (`uid`)
+)AUTO_INCREMENT=10001;
+
+-- --------------------------------------------------------
+
+--
+-- 版本2.0 互动成员表的结构 `t_interact_av_room`
+--
+
+CREATE TABLE IF NOT EXISTS `t_interact_av_room` (
+ `uid`          varchar(50)  NOT  NULL  COMMENT '成员id',          
+ `av_room_id`   int(11)      NOT  NULL DEFAULT  0  COMMENT '成员所在房间ID',            
+ `status`       varchar(20)  NOT  NULL DEFAULT  'off' COMMENT '成员在房间的麦状态',           
+ `modify_time`  int(11)      NOT  NULL DEFAULT  0   COMMENT '成员心跳时间戳',           
+ `role`         int(11)      NOT  NULL DEFAULT  0   COMMENT '成员角色',                              
+  PRIMARY KEY (`uid`)
+);
+
+-- --------------------------------------------------------
+
+--
+-- 版本2.0 互动成员表的结构 `t_video_record`
+--
+
+CREATE TABLE IF NOT EXISTS `t_video_record_test` (
+ `id`           int(11)       NOT  NULL   AUTO_INCREMENT  COMMENT '视频id',
+ `uid`          varchar(50)   NOT  NULL   DEFAULT ''  COMMENT '视频的拥有者',                
+ `video_id`     varchar(50)   NOT  NULL   DEFAULT ''  COMMENT '视频id',                            
+ `play_url`     varchar(128)  NOT  NULL   DEFAULT ''  COMMENT '视频url',                            
+ `create_time`  int(11)       NOT  NULL   DEFAULT  0  COMMENT '视频创建时间戳',                                     
+  PRIMARY KEY (`id`)
+)AUTO_INCREMENT=10001;
