@@ -15,28 +15,28 @@ class InteractAvRoom
     private $avRoomId = -1;
 
     //上下麦状态 => string; 状态:on-上麦，off-下麦
-	private $status = '';
+    private $status = '';
 
-	//心跳时间 => int
-	private $modifyTime = 0;
+    //心跳时间 => int
+    private $modifyTime = 0;
 
     //成员角色 => int；0-观众；1-主播；2-上麦成员
-	private $role = 0;
-	
+    private $role = 0;
+    
     public function __construct($uid, $avRoomId, $status = 'off', $role = 0)
     {
         $this->uid = $uid;
-		$this->avRoomId = $avRoomId;
-		$this->status = $status;
-		$this->role = $role;
-		$this->modifyTime = date('U'); 
+        $this->avRoomId = $avRoomId;
+        $this->status = $status;
+        $this->role = $role;
+        $this->modifyTime = date('U'); 
     }
 
     /* 功能：检查房间ID是否存在
      * 说明：房间存在返回1，房间不存在返回0；查询失败返回-1；主要用于房间成员加入
      */
-	public function getAvRoomId()
-	{
+    public function getAvRoomId()
+    {
         $dbh = DB::getPDOHandler();
         if (is_null($dbh))
         {
@@ -44,27 +44,27 @@ class InteractAvRoom
         }
         try
         {
-			$sql = 'SELECT * from t_new_live_record where av_room_id=:avRoomId';
+            $sql = 'SELECT * from t_new_live_record where av_room_id=:avRoomId';
             $stmt = $dbh->prepare($sql);
-			$stmt->bindParam(':avRoomId', $this->avRoomId, PDO::PARAM_INT);
+            $stmt->bindParam(':avRoomId', $this->avRoomId, PDO::PARAM_INT);
             $result = $stmt->execute();
             if (!$result)
             {
                 return -1;
             }
-			$result = $stmt->rowCount();
-			if($result >= 1)
-			{
-				return 1;
-			}
+            $result = $stmt->rowCount();
+            if($result >= 1)
+            {
+                return 1;
+            }
         }
         catch (PDOException $e)
         {
             return -1;
         }
-			
-		return 0;
-	}
+            
+        return 0;
+    }
 
     /* 功能：成员进入房间
      * 说明：如果成员已经存在，覆盖。成功：true, 出错：false
@@ -82,10 +82,10 @@ class InteractAvRoom
                     . ' VALUES (:uid, :avRoomId, :status, :modifyTime, :role)';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
-			$stmt->bindParam(':avRoomId', $this->avRoomId, PDO::PARAM_INT);
-			$stmt->bindParam(':status', $this->status, PDO::PARAM_STR);
-			$stmt->bindParam(':modifyTime', $this->modifyTime, PDO::PARAM_INT);
-			$stmt->bindParam(':role', $this->role, PDO::PARAM_INT);
+            $stmt->bindParam(':avRoomId', $this->avRoomId, PDO::PARAM_INT);
+            $stmt->bindParam(':status', $this->status, PDO::PARAM_STR);
+            $stmt->bindParam(':modifyTime', $this->modifyTime, PDO::PARAM_INT);
+            $stmt->bindParam(':role', $this->role, PDO::PARAM_INT);
             $result = $stmt->execute();
             if (!$result)
             {
@@ -114,7 +114,7 @@ class InteractAvRoom
         {
             $sql = 'delete from t_interact_av_room  where uid=:uid';
             $stmt = $dbh->prepare($sql);
-			$stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
+            $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
             $result = $stmt->execute();
             if (!$result)
             {
@@ -143,7 +143,7 @@ class InteractAvRoom
         {
             $sql = 'delete from t_interact_av_room  where av_room_id=:avRoomId';
             $stmt = $dbh->prepare($sql);
-			$stmt->bindParam(':avRoomId', $avRoomId, PDO::PARAM_INT);
+            $stmt->bindParam(':avRoomId', $avRoomId, PDO::PARAM_INT);
             $result = $stmt->execute();
             if (!$result)
             {
@@ -240,7 +240,7 @@ class InteractAvRoom
 
     /* 功能：更新上下麦状态
      */
-	public function updateStatus()
+    public function updateStatus()
     {
         $dbh = DB::getPDOHandler();
         if (is_null($dbh))
@@ -268,12 +268,12 @@ class InteractAvRoom
         }
         return false;
     }
-	
+    
     /* 功能：更新成员心跳时间
      * 说明：更新用户（uid）的心跳时间（time）；role角色
      *      成功返回true，失败返回false
      */
-	static public function updateLastUpdateTimeByUid($uid, $role, $time)
+    static public function updateLastUpdateTimeByUid($uid, $role, $time)
     {
         $dbh = DB::getPDOHandler();
         if (is_null($dbh))
@@ -286,7 +286,7 @@ class InteractAvRoom
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
             $stmt->bindParam(':role', $role, PDO::PARAM_INT);
-			$stmt->bindParam(':time', $time, PDO::PARAM_INT);
+            $stmt->bindParam(':time', $time, PDO::PARAM_INT);
             $result = $stmt->execute();
             if (!$result)
             {
@@ -297,39 +297,39 @@ class InteractAvRoom
         {
             return false;
         }
-		return true;
+        return true;
     }
 
     /* 功能：删除僵尸成员
      * 说明：由定时清理程序调用。删除心跳超过定时（inactiveSeconds）时间的成员
      *      成功返回true，失败返回false
      */
-	public static function deleteDeathRoomMember($inactiveSeconds, $role = 0)
-	{
-		$dbh = DB::getPDOHandler();
-		if (is_null($dbh))
-		{
-			return false;
-		}
-		try
-		{
-			$sql = 'DELETE FROM t_interact_av_room WHERE role = :role and modify_time < :lastModifyTime';
-			$stmt = $dbh->prepare($sql);
-			$lastModifyTime = date('U') - $inactiveSeconds;
-			$stmt->bindParam(":role", $role, PDO::PARAM_INT);
-			$stmt->bindParam(":lastModifyTime", $lastModifyTime, PDO::PARAM_INT);
-			$result = $stmt->execute();
-			if (!$result)
-			{
-				return false;
-			}
-		}
-		catch (PDOException $e)
-		{
-			return false;
-		}
-		return true;
-	}
+    public static function deleteDeathRoomMember($inactiveSeconds, $role = 0)
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            return false;
+        }
+        try
+        {
+            $sql = 'DELETE FROM t_interact_av_room WHERE role = :role and modify_time < :lastModifyTime';
+            $stmt = $dbh->prepare($sql);
+            $lastModifyTime = date('U') - $inactiveSeconds;
+            $stmt->bindParam(":role", $role, PDO::PARAM_INT);
+            $stmt->bindParam(":lastModifyTime", $lastModifyTime, PDO::PARAM_INT);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                return false;
+            }
+        }
+        catch (PDOException $e)
+        {
+            return false;
+        }
+        return true;
+    }
 }
 
 ?>

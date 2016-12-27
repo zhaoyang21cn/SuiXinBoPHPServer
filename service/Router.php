@@ -7,36 +7,36 @@
 class Router
 {
     private static $mapper = array(
-		//独立账号系统
-		'account' => array(
-			'regist' => 'AccountRegisterCmd',
-			'login' => 'AccountLoginCmd',
-			'logout' => 'AccountLogoutCmd',
-		),
-		
+        //独立账号系统
+        'account' => array(
+            'regist' => 'AccountRegisterCmd',
+            'login' => 'AccountLoginCmd',
+            'logout' => 'AccountLogoutCmd',
+        ),
+        
         'live' => array(
-			//房间
-			'create' => 'CreateLiveRoomCmd',
-			'reportroom' => 'ReportLiveRoomInfoCmd',
-			'roomlist' => 'GetLiveRoomListCmd',
-			'exitroom' => 'ExitLiveRoomCmd',
+            //房间
+            'create' => 'CreateLiveRoomCmd',
+            'reportroom' => 'ReportLiveRoomInfoCmd',
+            'roomlist' => 'GetLiveRoomListCmd',
+            'exitroom' => 'ExitLiveRoomCmd',
 
-			//上/下麦
-			'request' => 'RequestInteractLiveRoomCmd',
-			'reportstatus' => 'JoinOrExitInteractLiveCmd',
+            //上/下麦
+            'request' => 'RequestInteractLiveRoomCmd',
+            'reportstatus' => 'JoinOrExitInteractLiveCmd',
 
-			//心跳
-			'heartbeat' => 'HeartBeatCmd',
+            //心跳
+            'heartbeat' => 'HeartBeatCmd',
 
-			//点播
-			'recordlist' => 'GetVideoRecordListCmd',		
-			'reportrecord' => 'SaveVideoRecordCmd',
+            //点播
+            'recordlist' => 'GetVideoRecordListCmd',        
+            'reportrecord' => 'SaveVideoRecordCmd',
 
-			//成员
-			'reportmemid' => 'ReportRoomMemberCmd',
-			'roomidlist' => 'GetRoomMemberListCmd',
+            //成员
+            'reportmemid' => 'ReportRoomMemberCmd',
+            'roomidlist' => 'GetRoomMemberListCmd',
 
-			//old
+            //old
             'start' => 'LiveStartCmd',
             'list' => 'LiveListCmd',
             'end' => 'LiveEndCmd',

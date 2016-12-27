@@ -19,22 +19,22 @@ class CreateLiveRoomCmd extends TokenCmd
 
     public function parseInput()
     {
-		if (!isset($this->req['type']))
+        if (!isset($this->req['type']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of type');
         }
-		if (!is_string($this->req['type']))
-		{
-			 return new CmdResp(ERR_REQ_DATA, ' Invalid type');
-		}
-		
+        if (!is_string($this->req['type']))
+        {
+             return new CmdResp(ERR_REQ_DATA, ' Invalid type');
+        }
+        
         $this->avRoom = new AvRoom($this->user);
         return new CmdResp(ERR_SUCCESS, '');
     }
 
     public function handle()
     {
-		$ret = $this->avRoom->load();
+        $ret = $this->avRoom->load();
         // 加载房间出错
         if ($ret < 0)
         {
@@ -42,26 +42,26 @@ class CreateLiveRoomCmd extends TokenCmd
         }
 
         //房间不存在，执行创建
-		if($ret == 0)
-		{
-			$ret = $this->avRoom->create();
-			if (!$ret)
-			{
-				return new CmdResp(ERR_SERVER, 'Server internal error: create av room fail'); 
-			}
-		} 
+        if($ret == 0)
+        {
+            $ret = $this->avRoom->create();
+            if (!$ret)
+            {
+                return new CmdResp(ERR_SERVER, 'Server internal error: create av room fail'); 
+            }
+        } 
 
-		//房间id
+        //房间id
         $id = $this->avRoom->getId();
         //房间成员设置
-		$interactAvRoom = new InteractAvRoom($this->user, $id, 'off', 1);
-		//主播加入房间列表
-	    $ret = $interactAvRoom->enterRoom();	
-		if(!$ret)
-		{
-			return new CmdResp(ERR_SERVER, 'Server internal error:insert record into interactroom fail'); 
-		}
+        $interactAvRoom = new InteractAvRoom($this->user, $id, 'off', 1);
+        //主播加入房间列表
+        $ret = $interactAvRoom->enterRoom();    
+        if(!$ret)
+        {
+            return new CmdResp(ERR_SERVER, 'Server internal error:insert record into interactroom fail'); 
+        }
 
         return new CmdResp(ERR_SUCCESS, '', array('roomnum' => (int)$id, 'groupid' => (string)$id));
-    }	
+    }    
 }

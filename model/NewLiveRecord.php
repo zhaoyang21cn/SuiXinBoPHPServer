@@ -10,18 +10,18 @@ class NewLiveRecord
 {
     const FIELD_TITLE = 'title';
     const FIELD_COVER = 'cover';
-	const FIELD_TYPE = 'type';
+    const FIELD_TYPE = 'type';
     const FIELD_HOST_UID = 'host_uid';
     const FIELD_LONGITUDE = 'longitude';
     const FIELD_LATITUDE = 'latitude';
     const FIELD_ADDRESS = 'address';
     const FIELD_ADMIRE_COUNT = 'admire_count';
-	const FIELD_CHAT_ROOM_ID = 'chat_room_id';
+    const FIELD_CHAT_ROOM_ID = 'chat_room_id';
     const FIELD_AV_ROOM_ID = 'av_room_id';
     const FIELD_CREATE_TIME = 'create_time';
     const FIELD_MODIFY_TIME = 'modify_time';
-	const FIELD_APPID = 'appid';
-	const FIELD_ROOM_TYPE = 'room_type';
+    const FIELD_APPID = 'appid';
+    const FIELD_ROOM_TYPE = 'room_type';
 
     // 直播标题 => sring
     private $title = '';
@@ -72,8 +72,8 @@ class NewLiveRecord
         $this->admireCount = (int)$fields[self::FIELD_ADMIRE_COUNT];
         $this->chatRoomId = $fields[self::FIELD_CHAT_ROOM_ID];
         $this->avRoomId = (int)$fields[self::FIELD_AV_ROOM_ID];
-		$this->roomType = $fields[self::FIELD_ROOM_TYPE];
-	}
+        $this->roomType = $fields[self::FIELD_ROOM_TYPE];
+    }
 
     /* 功能：将直播记录存入数据库
      * 说明：成功返回插入的ID, 失败返回-1
@@ -97,8 +97,8 @@ class NewLiveRecord
             self::FIELD_ADDRESS => $this->address,
             self::FIELD_ADMIRE_COUNT => $this->admireCount,
             self::FIELD_CREATE_TIME => date('Y-m-d H:i:s'),
-			self::FIELD_MODIFY_TIME => date('U'),
-			self::FIELD_ROOM_TYPE => $this->roomType,
+            self::FIELD_MODIFY_TIME => date('U'),
+            self::FIELD_ROOM_TYPE => $this->roomType,
         );
         try
         {
@@ -128,7 +128,7 @@ class NewLiveRecord
      * 说明：将用户hostUid的直播记录删除。一个用户同一时间只能开启一个直播；
      *       成功返回true 失败返回false
      */
-	static public function delete($hostUid)
+    static public function delete($hostUid)
     {
         $dbh = DB::getPDOHandler();
         if (is_null($dbh))
@@ -283,14 +283,14 @@ class NewLiveRecord
             $whereSql = " WHERE appid = $appid ";
         }
         if ($roomType == 'live') {
-			if(empty($whereSql))
-			{
-				$whereSql .= " WHERE room_type = '$roomType' ";
-			}
-			else
-			{
-				$whereSql .= " AND room_type = '$roomType' ";
-			}
+            if(empty($whereSql))
+            {
+                $whereSql .= " WHERE room_type = '$roomType' ";
+            }
+            else
+            {
+                $whereSql .= " AND room_type = '$roomType' ";
+            }
         }
 
         $dbh = DB::getPDOHandler();
@@ -305,11 +305,11 @@ class NewLiveRecord
             self::FIELD_LONGITUDE,
             self::FIELD_LATITUDE,
             self::FIELD_ADDRESS,
-			self::FIELD_ADMIRE_COUNT, 
+            self::FIELD_ADMIRE_COUNT, 
             self::FIELD_HOST_UID,         
             self::FIELD_CHAT_ROOM_ID,
             self::FIELD_AV_ROOM_ID,
-			self::FIELD_ROOM_TYPE,
+            self::FIELD_ROOM_TYPE,
         );
         try
         {
@@ -530,7 +530,7 @@ class NewLiveRecord
     {
         $this->avRoomId = $avRoomId;
     }
-	
+    
     public function getRoomType()
     {
         return $this->roomType;
@@ -540,40 +540,40 @@ class NewLiveRecord
     {
         $this->roomType = $roomType;
     }
-	
-	public function setMemberSize($memberSize)
-	{
-		$this->memberSize = $memberSize;
-	}
-	
-	public function getMemberSize()
-	{
-		return $this->memberSize;
-	}
+    
+    public function setMemberSize($memberSize)
+    {
+        $this->memberSize = $memberSize;
+    }
+    
+    public function getMemberSize()
+    {
+        return $this->memberSize;
+    }
 
-	/**
+    /**
      * 生成Json数组
      */
     public function toJsonArray()
     {
-    	return array(
-			'uid' => $this->hostUid,
-			'info' => array(
-				'title' => $this->title,
-				'roomnum' => $this->avRoomId,
-				'type' => $this->roomType,
-				'groupid' => $this->chatRoomId,
-				'cover' => $this->cover,
-				'thumbup' => $this->admireCount,
-				'memsize' => $this->memberSize,
-    		),
-			/*
-			'lbs' => array(
-				'longitude' => $this->longitude,
-				'latitude' => $this->latitude,
-				'address' => $this->address,
-			),*/
-    	);
+        return array(
+            'uid' => $this->hostUid,
+            'info' => array(
+                'title' => $this->title,
+                'roomnum' => $this->avRoomId,
+                'type' => $this->roomType,
+                'groupid' => $this->chatRoomId,
+                'cover' => $this->cover,
+                'thumbup' => $this->admireCount,
+                'memsize' => $this->memberSize,
+            ),
+            /*
+            'lbs' => array(
+                'longitude' => $this->longitude,
+                'latitude' => $this->latitude,
+                'address' => $this->address,
+            ),*/
+        );
     }
 }
 

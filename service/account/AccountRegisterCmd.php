@@ -14,11 +14,11 @@ require_once MODEL_PATH . '/Account.php';
 class AccountRegisterCmd extends Cmd
 {
     private $account;
-	
-	public function __construct()
-	{
-		$this->account = new Account();
-	}
+    
+    public function __construct()
+    {
+        $this->account = new Account();
+    }
 
     public function parseInput()
     {
@@ -32,7 +32,7 @@ class AccountRegisterCmd extends Cmd
         }
         $this->account->setUser($this->req['id']);
         
-		if (empty($this->req['pwd']))
+        if (empty($this->req['pwd']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of pwd');
         }
@@ -41,15 +41,15 @@ class AccountRegisterCmd extends Cmd
             return new CmdResp(ERR_REQ_DATA, 'Invalid pwd');
         }
         $this->account->setPwd($this->req['pwd']);
-		
-		$this->account->setRegisterTime(date('U'));
+        
+        $this->account->setRegisterTime(date('U'));
         return new CmdResp(ERR_SUCCESS, '');
     }
 
     public function handle()
     {
-		$errorMsg = '';
-		$ret = $this->account->register($errorMsg);
-		return new CmdResp($ret, $errorMsg);
+        $errorMsg = '';
+        $ret = $this->account->register($errorMsg);
+        return new CmdResp($ret, $errorMsg);
     }
 }

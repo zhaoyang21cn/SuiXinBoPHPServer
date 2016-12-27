@@ -18,15 +18,15 @@ class GetRoomMemberListCmd extends TokenCmd
 
     public function parseInput()
     {
-		if (!isset($this->req['roomnum']))
+        if (!isset($this->req['roomnum']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of roomnum');
         }
-		if (!is_int($this->req['roomnum']))
-		{
-			 return new CmdResp(ERR_REQ_DATA, ' Invalid roomnum');
-		}
-		$this->roomnum = $this->req['roomnum'];	
+        if (!is_int($this->req['roomnum']))
+        {
+             return new CmdResp(ERR_REQ_DATA, ' Invalid roomnum');
+        }
+        $this->roomnum = $this->req['roomnum'];    
 
         if (!isset($this->req['index']))
         {
@@ -46,7 +46,7 @@ class GetRoomMemberListCmd extends TokenCmd
         {
             return new CmdResp(ERR_REQ_DATA, 'Page size should be a positive integer(not larger than 50)');
         }
-		
+        
         $this->index = $index;
         $this->size = $size;
         return new CmdResp(ERR_SUCCESS, '');
@@ -64,14 +64,14 @@ class GetRoomMemberListCmd extends TokenCmd
         foreach ($recordList as $record)
         {
             $rspRecordList[] = array(
-					'id' => $record['uid'],
-					'role' => $record['role']);
+                    'id' => $record['uid'],
+                    'role' => $record['role']);
         }
-		
+        
         //获取房间成员总数
-		$totalCount = InteractAvRoom::getCount($this->roomnum);
+        $totalCount = InteractAvRoom::getCount($this->roomnum);
         if ($totalCount < 0)
-		{
+        {
             return new CmdResp(ERR_SERVER, 'Server internal error');
         }
         $data = array(

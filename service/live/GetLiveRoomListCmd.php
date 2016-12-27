@@ -15,7 +15,7 @@ class GetLiveRoomListCmd extends TokenCmd
 {
 
     private $appid;
-	private $roomType = '';
+    private $roomType = '';
     private $pageIndex = 0;
     private $pageSize;
 
@@ -48,13 +48,13 @@ class GetLiveRoomListCmd extends TokenCmd
         {
             return new CmdResp(ERR_REQ_DATA, 'Page size should be a positive integer(not larger than 50)');
         }
-		
+        
         $this->pageIndex = $pageIndex;
         $this->pageSize = $pageSize;
-		if(isset($this->req['type']))
-		{
-			$this->roomType = $this->req['type'];
-		}
+        if(isset($this->req['type']))
+        {
+            $this->roomType = $this->req['type'];
+        }
         return new CmdResp(ERR_SUCCESS, '');
     }
 
@@ -78,15 +78,15 @@ class GetLiveRoomListCmd extends TokenCmd
         $rspRecordList = array();
         foreach ($recordList as $record)
         {
-			$memberSize = InteractAvRoom::getCount($record->getAvRoomId());
-			$record->setMemberSize($memberSize);
+            $memberSize = InteractAvRoom::getCount($record->getAvRoomId());
+            $record->setMemberSize($memberSize);
             $rspRecordList[] = $record->toJsonArray();
         }
-		
+        
         $data = array(
             'total' => $totalCount,
             'rooms' => $rspRecordList,
         );
         return new CmdResp(ERR_SUCCESS, '', $data);
-    }	
+    }    
 }

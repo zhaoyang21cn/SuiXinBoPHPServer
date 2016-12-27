@@ -21,14 +21,14 @@ class ReportLiveRoomInfoCmd extends TokenCmd
         $liveRecord = new NewLiveRecord();
         $req = $this->req;
 
-		$room = $req['room'];
+        $room = $req['room'];
         // room-必填
         if (!isset($req['room']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of room.');
         }
-		$room = $req['room'];
-		
+        $room = $req['room'];
+        
         // 检查title-选填
         if (isset($room['title']) && is_string($room['title']))
         {
@@ -38,7 +38,7 @@ class ReportLiveRoomInfoCmd extends TokenCmd
             }
             $liveRecord->setTitle($room['title']);
         }
-		
+        
         // 检查封面-选填
         if (isset($room['cover']) && is_string($room['cover']))
         {
@@ -49,18 +49,18 @@ class ReportLiveRoomInfoCmd extends TokenCmd
             $liveRecord->setCover($room['cover']);
         }
 
-		// 检查type-必填
+        // 检查type-必填
         if (!isset($room['type']))
-		{
+        {
             return new CmdResp(ERR_REQ_DATA, 'Lack of type.');
-		}	
-		if(!is_string($room['type']))
+        }    
+        if(!is_string($room['type']))
         {
             return new CmdResp(ERR_REQ_DATA, 'invalid type.');
         }
-		$liveRecord->setRoomType($room['type']);
-		
-		// 检查 av room id-必填
+        $liveRecord->setRoomType($room['type']);
+        
+        // 检查 av room id-必填
         if (!isset($room['roomnum']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of av room id.');
@@ -86,8 +86,8 @@ class ReportLiveRoomInfoCmd extends TokenCmd
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of appid.');
         }
-		$liveRecord->setAppid($room['appid']);
-	
+        $liveRecord->setAppid($room['appid']);
+    
         // LBS-选填
         if (isset($req['lbs']) && is_array($req['lbs']))
         {
@@ -109,9 +109,9 @@ class ReportLiveRoomInfoCmd extends TokenCmd
                 $liveRecord->setAddress($lbsInReq['address']);
             }
         }
-        	
+            
         $liveRecord->setHostUid($this->user);
-		$liveRecord->setHostUserName($this->user);
+        $liveRecord->setHostUserName($this->user);
         $this->record = $liveRecord;
 
         return new CmdResp(ERR_SUCCESS, '');
@@ -125,5 +125,5 @@ class ReportLiveRoomInfoCmd extends TokenCmd
             return new CmdResp(ERR_SERVER, 'Server internal error');
         }
         return new CmdResp(ERR_SUCCESS, '');
-    }	
+    }    
 }

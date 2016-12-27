@@ -103,8 +103,8 @@ class UserAvRoom
         return $this->id;
     }
 
-	public function exitRoom()
-	{
+    public function exitRoom()
+    {
         $dbh = DB::getPDOHandler();
         $list = array();
         if (is_null($dbh))
@@ -126,7 +126,7 @@ class UserAvRoom
         {
             return -1;
         }
-		return 0;
+        return 0;
     }
 }
 

@@ -9,18 +9,18 @@ require_once LIB_PATH . '/db/DB.php';
 class VideoRecord
 {
     const FIELD_HOST_UID = 'uid';
-	const FIELD_VIDEO_ID = 'video_id';
-	const FIELD_PLAY_URL = 'play_url';
+    const FIELD_VIDEO_ID = 'video_id';
+    const FIELD_PLAY_URL = 'play_url';
     const FIELD_CREATE_TIME = 'create_time';
-	
+    
     // 用户id => string
     private $uid = '';
 
     // 视频id => string
-	private $videoId = '';
+    private $videoId = '';
 
     // 视频url => string
-	private $playUrl = '';
+    private $playUrl = '';
 
     // 创建时间(时间戳) => int
     private $createTime = 0;
@@ -57,7 +57,7 @@ class VideoRecord
         $this->uid = $fields[self::FIELD_HOST_UID];
         $this->videoId = $fields[self::FIELD_VIDEO_ID];
         $this->playUrl = $fields[self::FIELD_PLAY_URL];
-		$this->createTime = $fields[self::FIELD_CREATE_TIME];
+        $this->createTime = $fields[self::FIELD_CREATE_TIME];
     }
 
     /* 功能：存储视频记录
@@ -74,7 +74,7 @@ class VideoRecord
             
             self::FIELD_HOST_UID => $this->uid,
             self::FIELD_VIDEO_ID => $this->videoId,
-			self::FIELD_PLAY_URL =>  $this->playUrl,
+            self::FIELD_PLAY_URL =>  $this->playUrl,
             self::FIELD_CREATE_TIME => date('U'),
         );
         try
@@ -101,7 +101,7 @@ class VideoRecord
         }
     }
 
-	/* 功能：获取视频列表
+    /* 功能：获取视频列表
      * 说明: 从偏移（offset）处获取N（limit）条APP（appid）的视频信息；
      *      成功返回视频列表，失败返回空
      */
@@ -119,9 +119,9 @@ class VideoRecord
             return null;
         }
         $fields = array(
-			self::FIELD_HOST_UID,
+            self::FIELD_HOST_UID,
             self::FIELD_VIDEO_ID,
-			self::FIELD_PLAY_URL
+            self::FIELD_PLAY_URL
         );
         try
         {
@@ -153,7 +153,7 @@ class VideoRecord
         }
         return array();
     }
-	
+    
     /* 功能：删除视频记录
      * 说明: 成功返回 true, 失败返回false
      */
@@ -208,7 +208,7 @@ class VideoRecord
             $result = $stmt->execute();
             if (!$result)
             {
-            	return -1; 
+                return -1; 
             }
             return $stmt->fetch()['total'];
         }
@@ -223,10 +223,10 @@ class VideoRecord
      */
     public function toJsonArray()
     {
-    	return array(
-			'uid' => $this->uid,
-			'videoId' => $this->videoId,
-			'playurl' => $this->playUrl,
+        return array(
+            'uid' => $this->uid,
+            'videoId' => $this->videoId,
+            'playurl' => $this->playUrl,
         );
     }
 }

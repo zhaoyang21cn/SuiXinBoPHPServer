@@ -35,7 +35,7 @@ class GetVideoRecordListCmd extends TokenCmd
         {
             return new CmdResp(ERR_REQ_DATA, 'Page size should be a positive integer(not larger than 50)');
         }
-		
+        
         $this->pageIndex = $pageIndex;
         $this->pageSize = $pageSize;
         return new CmdResp(ERR_SUCCESS, '');
@@ -56,9 +56,9 @@ class GetVideoRecordListCmd extends TokenCmd
         {
             $rspRecordList[] = $record->toJsonArray();
         }
-		
+        
         //获取视频总数
-		$totalCount = VideoRecord::getCount();
+        $totalCount = VideoRecord::getCount();
         if (!$totalCount)
         {
             return new CmdResp(ERR_SERVER, 'Server internal error');

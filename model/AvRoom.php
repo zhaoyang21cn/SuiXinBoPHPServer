@@ -104,8 +104,8 @@ class AvRoom
         return $this->id;
     }
 
-	public function exitAvRoom()
-	{
+    public function exitAvRoom()
+    {
         $dbh = DB::getPDOHandler();
         $list = array();
         if (is_null($dbh))
@@ -127,36 +127,36 @@ class AvRoom
         {
             return -1;
         }
-		return 0;
+        return 0;
     }
 
-	static public function updateLastUpdateTimeByUid($uid, $time)
-	{
-		$dbh = DB::getPDOHandler();
-		if (is_null($dbh))
-		{
-			return false;
-		}
-		try
-		{
-			$sql = 'update t_av_room set last_update_time=:time where uid=:uid';
-			$stmt = $dbh->prepare($sql);
-			$stmt->bindParam(':time', $time, PDO::PARAM_INT);
-			$stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
-			$result = $stmt->execute();
-				return new CmdResp(ERR_SERVER, 'Server error'.$uid.$time.$stmt);
-			if (!$result)
-			{
-				return false;
-			}
-			return true;
-		}
-		catch (PDOException $e)
-		{
-			return false;
-		}
-		return false;
-	}
+    static public function updateLastUpdateTimeByUid($uid, $time)
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            return false;
+        }
+        try
+        {
+            $sql = 'update t_av_room set last_update_time=:time where uid=:uid';
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':time', $time, PDO::PARAM_INT);
+            $stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
+            $result = $stmt->execute();
+                return new CmdResp(ERR_SERVER, 'Server error'.$uid.$time.$stmt);
+            if (!$result)
+            {
+                return false;
+            }
+            return true;
+        }
+        catch (PDOException $e)
+        {
+            return false;
+        }
+        return false;
+    }
 }
 
 ?>

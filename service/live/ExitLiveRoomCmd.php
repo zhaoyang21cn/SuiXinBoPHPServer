@@ -19,42 +19,42 @@ class ExitLiveRoomCmd extends TokenCmd
 
     public function parseInput()
     {
-		if (empty($this->req['roomnum']))
+        if (empty($this->req['roomnum']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of roomnum');
         }
-		if (!is_int($this->req['roomnum']))
-		{
-			 return new CmdResp(ERR_REQ_DATA, ' Invalid roomnum');
-		}
-		
-		if (empty($this->req['type']))
+        if (!is_int($this->req['roomnum']))
+        {
+             return new CmdResp(ERR_REQ_DATA, ' Invalid roomnum');
+        }
+        
+        if (empty($this->req['type']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of type');
         }
-		if (!is_string($this->req['type']))
-		{
-			 return new CmdResp(ERR_REQ_DATA, ' Invalid type');
-		}
-		
+        if (!is_string($this->req['type']))
+        {
+             return new CmdResp(ERR_REQ_DATA, ' Invalid type');
+        }
+        
         return new CmdResp(ERR_SUCCESS, '');
     }
 
     public function handle()
     {
-    	//删除直播记录
-		$ret = NewLiveRecord::delete($this->user);
-		if(!$ret)
-		{
-			return new CmdResp(ERR_SERVER, 'Server internal error: Delete live record fail'); 
-		}		
+        //删除直播记录
+        $ret = NewLiveRecord::delete($this->user);
+        if(!$ret)
+        {
+            return new CmdResp(ERR_SERVER, 'Server internal error: Delete live record fail'); 
+        }        
 
-		//清空房间成员
-	 	$ret = InteractAvRoom::ClearRoomByRoomNum($this->req['roomnum']);
-		if(!$ret)
-		{
-			return new CmdResp(ERR_SERVER, 'Server internal error: Delete member list fail'); 
-		}		
+        //清空房间成员
+         $ret = InteractAvRoom::ClearRoomByRoomNum($this->req['roomnum']);
+        if(!$ret)
+        {
+            return new CmdResp(ERR_SERVER, 'Server internal error: Delete member list fail'); 
+        }        
         return new CmdResp(ERR_SUCCESS, '');
-    }	
+    }    
 }

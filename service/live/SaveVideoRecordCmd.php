@@ -17,28 +17,28 @@ class SaveVideoRecordCmd extends TokenCmd
 
     public function parseInput()
     {
-		if (!isset($this->req['videoid']) && !is_string($this->req['videoid']))
+        if (!isset($this->req['videoid']) && !is_string($this->req['videoid']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of videoid');
         }
-		
-		if (!isset($this->req['playurl']) && !is_string($this->req['playurl']))
+        
+        if (!isset($this->req['playurl']) && !is_string($this->req['playurl']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of playurl');
         }
-		
+        
         $this->videoRecord = new VideoRecord($this->user, $this->req['videoid'], $this->req['playurl']);
         return new CmdResp(ERR_SUCCESS, '');
     }
 
     public function handle()
     {
-		$ret = $this->videoRecord->save();
-		if (!$ret)
-		{
-			return new CmdResp(ERR_SERVER, 'Server internal error'); 
-		}
+        $ret = $this->videoRecord->save();
+        if (!$ret)
+        {
+            return new CmdResp(ERR_SERVER, 'Server internal error'); 
+        }
  
         return new CmdResp(ERR_SUCCESS, '');
-    }	
+    }    
 }

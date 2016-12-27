@@ -14,11 +14,11 @@ require_once MODEL_PATH . '/Account.php';
 class AccountLogoutCmd extends Cmd
 {
     private $account;
-	
-	public function __construct()
-	{
-		$this->account = new Account();
-	}
+    
+    public function __construct()
+    {
+        $this->account = new Account();
+    }
 
     public function parseInput()
     {
@@ -31,16 +31,16 @@ class AccountLogoutCmd extends Cmd
             return new CmdResp(ERR_REQ_DATA, 'Invalid token');
         }
         $this->account->setToken($this->req['token']);
-		$this->account->setLogoutTime(date('U'));
+        $this->account->setLogoutTime(date('U'));
        
         return new CmdResp(ERR_SUCCESS, '');
     }
 
     public function handle()
     {
-		$result = array();
-		$errorMsg = '';
-		$ret = $this->account->logout($errorMsg);		
-		return new CmdResp($ret, $errorMsg);
+        $result = array();
+        $errorMsg = '';
+        $ret = $this->account->logout($errorMsg);        
+        return new CmdResp($ret, $errorMsg);
     }
 }
