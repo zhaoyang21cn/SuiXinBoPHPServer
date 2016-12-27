@@ -34,7 +34,7 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 执行sxb_db.sql文件中的sql。
 
 ## 2. 目录结构
-![参考directory.png](https://github.com/zhaoyang21cn/SuiXinBoPHPServer/blob/master/directory.png)
+![参考directory.png](https://github.com/zhaoyang21cn/SuiXinBoPHPServer/tree/StandaloneAuth/directory.png)
 
 ### 2.1 service 
 
