@@ -15,6 +15,7 @@ class AccountLoginCmd extends Cmd
 {
     // 用户账号对象
     private $account;
+    const APPID = '1400019352';
     
     public function __construct()
     {
@@ -72,16 +73,16 @@ class AccountLoginCmd extends Cmd
         $userSig = $account->getUserSig();
         if(empty($userSig))
         {
-            $userSig = $account->genUserSig('1400019352', $private_key);
+            $userSig = $account->genUserSig(self::APPID, $private_key);
             // 更新对象account的成员userSig
             $account->setUserSig($userSig);
         } 
         else 
         {
-            $ret = $account->verifyUserSig('1400019352', $public_key);
+            $ret = $account->verifyUserSig(self::APPID, $public_key);
             if($ret == 1) //过期重新生成
             {
-                $userSig = $account->genUserSig('1400019352', $private_key);
+                $userSig = $account->genUserSig(self::APPID, $private_key);
                 // 更新对象account的成员userSig
                 $account->setUserSig($userSig);
             }
