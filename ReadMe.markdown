@@ -8,8 +8,8 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 
 ### 1.2 下载源码和文档
 
-从https://github.com/zhaoyang21cn/SuiXinBoPHPServer下载得到zip文件，解压到服务器文档目录下
-（比如apache DOCUMENT_ROOT），并且更改目录名为sxb。
+从https://github.com/zhaoyang21cn/SuiXinBoPHPServer/tree/StandaloneAuth下载得到zip文件，
+解压到服务器文档目录下（比如apache DOCUMENT_ROOT），并且更改目录名为sxb。
 
 ### 1.3 修改配置
 
