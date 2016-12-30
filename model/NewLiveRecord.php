@@ -2,6 +2,7 @@
 /**
  * 新的直播记录表
  * Date: 2016/11/17
+ * Update: 2016/12/29
  */
 require_once dirname(__FILE__) . '/../Path.php';
 require_once LIB_PATH . '/db/DB.php';
@@ -22,6 +23,11 @@ class NewLiveRecord
     const FIELD_MODIFY_TIME = 'modify_time';
     const FIELD_APPID = 'appid';
     const FIELD_ROOM_TYPE = 'room_type';
+    const FIELD_DEVICE = 'device';
+    const FIELD_VIDEO_TYPE = 'video_type';
+    const FIELD_PLAY_URL1 = 'play_url1';
+    const FIELD_PLAY_URL2 = 'play_url2';
+    const FIELD_PLAY_URL3 = 'play_url3'; 
 
     // 直播标题 => sring
     private $title = '';
@@ -59,11 +65,26 @@ class NewLiveRecord
     // 房间类型 => string
     private $roomType = '';
 
+    // 设备类型 => int; 0-IOS  1-Android  2-PC
+    private $device = 0;
+
+    // 视频类型 => int; 0-摄像头 1-屏幕分享
+    private $videoType = 0;
+
+    // 播放地址1 => string
+    private $playUrl1 = '';
+
+    // 播放地址2 => string
+    private $playUrl2 = '';
+
+    // 播放地址3 => string
+    private $playUrl3 = '';
+
+    /* 功能：查询结果行初始化记录对象
+     */
     private function InitFromDBFields($fields)
     {
-        $this->createTime = strtotime($fields[self::FIELD_CREATE_TIME]);
         $this->title = $fields[self::FIELD_TITLE];
-        $this->appid = $fields[self::FIELD_APPID];
         $this->cover = $fields[self::FIELD_COVER];
         $this->longitude = (float)$fields[self::FIELD_LONGITUDE];
         $this->latitude = (float)$fields[self::FIELD_LATITUDE];
@@ -73,6 +94,52 @@ class NewLiveRecord
         $this->chatRoomId = $fields[self::FIELD_CHAT_ROOM_ID];
         $this->avRoomId = (int)$fields[self::FIELD_AV_ROOM_ID];
         $this->roomType = $fields[self::FIELD_ROOM_TYPE];
+		if(array_key_exists(self::FIELD_APPID, $fields))
+			$this->appid = $fields[self::FIELD_APPID];
+		if(array_key_exists(self::FIELD_CREATE_TIME, $fields))
+			$this->createTime = strtotime($fields[self::FIELD_CREATE_TIME]);
+		if(array_key_exists(self::FIELD_DEVICE, $fields))
+			$this->device = $fields[self::FIELD_DEVICE];
+		if(array_key_exists(self::FIELD_VIDEO_TYPE, $fields))
+			$this->videoType = $fields[self::FIELD_VIDEO_TYPE];
+		if(array_key_exists(self::FIELD_PLAY_URL1, $fields))
+			$this->playUrl1 = $fields[self::FIELD_PLAY_URL1];
+		if(array_key_exists(self::FIELD_PLAY_URL2, $fields))
+			$this->playUrl2 = $fields[self::FIELD_PLAY_URL2];
+		if(array_key_exists(self::FIELD_PLAY_URL3, $fields))
+			$this->playUrl3 = $fields[self::FIELD_PLAY_URL3];
+    }
+
+    public function genPlayUrl($bizId, $url)
+    {
+        $livecode = $this->avRoomId . '_' . $this->hostUid; 
+		if($this->videoType == 0) 
+		{ //摄像头
+			$livecode = $livecode . '_main';
+		} 
+		else if ($this->videoType == 1) 
+		{ //屏幕分享
+			$livecode =  $livecode . '_aux';
+		} 
+		else 
+		{
+			return false;
+		}
+
+		$cmd = 'echo ' . $livecode . '| md5sum - | awk -F\' \' \'{print $1}\'';
+		exec($cmd, $output, $ret);
+		if ($ret != 0) 
+		{
+			return false;
+		}
+
+		$livecode = $bizId . '_' . $output[0]; //直播码
+
+        $this->playUrl1 = 'rtmp://' . $bizId . '.' . $url . $livecode;
+        $this->playUrl2 = 'http://' . $bizId . '.' . $url . $livecode . '.flv';
+        $this->playUrl3 = 'http://' . $bizId . '.' . $url . $livecode . '.m3u8';
+
+		return true;
     }
 
     /* 功能：将直播记录存入数据库
@@ -86,19 +153,24 @@ class NewLiveRecord
             return -1;
         }
         $fields = array(
-            self::FIELD_TITLE => $this->title,
-            self::FIELD_APPID => $this->appid,
-            self::FIELD_COVER => $this->cover,
-            self::FIELD_CHAT_ROOM_ID => $this->chatRoomId,
-            self::FIELD_AV_ROOM_ID => $this->avRoomId,
-            self::FIELD_HOST_UID => $this->hostUid,
-            self::FIELD_LONGITUDE => $this->longitude,
-            self::FIELD_LATITUDE => $this->latitude,
-            self::FIELD_ADDRESS => $this->address,
-            self::FIELD_ADMIRE_COUNT => $this->admireCount,
             self::FIELD_CREATE_TIME => date('Y-m-d H:i:s'),
             self::FIELD_MODIFY_TIME => date('U'),
+            self::FIELD_APPID => $this->appid,
+            self::FIELD_TITLE => $this->title,
+            self::FIELD_COVER => $this->cover,
+            self::FIELD_HOST_UID => $this->hostUid, 
+            self::FIELD_AV_ROOM_ID => $this->avRoomId,
+            self::FIELD_CHAT_ROOM_ID => $this->chatRoomId, 
             self::FIELD_ROOM_TYPE => $this->roomType,
+            self::FIELD_VIDEO_TYPE => $this->videoType,
+            self::FIELD_DEVICE => $this->device,
+            self::FIELD_ADMIRE_COUNT => $this->admireCount,
+            self::FIELD_PLAY_URL1 => $this->playUrl1,
+            self::FIELD_PLAY_URL2 => $this->playUrl2,
+            self::FIELD_PLAY_URL3 => $this->playUrl3,  
+            self::FIELD_LONGITUDE => $this->longitude,
+            self::FIELD_LATITUDE => $this->latitude,
+            self::FIELD_ADDRESS => $this->address,  
         );
         try
         {
@@ -234,16 +306,16 @@ class NewLiveRecord
         }
         $fields = array(
             self::FIELD_CREATE_TIME,
-            self::FIELD_TITLE,
             self::FIELD_APPID,
-            self::FIELD_COVER,
+            self::FIELD_TITLE,          
+            self::FIELD_COVER,          
+            self::FIELD_HOST_UID,
+            self::FIELD_CHAT_ROOM_ID,
+            self::FIELD_AV_ROOM_ID,
+            self::FIELD_ADMIRE_COUNT,           
             self::FIELD_LONGITUDE,
             self::FIELD_LATITUDE,
             self::FIELD_ADDRESS,
-            self::FIELD_HOST_UID,
-            self::FIELD_ADMIRE_COUNT,
-            self::FIELD_CHAT_ROOM_ID,
-            self::FIELD_AV_ROOM_ID,
         );
         try
         {
@@ -272,10 +344,10 @@ class NewLiveRecord
         return -1;
     }
 
-    /* 功能：获取直播记录列表
-     * 说明：成功返回直播记录列表，失败返回null
-     */
-    public static function getList($appid, $roomType, $offset = 0, $limit = 50)
+    /* 功能：查询直播记录
+     * 说明：查询指定的记录字段
+     */	 
+    public static function getList($appid, $roomType, $offset, $limit, $fields)
     {
         if ($appid == 0) {
             $whereSql = "";
@@ -292,25 +364,14 @@ class NewLiveRecord
                 $whereSql .= " AND room_type = '$roomType' ";
             }
         }
-
+       
         $dbh = DB::getPDOHandler();
         $list = array();
         if (is_null($dbh))
         {
             return null;
         }
-        $fields = array(
-            self::FIELD_TITLE,
-            self::FIELD_COVER,
-            self::FIELD_LONGITUDE,
-            self::FIELD_LATITUDE,
-            self::FIELD_ADDRESS,
-            self::FIELD_ADMIRE_COUNT, 
-            self::FIELD_HOST_UID,         
-            self::FIELD_CHAT_ROOM_ID,
-            self::FIELD_AV_ROOM_ID,
-            self::FIELD_ROOM_TYPE,
-        );
+
         try
         {
             $sql = 'SELECT ' . implode(',', $fields) .
@@ -327,14 +388,7 @@ class NewLiveRecord
             {
                 return array();
             }
-            $list = array();
-            foreach ($rows as $row)
-            {
-                $record = new NewLiveRecord();
-                $record->InitFromDBFields($row);
-                $list[] = $record;
-            }
-            return $list;
+            return $rows;
         }
         catch (PDOException $e)
         {
@@ -342,6 +396,145 @@ class NewLiveRecord
         }
         return array();
     }
+
+    /* 功能：查询直播记录列表
+     * 说明：成功返回直播记录列表，失败返回null
+     */
+    public static function getLiveRoomList($appid, $roomType, $offset = 0, $limit = 50)
+    {
+        $fields = array(
+            self::FIELD_TITLE,
+            self::FIELD_COVER,
+            self::FIELD_HOST_UID,
+            self::FIELD_AV_ROOM_ID,
+            self::FIELD_CHAT_ROOM_ID,
+            self::FIELD_ROOM_TYPE,
+            self::FIELD_ADMIRE_COUNT,
+            self::FIELD_LONGITUDE,
+            self::FIELD_LATITUDE,
+            self::FIELD_ADDRESS,  
+        );
+
+		$rows = NewLiveRecord::getList($appid, $roomType, $offset, $limit, $fields);
+		if(is_null($rows)) 
+		{
+			return null;
+		}
+		$data = array();
+		foreach ($rows as $row)
+		{
+			$data[] = array(
+				'uid' => $row[self::FIELD_HOST_UID],
+				'info' => array(
+					'title' => $row[self::FIELD_TITLE],
+					'roomnum' => $row[self::FIELD_AV_ROOM_ID],
+					'type' => $row[self::FIELD_ROOM_TYPE],
+					'groupid' => $row[self::FIELD_CHAT_ROOM_ID],
+					'cover' => $row[self::FIELD_COVER],
+					'thumbup' => $row[self::FIELD_ADMIRE_COUNT],
+				),
+			);
+		}
+		return $data;
+    }
+
+
+    /* 功能：拉取房间的推流地址
+     * 说明：成功返回播放url json数据，失败返回null
+     */
+    public static function getLiveStreamList($appid, $roomType, $offset = 0, $limit = 50)
+    {
+        $fields = array(
+            self::FIELD_COVER,
+            self::FIELD_HOST_UID,
+            self::FIELD_PLAY_URL1,
+            self::FIELD_PLAY_URL2,
+            self::FIELD_PLAY_URL3,
+        );
+
+		$rows = NewLiveRecord::getList($appid, $roomType, $offset, $limit, $fields);
+		if(is_null($rows)) 
+		{
+			return null;
+		}
+		$data = array();
+		foreach ($rows as $row)
+		{
+			$data[] = array(
+				'uid' => $row[self::FIELD_HOST_UID],
+				'cover' => $row[self::FIELD_COVER],
+				'address' => $row[self::FIELD_PLAY_URL1],
+				'address2' => $row[self::FIELD_PLAY_URL2],
+				'address3' => $row[self::FIELD_PLAY_URL3],
+			);
+		}
+		return $data;
+    }
+
+    /* 功能：依据房间ID拉取本房间的推流地址
+     * 说明：成功返回播放url json数据，失败返回null
+     */
+    public static function getLiveStreamByRoomID($appid, $avRoomId)
+    {
+        if ($appid == 0) {
+            $whereSql = "";
+        }else{
+            $whereSql = " WHERE appid = $appid ";
+        }
+       
+        if(empty($whereSql))
+        {
+            $whereSql .= " WHERE av_room_id = '$avRoomId' ";
+        }
+        else
+        {
+            $whereSql .= " AND av_room_id = '$avRoomId' ";
+        }
+      
+       
+        $dbh = DB::getPDOHandler();
+        $list = array();
+        if (is_null($dbh))
+        {
+            return null;
+        }
+
+        $fields = array( 
+            self::FIELD_PLAY_URL1,
+            self::FIELD_PLAY_URL2,
+            self::FIELD_PLAY_URL3,
+        );
+
+        try
+        {
+            $sql = 'SELECT ' . implode(',', $fields) . ' FROM t_new_live_record ' . $whereSql ;
+            $stmt = $dbh->prepare($sql);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                return null;
+            }
+            $rows = $stmt->fetchAll();
+            if (empty($rows))
+            {
+                return array();
+            }
+            $data = array();
+            foreach ($rows as $row)
+			{  
+				$data['address'] = $row[self::FIELD_PLAY_URL1];
+				$data['address2'] = $row[self::FIELD_PLAY_URL2];
+				$data['address3'] = $row[self::FIELD_PLAY_URL3];
+			}
+            return $data;
+        }
+        catch (PDOException $e)
+        {
+            return null;
+        }
+        return array(); 
+    }
+
 
     /* 功能：获取字段类型
      */
@@ -551,29 +744,24 @@ class NewLiveRecord
         return $this->memberSize;
     }
 
-    /**
-     * 生成Json数组
-     */
-    public function toJsonArray()
+    public function setDevice($device)
     {
-        return array(
-            'uid' => $this->hostUid,
-            'info' => array(
-                'title' => $this->title,
-                'roomnum' => $this->avRoomId,
-                'type' => $this->roomType,
-                'groupid' => $this->chatRoomId,
-                'cover' => $this->cover,
-                'thumbup' => $this->admireCount,
-                'memsize' => $this->memberSize,
-            ),
-            /*
-            'lbs' => array(
-                'longitude' => $this->longitude,
-                'latitude' => $this->latitude,
-                'address' => $this->address,
-            ),*/
-        );
+        $this->device = $device;
+    }
+
+    public function getDevice()
+    {
+        return $this->device;
+    }
+
+    public function setVideoType($videoType)
+    {
+        $this->videoType = $videoType;
+    }
+
+    public function getVideoType()
+    {
+        return $this->videoType;
     }
 }
 

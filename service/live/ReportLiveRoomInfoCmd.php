@@ -15,6 +15,8 @@ class ReportLiveRoomInfoCmd extends TokenCmd
 {
     //NewLiveRecord
     private $record;
+    const URL = 'liveplay.myqcloud.com/live/';
+    const BIZID = '123456';
 
     public function parseInput()
     {
@@ -82,6 +84,30 @@ class ReportLiveRoomInfoCmd extends TokenCmd
         }
         $liveRecord->setChatRoomId($room['groupid']);
 
+        // 检查device-必填
+        $device = $room['device'];
+        if (!isset($device))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'Lack of device.');
+        }
+        if (!is_int($device) || (is_int($device) && $device >= 3) )
+        {
+            return new CmdResp(ERR_REQ_DATA, 'device should be 0-IOS 1-Android  2-PC.');
+        }
+        $liveRecord->setDevice($device);
+
+        // 检查video type-必填
+        $videotype = $room['videotype'];
+        if (!isset($videotype))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'Lack of videotype.');
+        }
+        if (!is_int($videotype) || (is_int($videotype) && $videotype >= 2) )
+        {
+            return new CmdResp(ERR_REQ_DATA, 'videotype should be 0 or 1.');
+        }
+        $liveRecord->setVideoType($videotype);
+
         if (!isset($room['appid']) && !is_int($room['appid']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of appid.');
@@ -111,7 +137,6 @@ class ReportLiveRoomInfoCmd extends TokenCmd
         }
             
         $liveRecord->setHostUid($this->user);
-        $liveRecord->setHostUserName($this->user);
         $this->record = $liveRecord;
 
         return new CmdResp(ERR_SUCCESS, '');
@@ -119,6 +144,11 @@ class ReportLiveRoomInfoCmd extends TokenCmd
 
     public function handle()
     {
+        $ret = $this->record->genPlayUrl(self::BIZID, self::URL);
+		if($ret != true) {
+            return new CmdResp(ERR_SERVER, 'Server internal error: gen play url fail');
+		}
+
         $id = $this->record->save();
         if ($id < 0)
         {

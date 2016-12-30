@@ -8,7 +8,7 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 
 ### 1.2 下载源码和文档
 
-从https://github.com/zhaoyang21cn/SuiXinBoPHPServer/tree/StandaloneAuth下载得到zip文件，
+从https://github.com/zhaoyang21cn/SuiXinBoPHPServer/tree/StandaloneAuth 下载得到zip文件，
 解压到服务器文档目录下（比如apache DOCUMENT_ROOT），并且更改目录名为sxb。
 
 ### 1.3 修改配置
@@ -16,7 +16,7 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 1. 在lib/db/DBConfig.php填写数据库用户名和密码; 开通腾讯云COS服务，得到对应的APPID、SecretKey和SecretID。
 然后填写deps/cos-php-sdk/Conf.php中对应的部分(不开通COS也能跑，只是客户端无法上传图片到COS)。
 
-2. 修改deps/sig目录权限，使得其他用户就有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录
+2. 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录
 将用于生成和校验sig的公私钥放置于此目录，如果用户自定义置于其他目录，则需要修改server/account/AccountLoginCmd.php
 文件中代码：
 	$private_key = DEPS_PATH . '/sig/private_key';
@@ -28,6 +28,10 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 4. 调整server/account/AccountLoginCmd.php代码：
 	const APPID = '1400019352';
 为自己的appid
+
+5. 调整server/live/ReportLiveRoomInfoCmd.php代码
+	const BIZID = '123456';
+为自己云上接入的bizID，用于生成直播码
 
 ### 1.4 数据库建表建库
 

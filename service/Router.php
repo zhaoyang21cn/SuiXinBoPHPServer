@@ -1,7 +1,10 @@
 <?php
 /**
  * Date: 2016/4/20
- * Update: 2016/11/18
+ * Update: 2016/11/17
+ * Tips: 升级2.0版本
+ * Update: 2016/12/29
+ * Tips：增加推流机制
  */
 
 class Router
@@ -35,6 +38,10 @@ class Router
             //成员
             'reportmemid' => 'ReportRoomMemberCmd',
             'roomidlist' => 'GetRoomMemberListCmd',
+
+            //推流旁路
+            'livestreamlist' => 'GetLiveStreamListCmd',
+            'getroomplayurl' => 'GetRoomPlayUrlCmd',
 
             //old
             'start' => 'LiveStartCmd',

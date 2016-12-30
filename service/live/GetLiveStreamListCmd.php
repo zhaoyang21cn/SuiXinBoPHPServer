@@ -1,7 +1,7 @@
 <?php
 /**
- * 房间列表接口
- * Date: 2016/11/17
+ * 拉旁路直播列表接口
+ * Date: 2016/12/29
  */
 require_once dirname(__FILE__) . '/../../Path.php';
 
@@ -9,10 +9,10 @@ require_once SERVICE_PATH . '/TokenCmd.php';
 require_once SERVICE_PATH . '/CmdResp.php';
 require_once ROOT_PATH . '/ErrorNo.php';
 require_once MODEL_PATH . '/NewLiveRecord.php';
-require_once MODEL_PATH . '/InteractAvRoom.php';
 
-class GetLiveRoomListCmd extends TokenCmd
+class GetLiveStreamListCmd extends TokenCmd
 {
+
     private $appid;
     private $roomType = '';
     private $pageIndex = 0;
@@ -59,33 +59,26 @@ class GetLiveRoomListCmd extends TokenCmd
 
     public function handle()
     {
-        //获取直播房间记录
+        //获取房间播放url记录
         $offset = $this->pageIndex;
         $limit = $this->pageSize;
 
-        $recordList = NewLiveRecord::getLiveRoomList($this->appid, $this->roomType, $offset, $limit);
-        if (is_null($recordList))
+        $rspData = NewLiveRecord::getLiveStreamList($this->appid, $this->roomType, $offset, $limit);
+        if (is_null($rspData))
         {
             return new CmdResp(ERR_SERVER, 'Server internal error');
         }
 
-        //获取房间总数
+        //获取总数
         $totalCount = NewLiveRecord::getCount($this->appid);
         if ($totalCount < 0)
         {
             return new CmdResp(ERR_SERVER, 'Server internal error');
         }
-        $rspData = array();
-        foreach ($recordList as $record)
-        {
-            $memberSize = InteractAvRoom::getCount($record['info']['roomnum']);
-			$record['info']['memsize'] = $memberSize;
-            $rspData[] = $record;
-        }
-        
+       
         $data = array(
             'total' => $totalCount,
-            'rooms' => $rspData,
+            'videos' => $rspData,
         );
         return new CmdResp(ERR_SUCCESS, '', $data);
     }    

@@ -72,23 +72,33 @@ CREATE TABLE IF NOT EXISTS `t_user_av_room` (
 
 CREATE TABLE IF NOT EXISTS `t_new_live_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `title` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标题',
-  `cover` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '封面URL',
-  `host_uid` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '主播UID',
-  `longitude` double NOT NULL DEFAULT 0 COMMENT '经度',
-  `latitude` double NOT NULL DEFAULT 0 COMMENT '纬度',
-  `address` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '地址',
-  `av_room_id` int(11) NOT NULL DEFAULT 0 COMMENT 'av房间ID',
-  `chat_room_id` varchar(50) NOT NULL COMMENT '聊天室ID',
-  `admire_count` int(11) NOT NULL DEFAULT 0 COMMENT '点赞人数',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
   `modify_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `appid` int(11) NOT NULL DEFAULT 0 COMMENT 'appid',
+  `title` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标题',
+  `cover` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '封面URL',
+  `host_uid` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '主播UID',
+  `av_room_id` int(11) NOT NULL DEFAULT 0 COMMENT 'av房间ID',
+  `chat_room_id` varchar(50) NOT NULL COMMENT '聊天室ID',
+  `room_type`    varchar(30) NOT NULL DEFAULT 'live',
+  `admire_count` int(11) NOT NULL DEFAULT 0 COMMENT '点赞人数',                    
+  `longitude` double NOT NULL DEFAULT 0 COMMENT '经度',
+  `latitude` double NOT NULL DEFAULT 0 COMMENT '纬度',
+  `address` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '地址',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_host_uid` (`host_uid`),
   KEY `idx_modify_time` (`modify_time`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='新版直播记录表' AUTO_INCREMENT=14 ;
 
+--
+-- 版本2.1 增加字段 video_type,device
+--
+
+alter table `t_new_live_record` add column `video_type` tinyint not null default 0 after `room_type`;
+alter table `t_new_live_record` add column `device` tinyint not null default 0 after `video_type`;
+alter table `t_new_live_record` add column `play_url1` varchar(128) after `admire_count`;
+alter table `t_new_live_record` add column `play_url2` varchar(128) after `play_url1`;
+alter table `t_new_live_record` add column `play_url3` varchar(128) after `play_url2`;
 -- --------------------------------------------------------
 
 --
@@ -151,3 +161,6 @@ CREATE TABLE IF NOT EXISTS `t_video_record_test` (
  `create_time`  int(11)       NOT  NULL   DEFAULT  0  COMMENT '视频创建时间戳',                                     
   PRIMARY KEY (`id`)
 )AUTO_INCREMENT=10001;
+
+-- --------------------------------------------------------
+
