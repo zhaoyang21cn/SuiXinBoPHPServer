@@ -125,8 +125,8 @@ class NewLiveRecord
 		{
 			return false;
 		}
-
-		$cmd = 'echo ' . $livecode . '| md5sum - | awk -F\' \' \'{print $1}\'';
+/*
+		$cmd = 'echo  -n ' . $livecode . '| md5sum - | awk -F\' \' \'{print $1}\'';
 		exec($cmd, $output, $ret);
 		if ($ret != 0) 
 		{
@@ -134,7 +134,10 @@ class NewLiveRecord
 		}
 
 		$livecode = $bizId . '_' . $output[0]; //直播码
-
+*/
+		$md5sum = md5($livecode);
+		$livecode = $bizId . '_' . $md5sum; //直播码
+		
         $this->playUrl1 = 'rtmp://' . $bizId . '.' . $url . $livecode;
         $this->playUrl2 = 'http://' . $bizId . '.' . $url . $livecode . '.flv';
         $this->playUrl3 = 'http://' . $bizId . '.' . $url . $livecode . '.m3u8';

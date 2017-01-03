@@ -282,7 +282,7 @@ class InteractAvRoom
         }
         try
         {
-            $sql = 'UPDATE t_interact_av_room SET modify_time=:time WHERE uid = :uid and role=:role';
+            $sql = 'UPDATE t_interact_av_room SET modify_time=:time, role=:role WHERE uid = :uid';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
             $stmt->bindParam(':role', $role, PDO::PARAM_INT);
