@@ -89,7 +89,7 @@ class HeartBeatCmd extends Cmd
         $data['admire_count'] = $this->thumbup;
         $data['modify_time'] = $this->modifyTime;
         $ret = NewLiveRecord::updateByHostUid($uid, $data);
-        if(!$ret)
+        if($ret == -1)
         {
             return new CmdResp(ERR_SERVER, 'Server error: update live record time fail');
         }
