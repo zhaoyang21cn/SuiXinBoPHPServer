@@ -229,6 +229,54 @@ class VideoRecord
             'playurl' => $this->playUrl,
         );
     }
+
+	static	public function getVideoUrl($index, $size, &$http_info)
+	{
+		$domain = 'vod.api.qcloud.com';
+		$Action = 'DescribeVodPlayInfo';
+		$Nonce = rand(10000, 100000000);
+		$Region = 'gz';
+		$SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';
+		$Timestamp = date('U');
+		$fileName = 'sxb';
+		$pageNo = $index;
+		$pageSize = $size;
+
+		$Signature = '';
+		$https = 'https://';
+		$url = $domain . '/v2/index.php?'
+			. 'Action=' . $Action . '&'
+			. 'Nonce=' . $Nonce . '&'
+			. 'Region=' . $Region . '&'
+			. 'SecretId=' . $SecretId . '&'
+			. 'Timestamp=' . $Timestamp . '&'
+			. 'fileName=' . $fileName . '&'
+			. 'pageNo=' . $pageNo . '&'
+			. 'pageSize=' . $pageSize;
+		$srcStr = 'GET' . $url;
+		$secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';
+		$Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
+		$Signature = urlencode($Signature);
+
+		$url = $https . $url . '&Signature=' . $Signature;
+		$timeout = 3000;
+
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout);
+		$ret = curl_exec($ch);
+
+		if ($ret === false) 
+		{
+			return false;
+		}
+		$http_info = curl_getinfo($ch);
+		curl_close($ch);
+		$input = iconv('UTF-8', 'UTF-8//IGNORE', $ret);
+		$rsp = json_decode($input, 12);
+		return $rsp;
+	}
 }
 
 

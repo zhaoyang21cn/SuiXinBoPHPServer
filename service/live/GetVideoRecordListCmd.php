@@ -43,6 +43,7 @@ class GetVideoRecordListCmd extends TokenCmd
 
     public function handle()
     {
+		/*
         //获取视频列表
         $offset = $this->pageIndex;
         $limit = $this->pageSize;
@@ -67,6 +68,41 @@ class GetVideoRecordListCmd extends TokenCmd
             'total' => $totalCount,
             'videos' => $rspRecordList,
         );
+        return new CmdResp(ERR_SUCCESS, '', $data);
+		*/
+
+		$http_info = '';
+		$rsp = VideoRecord::getVideoUrl($this->pageIndex, $this->pageSize, $http_info);
+		if($rsp === false)
+		{
+            return new CmdResp(ERR_SERVER, 'Server internal error: curl_exec fail');
+		}
+		
+		$fileSet = array();
+		$fileSet = $rsp['fileSet'];
+		$videos = array();
+		foreach($fileSet as $set)
+		{
+			$playSet = array();
+			$playSet = $set['playSet'];
+			$playUrl = array();
+			foreach($playSet as $play)
+			{
+				$playUrl[] = $play['url'];
+			}
+
+			$videos[] = array (
+					'cover' => $set['image_url'],
+					'videoId' => $set['fileId'],
+					'playurl' => $playUrl,
+					);
+		}
+
+        $data = array(
+            'total' => $rsp['totalCount'],
+            'videos' => $videos,
+        );
+
         return new CmdResp(ERR_SUCCESS, '', $data);
     }
 }
