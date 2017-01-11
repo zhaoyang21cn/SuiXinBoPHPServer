@@ -431,7 +431,7 @@ class Account
      */
     public function genToken()
     {
-        $cmd = 'echo ' . $this->uid . $this->loginTime . '| base64';
+        $cmd = 'echo \'' . $this->uid . $this->loginTime . '\'| base64';
         $ret = exec($cmd, $out, $status);
         if ($status != 0)
         {

@@ -93,6 +93,7 @@ class GetVideoRecordListCmd extends TokenCmd
 
 			$videos[] = array (
 					'cover' => $set['image_url'],
+					'uid' => $set['fileName'],
 					'videoId' => $set['fileId'],
 					'playurl' => $playUrl,
 					);
