@@ -1,44 +1,47 @@
 # 随心播后台说明
 
-## 1. 环境部署
+## 1. 代码部署
 
-### 1.1 搭建环境
+### 1.1 搭建PHP和数据库环境
 
-PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能运行), MySQL >= 5.5.3，Apache/Nginx服务器。
+#### 服务器环境要求 
 
-### 1.2 下载源码和文档
+* PHP >= 5.4
+* MySQL >= 5.5.3
 
-从https://github.com/zhaoyang21cn/SuiXinBoPHPServer/tree/StandaloneAuth 下载得到zip文件，
-解压到服务器文档目录下（比如apache DOCUMENT_ROOT），并且更改目录名为sxb。
+### 1.2 修改配置
 
-### 1.3 修改配置
+* 下载代码，部署到php目录中
+* 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码
+* 调整server/account/AccountLoginCmd.php为自己互动直播的sdkAppid：
 
-1. 在lib/db/DBConfig.php填写数据库用户名和密码; 开通腾讯云COS服务，得到对应的APPID、SecretKey和SecretID。
-然后填写deps/cos-php-sdk/Conf.php中对应的部分(不开通COS也能跑，只是客户端无法上传图片到COS)。
+```php
+	const SDKAPPID = '1400019352';
+```
+* 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig
+* 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录，将用于生成和校验sig的公私钥放置于此目录。<br/>
+如果用户自定义置于其他目录，则需要修改server/account/AccountLoginCmd.php为自定义路径，保证这些文件至少具有可读权限。
 
-2. 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录
-将用于生成和校验sig的公私钥放置于此目录，如果用户自定义置于其他目录，则需要修改server/account/AccountLoginCmd.php
-文件中代码：
+```php
 	$private_key = DEPS_PATH . '/sig/private_key';
 	$public_key = DEPS_PATH . '/sig/public_key';
-为自定义路径，保证这些文件至少具有可读权限
+```
 
-3. 修改deps/bin/tls_licence_tools具有可执行权限
+* 如果您在使用直播码进行旁路推流，调整server/live/ReportLiveRoomInfoCmd.php代码的BIZID。
 
-4. 调整server/account/AccountLoginCmd.php代码：
-	const APPID = '1400019352';
-为自己的appid
-
-5. 调整server/live/ReportLiveRoomInfoCmd.php代码
+```php
 	const BIZID = '123456';
-为自己云上接入的bizID，用于生成直播码
+```
 
-### 1.4 数据库建表建库
+* 如果想使用图片上传功能，需要开通腾讯云COS服务，并在deps/cos-php-sdk/Conf.php填写对应APPID、SecretKey和SecretID。
+
+### 1.3 数据库建表建库
 
 执行sxb_db.sql文件中的sql。
 
-## 2. 目录结构
-![参考directory.png](https://github.com/zhaoyang21cn/SuiXinBoPHPServer/blob/StandaloneAuth/directory.png)
+## 2. 代码目录结构
+
+![](https://mc.qcloudimg.com/static/img/0413205b36b65645ef4a5ddd8135198c/2.png)
 
 ### 2.1 service 
 
@@ -49,7 +52,7 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 - 开始直播：数据库Replace一条记录，注意一个用户同一时间最多只能有一场直播；
 - 直播结束：从数据库中删除记录；
 - 直播列表：从数据库分页获取直播列表；
-- 直播心跳包：客户端30秒发一次心跳包更新数据。
+- 直播心跳包：客户端10秒发一次心跳包更新数据。
 
 #### 2.1.2 Cos服务
 
@@ -79,8 +82,8 @@ PHP >= 5.4(但代码基本是按照5.1写法，所以稍作修改，PHP5.1也能
 ### 2.6 cron 
 后台定时任务。清理90秒没有发心跳包的直播记录。可以crontab定时执行。
 
-## 3. 特殊说明
- 下载之后安装后确认
- 1. sig目录其他用户一定要有读写可执行权限
- 2. deps/bin/tls_licence_tools签名程序一定可执行权限
- 3. 调整为自己的appid和私钥公钥路径
+## 3. 再次强调
+ 
+ * sig目录其他用户一定要有读写可执行权限
+ * deps/bin/tls_licence_tools签名程序一定可执行权限
+ * 调整为自己的SDKAPPID和私钥公钥路径
