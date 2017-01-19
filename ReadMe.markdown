@@ -1,4 +1,4 @@
-# 随心播后台说明
+# 随心播 Server QuickStart
 
 ## 1. 代码部署
 
@@ -13,7 +13,7 @@
 
 * 下载代码，部署到php目录中
 * 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码
-* 调整server/account/AccountLoginCmd.php为自己互动直播的sdkAppid：
+* 调整server/account/AccountLoginCmd.php为自己互动直播的SDKAPPID：
 
 ```php
 	const SDKAPPID = '1400019352';
@@ -60,7 +60,7 @@
 
 #### 2.1.3 AvRoom服务
 
-获取Av房间号。
+获取AV房间号。
 
 
 ### 2.2 model 

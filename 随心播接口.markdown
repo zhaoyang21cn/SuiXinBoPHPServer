@@ -1,4 +1,4 @@
-## 随心播服务器接口### 版本说明
+## 随心播 Server 接口文档### 版本说明
 
 版本  | 时间  | 备注
 :-----: | :-----: | :-----: 
@@ -27,6 +27,7 @@
 * 拉取旁路直播地址列表
 * 拉取指定房间的旁路直播地址
 * 下线
+* 推流和录制回调接口
 
 #### 需自行实现的功能点
 
@@ -243,17 +244,17 @@ status|String|必填|状态:on-上麦，off-下麦* response字段示例```j
 ｛  “errorCode”: 0,	“errorInfo”: “”, }
 ```
 
-### 十一 录制视频完成上报
+### 十一 开始录制视频上报
 
-* 录制完视频上报信息，用于点播
+* 手工录制视频开始的时候上报信息，用于点播
 
 * 请求URL  
  
 ```htmlindex.php?svc=live&cmd=reportrecord```* request字段示例
 
-```json｛  “token”:”[token]”,	“videoid”:”[videoid]”,	“playurl”:”[playurl]”,	“type”:0,	“cover”:”http://cover.png” }
+```json｛  “token”:”[token]”,	“roomid”:10007,	“uid”:”wilder4”,	“name”:”我的录制”	“type”:0,	“cover”:”http://cover.png” }
 ```字段  | 类型  | 选项 | 说明
-:-----: | :-----: | :-----: | :-----: token|String|必填|用户tokenvideoId|String|必填|点播idplayurl|String|必填|播放地址type|Integer|必填|类型cover|String|选填|封面地址* response字段示例```json
+:-----: | :-----: | :-----: | :-----: token|String|必填|用户tokenroomid|Int|必填|录制房间iduid|String|必填|主播用户idname|String|必填|录制文件名type|Integer|必填|类型cover|String|选填|封面地址* response字段示例```json
 ｛  “errorCode”: 0,	“errorInfo”: “”, }
 ```
 
@@ -272,6 +273,31 @@ status|String|必填|状态:on-上麦，off-下麦* response字段示例```j
 ```
 
 ### 十三 拉取点播列表
+
+* 拉取可用的点播列表
+
+* 请求URL  
+ 
+```htmlindex.php?svc=live&cmd=recordlist```* request字段示例
+
+```json｛  “token”:”[token]”,
+	“type”:0,	“index”:0,	“size”:10 }
+```字段  | 类型  | 选项 | 说明
+:-----: | :-----: | :-----: | :-----: token|String|必填|用户token
+type|Integer|必填|类型过滤
+index|Integer|必填|起始房间位置(从0开始)size|Integer|必填|列表长度* response字段示例```json
+｛  “errorCode”: 0,	“errorInfo”: “”,	“data”:{    “total”:100,    	“videos”:[        {           “uid”:”[uid]”,           “cover”:”http://cover.png”,           “videoId”:”[videoid]”,           “playurl”:”[playurl]”        },    	]	}}
+```
+
+字段  | 类型  | 选项 | 说明
+:-----: | :-----: | :-----: | :-----: total|Integer|必填|房间总数videos|Array|必填|视频信息数组
+
+video信息
+
+字段  | 类型  | 选项 | 说明
+:-----: | :-----: | :-----: | :-----:
+uid|String|必填|主播id
+playid|String|必填|点播idplayurl|String|必填|播放地址cover|String|选填|封面地址
 
 ### 十四 拉取旁路直播地址列表
 
@@ -323,10 +349,17 @@ room|Integer|必填|房间id* response字段示例```json
  
 ```htmlindex.php?svc=account&cmd=logout```* request字段示例
 
-```json｛  “token”:”[token]” }
+```json｛ “token”:”[token]” }
 ```字段  | 类型  | 选项 | 说明
 :-----: | :-----: | :-----: | :-----: token|String|必填|用户token* response字段示例```json
 ｛  “errorCode”: 0,	“errorInfo”: “”, }
 ```
 
-
+### 十七 推流和录制回调接口
+
+* 接收旁路直播和录制相关服务器回调的通知
+
+* 请求URL
+
+```php
+index.php?svc=live&cmd=callback```* 这是腾讯视频云后台调用业务后台推送通知的接口，具体处理方式请参考文档和代码
