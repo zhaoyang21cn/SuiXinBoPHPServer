@@ -15,7 +15,7 @@ class AccountLoginCmd extends Cmd
 {
     // 用户账号对象
     private $account;
-    const APPID = '1400019352';
+    const SDKAPPID = '1400019352';
     
     public function __construct()
     {
@@ -73,26 +73,26 @@ class AccountLoginCmd extends Cmd
         $userSig = $account->getUserSig();
         if(empty($userSig))
         {
-            $userSig = $account->genUserSig(self::APPID, $private_key);
+            $userSig = $account->genUserSig(self::SDKAPPID, $private_key);
             // 更新对象account的成员userSig
             $account->setUserSig($userSig);
         } 
         else 
         {
-            $ret = $account->verifyUserSig(self::APPID, $public_key);
+            $ret = $account->verifyUserSig(self::SDKAPPID, $public_key);
             if($ret == 1) //过期重新生成
             {
-                $userSig = $account->genUserSig(self::APPID, $private_key);
+                $userSig = $account->genUserSig(self::SDKAPPID, $private_key);
                 // 更新对象account的成员userSig
                 $account->setUserSig($userSig);
             }
             else if($ret == -1) 
             {
-                return new CmdResp(ERR_SERVER, 'Server error');
+                return new CmdResp(ERR_SERVER, 'Server error:gen sig fail');
             }
         }
         if(empty($userSig))
-            return new CmdResp(ERR_SERVER, 'Server error');
+            return new CmdResp(ERR_SERVER, 'Server error: gen sig fail');
 
         $ret = $account->getState();
         if($ret == 1) //已登录
