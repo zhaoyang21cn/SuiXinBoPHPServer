@@ -186,7 +186,8 @@ title|String|非必填|标题type|String|必填|房间类型roomnum|Integer|�
 
 ```json｛  “token”:”[token]”,	“roomnum”:18	“index”:0,	“size”:10 }
 ```字段  | 类型  | 选项 | 说明
-:-----: | :-----: | :-----: | :-----: token|String|必填|用户tokenindex|Integer|必填|起始位置(从0开始)size|Integer|必填|列表长度* response字段示例```json
+:-----: | :-----: | :-----: | :-----: token|String|必填|用户token
+roomnum|Integer|必填|房间idindex|Integer|必填|起始位置(从0开始)size|Integer|必填|列表长度* response字段示例```json
 ｛  “errorCode”: 0,	“errorInfo”: “”,	“data”:{   		“total”:100,   		“idlist”:[       	{           “id”:”willduo”,           “role”:1,       	},    	]	} }
 ```
 
@@ -252,9 +253,9 @@ status|String|必填|状态:on-上麦，off-下麦* response字段示例```j
  
 ```htmlindex.php?svc=live&cmd=reportrecord```* request字段示例
 
-```json｛  “token”:”[token]”,	“roomid”:10007,	“uid”:”wilder4”,	“name”:”我的录制”	“type”:0,	“cover”:”http://cover.png” }
+```json｛  “token”:”[token]”,	“roomnum”:10007,	“uid”:”wilder4”,	“name”:”我的录制”	“type”:0,	“cover”:”http://cover.png” }
 ```字段  | 类型  | 选项 | 说明
-:-----: | :-----: | :-----: | :-----: token|String|必填|用户tokenroomid|Int|必填|录制房间iduid|String|必填|主播用户idname|String|必填|录制文件名type|Integer|必填|类型cover|String|选填|封面地址* response字段示例```json
+:-----: | :-----: | :-----: | :-----: token|String|必填|用户tokenroomnum|Int|必填|录制房间iduid|String|必填|主播用户idname|String|必填|录制文件名type|Integer|必填|类型cover|String|选填|封面地址* response字段示例```json
 ｛  “errorCode”: 0,	“errorInfo”: “”, }
 ```
 
