@@ -94,55 +94,55 @@ class NewLiveRecord
         $this->chatRoomId = $fields[self::FIELD_CHAT_ROOM_ID];
         $this->avRoomId = (int)$fields[self::FIELD_AV_ROOM_ID];
         $this->roomType = $fields[self::FIELD_ROOM_TYPE];
-		if(array_key_exists(self::FIELD_APPID, $fields))
-			$this->appid = $fields[self::FIELD_APPID];
-		if(array_key_exists(self::FIELD_CREATE_TIME, $fields))
-			$this->createTime = strtotime($fields[self::FIELD_CREATE_TIME]);
-		if(array_key_exists(self::FIELD_DEVICE, $fields))
-			$this->device = $fields[self::FIELD_DEVICE];
-		if(array_key_exists(self::FIELD_VIDEO_TYPE, $fields))
-			$this->videoType = $fields[self::FIELD_VIDEO_TYPE];
-		if(array_key_exists(self::FIELD_PLAY_URL1, $fields))
-			$this->playUrl1 = $fields[self::FIELD_PLAY_URL1];
-		if(array_key_exists(self::FIELD_PLAY_URL2, $fields))
-			$this->playUrl2 = $fields[self::FIELD_PLAY_URL2];
-		if(array_key_exists(self::FIELD_PLAY_URL3, $fields))
-			$this->playUrl3 = $fields[self::FIELD_PLAY_URL3];
+        if(array_key_exists(self::FIELD_APPID, $fields))
+            $this->appid = $fields[self::FIELD_APPID];
+        if(array_key_exists(self::FIELD_CREATE_TIME, $fields))
+            $this->createTime = strtotime($fields[self::FIELD_CREATE_TIME]);
+        if(array_key_exists(self::FIELD_DEVICE, $fields))
+            $this->device = $fields[self::FIELD_DEVICE];
+        if(array_key_exists(self::FIELD_VIDEO_TYPE, $fields))
+            $this->videoType = $fields[self::FIELD_VIDEO_TYPE];
+        if(array_key_exists(self::FIELD_PLAY_URL1, $fields))
+            $this->playUrl1 = $fields[self::FIELD_PLAY_URL1];
+        if(array_key_exists(self::FIELD_PLAY_URL2, $fields))
+            $this->playUrl2 = $fields[self::FIELD_PLAY_URL2];
+        if(array_key_exists(self::FIELD_PLAY_URL3, $fields))
+            $this->playUrl3 = $fields[self::FIELD_PLAY_URL3];
     }
 
     public function genPlayUrl($bizId, $url)
     {
         $livecode = $this->avRoomId . '_' . $this->hostUid; 
-		if($this->videoType == 0) 
-		{ //摄像头
-			$livecode = $livecode . '_main';
-		} 
-		else if ($this->videoType == 1) 
-		{ //屏幕分享
-			$livecode =  $livecode . '_aux';
-		} 
-		else 
-		{
-			return false;
-		}
+        if($this->videoType == 0) 
+        { //摄像头
+            $livecode = $livecode . '_main';
+        } 
+        else if ($this->videoType == 1) 
+        { //屏幕分享
+            $livecode =  $livecode . '_aux';
+        } 
+        else 
+        {
+            return false;
+        }
 /*
-		$cmd = 'echo  -n ' . $livecode . '| md5sum - | awk -F\' \' \'{print $1}\'';
-		exec($cmd, $output, $ret);
-		if ($ret != 0) 
-		{
-			return false;
-		}
+        $cmd = 'echo  -n ' . $livecode . '| md5sum - | awk -F\' \' \'{print $1}\'';
+        exec($cmd, $output, $ret);
+        if ($ret != 0) 
+        {
+            return false;
+        }
 
-		$livecode = $bizId . '_' . $output[0]; //直播码
+        $livecode = $bizId . '_' . $output[0]; //直播码
 */
-		$md5sum = md5($livecode);
-		$livecode = $bizId . '_' . $md5sum; //直播码
-		
+        $md5sum = md5($livecode);
+        $livecode = $bizId . '_' . $md5sum; //直播码
+        
         $this->playUrl1 = 'rtmp://' . $bizId . '.' . $url . $livecode;
         $this->playUrl2 = 'http://' . $bizId . '.' . $url . $livecode . '.flv';
         $this->playUrl3 = 'http://' . $bizId . '.' . $url . $livecode . '.m3u8';
 
-		return true;
+        return true;
     }
 
     /* 功能：将直播记录存入数据库
@@ -349,7 +349,7 @@ class NewLiveRecord
 
     /* 功能：查询直播记录
      * 说明：查询指定的记录字段
-     */	 
+     */     
     public static function getList($appid, $roomType, $offset, $limit, $fields)
     {
         if ($appid == 0) {
@@ -418,27 +418,27 @@ class NewLiveRecord
             self::FIELD_ADDRESS,  
         );
 
-		$rows = NewLiveRecord::getList($appid, $roomType, $offset, $limit, $fields);
-		if(is_null($rows)) 
-		{
-			return null;
-		}
-		$data = array();
-		foreach ($rows as $row)
-		{
-			$data[] = array(
-				'uid' => $row[self::FIELD_HOST_UID],
-				'info' => array(
-					'title' => $row[self::FIELD_TITLE],
-					'roomnum' => $row[self::FIELD_AV_ROOM_ID],
-					'type' => $row[self::FIELD_ROOM_TYPE],
-					'groupid' => $row[self::FIELD_CHAT_ROOM_ID],
-					'cover' => $row[self::FIELD_COVER],
-					'thumbup' => $row[self::FIELD_ADMIRE_COUNT],
-				),
-			);
-		}
-		return $data;
+        $rows = NewLiveRecord::getList($appid, $roomType, $offset, $limit, $fields);
+        if(is_null($rows)) 
+        {
+            return null;
+        }
+        $data = array();
+        foreach ($rows as $row)
+        {
+            $data[] = array(
+                'uid' => $row[self::FIELD_HOST_UID],
+                'info' => array(
+                    'title' => $row[self::FIELD_TITLE],
+                    'roomnum' => $row[self::FIELD_AV_ROOM_ID],
+                    'type' => $row[self::FIELD_ROOM_TYPE],
+                    'groupid' => $row[self::FIELD_CHAT_ROOM_ID],
+                    'cover' => $row[self::FIELD_COVER],
+                    'thumbup' => $row[self::FIELD_ADMIRE_COUNT],
+                ),
+            );
+        }
+        return $data;
     }
 
 
@@ -455,23 +455,23 @@ class NewLiveRecord
             self::FIELD_PLAY_URL3,
         );
 
-		$rows = NewLiveRecord::getList($appid, $roomType, $offset, $limit, $fields);
-		if(is_null($rows)) 
-		{
-			return null;
-		}
-		$data = array();
-		foreach ($rows as $row)
-		{
-			$data[] = array(
-				'uid' => $row[self::FIELD_HOST_UID],
-				'cover' => $row[self::FIELD_COVER],
-				'address' => $row[self::FIELD_PLAY_URL1],
-				'address2' => $row[self::FIELD_PLAY_URL2],
-				'address3' => $row[self::FIELD_PLAY_URL3],
-			);
-		}
-		return $data;
+        $rows = NewLiveRecord::getList($appid, $roomType, $offset, $limit, $fields);
+        if(is_null($rows)) 
+        {
+            return null;
+        }
+        $data = array();
+        foreach ($rows as $row)
+        {
+            $data[] = array(
+                'uid' => $row[self::FIELD_HOST_UID],
+                'cover' => $row[self::FIELD_COVER],
+                'address' => $row[self::FIELD_PLAY_URL1],
+                'address2' => $row[self::FIELD_PLAY_URL2],
+                'address3' => $row[self::FIELD_PLAY_URL3],
+            );
+        }
+        return $data;
     }
 
     /* 功能：依据房间ID拉取本房间的推流地址
@@ -503,6 +503,7 @@ class NewLiveRecord
         }
 
         $fields = array( 
+            self::FIELD_COVER,
             self::FIELD_PLAY_URL1,
             self::FIELD_PLAY_URL2,
             self::FIELD_PLAY_URL3,
@@ -524,11 +525,12 @@ class NewLiveRecord
             }
             $data = array();
             foreach ($rows as $row)
-			{  
-				$data['address'] = $row[self::FIELD_PLAY_URL1];
-				$data['address2'] = $row[self::FIELD_PLAY_URL2];
-				$data['address3'] = $row[self::FIELD_PLAY_URL3];
-			}
+            {  
+                $data['cover'] = $row[self::FIELD_COVER];
+                $data['address'] = $row[self::FIELD_PLAY_URL1];
+                $data['address2'] = $row[self::FIELD_PLAY_URL2];
+                $data['address3'] = $row[self::FIELD_PLAY_URL3];
+            }
             return $data;
         }
         catch (PDOException $e)
