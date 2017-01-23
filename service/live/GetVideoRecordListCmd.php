@@ -31,11 +31,20 @@ class GetVideoRecordListCmd extends TokenCmd
             return new CmdResp(ERR_REQ_DATA, 'Lack of page size');
         }
         $pageSize = $this->req['size'];
-        if ($pageSize !== (int)$pageSize || $pageSize < 0 || $pageSize > 50)
+        if ($pageSize !== (int)$pageSize || $pageSize < 0 || $pageSize > 100)
         {
             return new CmdResp(ERR_REQ_DATA, 'Page size should be a positive integer(not larger than 50)');
         }
         
+        if (!isset($this->req['type']))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'Lack of type');
+        }
+        if(!is_int($this->req['type']))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'invalid of type');
+        }
+
         $this->pageIndex = $pageIndex;
         $this->pageSize = $pageSize;
         return new CmdResp(ERR_SUCCESS, '');
@@ -43,67 +52,83 @@ class GetVideoRecordListCmd extends TokenCmd
 
     public function handle()
     {
-		/*
+        /* //test
+        $http_info = '';
+        $rsp = VideoRecord::getVideoInfo('200000291_9bf79ccfb5a6418badf35d07615de5b8', $http_info);
+        $rsp = VideoRecord::getVideoUrl('sxb_', 0, 100, $http_info);
+        $rsp = VideoRecord::getFileInfo('9031868222844415350', $http_info);
+        return new CmdResp(ERR_SUCCESS, '', $rsp);
+        */
+        
         //获取视频列表
         $offset = $this->pageIndex;
         $limit = $this->pageSize;
-        $recordList = VideoRecord::getList($offset, $limit);
-        if (is_null($recordList))
-        {
-            return new CmdResp(ERR_SERVER, 'Server internal error');
-        }
-        $rspRecordList = array();
-        foreach ($recordList as $record)
-        {
-            $rspRecordList[] = $record->toJsonArray();
-        }
         
-        //获取视频总数
-        $totalCount = VideoRecord::getCount();
-        if (!$totalCount)
+        $data = array();    
+
+        //获取后台DB中自动录制时回调生成的记录
+        if($this->req['type'] == 0) 
         {
-            return new CmdResp(ERR_SERVER, 'Server internal error');
+            $recordList = VideoRecord::getList($offset, $limit);
+            if (is_null($recordList))
+            {
+                return new CmdResp(ERR_SERVER, 'Server internal error');
+            }
+            $rspRecordList = array();
+            foreach ($recordList as $record)
+            {
+                $rspRecordList[] = $record->toJsonArray();
+            }
+
+            //获取视频总数
+            $totalCount = VideoRecord::getCount();
+            if (!$totalCount)
+            {
+                return new CmdResp(ERR_SERVER, 'Server internal error');
+            }
+            $data = array(
+                    'total' => $totalCount,
+                    'videos' => $rspRecordList,
+                    );
         }
-        $data = array(
-            'total' => $totalCount,
-            'videos' => $rspRecordList,
-        );
-        return new CmdResp(ERR_SUCCESS, '', $data);
-		*/
+        else //频道模式，通过http请求以“sxb_”前缀搜索上报的视频记录
+        {
+            $http_info = '';
+            $fileName = 'sxb_';
+            $rsp = VideoRecord::getVideoUrl($fileName, $offset, $limit, $http_info);
+            if($rsp === false)
+            {
+                return new CmdResp(ERR_SERVER, 'Server internal error: curl_exec fail-' . $http_info);
+            }
 
-		$http_info = '';
-		$rsp = VideoRecord::getVideoUrl($this->pageIndex, $this->pageSize, $http_info);
-		if($rsp === false)
-		{
-            return new CmdResp(ERR_SERVER, 'Server internal error: curl_exec fail');
-		}
-		
-		$fileSet = array();
-		$fileSet = $rsp['fileSet'];
-		$videos = array();
-		foreach($fileSet as $set)
-		{
-			$playSet = array();
-			$playSet = $set['playSet'];
-			$playUrl = array();
-			foreach($playSet as $play)
-			{
-				$playUrl[] = $play['url'];
-			}
+            $fileSet = array();
+            $fileSet = $rsp['fileSet'];
+            $videos = array();
+            foreach($fileSet as $set)
+            {
+                $playSet = array();
+                $playSet = $set['playSet'];
+                $playUrl = array();
+                foreach($playSet as $play)
+                {
+                    $playUrl[] = $play['url'];
+                }
+                $fileName = $set['fileName'];
+                $words = explode("_", $fileName);
+                $videos[] = array (
+                        'cover' => $set['image_url'],
+                        'uid' => $words[1],
+                        'name' => $fileName,
+                        'videoId' => $set['fileId'],
+                        'playurl' => $playUrl,
+                        );
+            }
 
-			$videos[] = array (
-					'cover' => $set['image_url'],
-					'uid' => $set['fileName'],
-					'videoId' => $set['fileId'],
-					'playurl' => $playUrl,
-					);
-		}
-
-        $data = array(
-            'total' => $rsp['totalCount'],
-            'videos' => $videos,
-        );
-
+            $data = array(
+                    'total' => $rsp['totalCount'],
+                    'videos' => $videos,
+                    );
+        }
         return new CmdResp(ERR_SUCCESS, '', $data);
     }
 }

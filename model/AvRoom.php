@@ -22,6 +22,26 @@ class AvRoom
         $this->uid = $uid;
     }
 
+    /*
+     * 生成旁路推流直播的MD5码
+     */
+    private function createStreamIdMd5($dbh)
+    {
+        $aux_md5 = md5($this->id . '_' . $this->uid . '_aux');
+        $main_md5 = md5($this->id . '_' . $this->uid . '_main');
+
+        $sql = 'UPDATE t_av_room SET aux_md5 = :aux_md5, main_md5 = :main_md5 where id = :id';
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':aux_md5', $aux_md5, PDO::PARAM_STR);
+        $stmt->bindParam(':main_md5', $main_md5, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $result = $stmt->execute();
+        if (!$result) 
+        {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * 创建 AvRoomId
@@ -45,7 +65,15 @@ class AvRoom
             {
                 return false;
             }
+
             $this->id = $dbh->lastInsertId();
+            
+            $result = $this->createStreamIdMd5($dbh);
+            if (!$result) //如果失败执行到这里，返回失败；再次创建时执行load进行弥补
+            {
+                return false;
+            }
+
             return true;
         }
         catch (PDOException $e)
@@ -69,7 +97,7 @@ class AvRoom
         }
         try
         {
-            $sql = 'SELECT id FROM t_av_room WHERE uid = :uid';
+            $sql = 'SELECT id, aux_md5, main_md5 FROM t_av_room WHERE uid = :uid';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
             $result = $stmt->execute();
@@ -83,6 +111,16 @@ class AvRoom
                 return 0;
             }
             $this->id = $row['id'];
+
+            //当create()执行insert成功，但是设置MD5失败时，在这里执行第二次设置
+            if(empty($row['aux_md5']) || empty($row['main_md5']))
+            {
+                $result = $this->createStreamIdMd5($dbh);
+                if (!$result) //如果此次执行也失败，则用户重试即可
+                {
+                    return -1;
+                }
+            }
             return 1;
         }
         catch (PDOException $e)
@@ -144,7 +182,6 @@ class AvRoom
             $stmt->bindParam(':time', $time, PDO::PARAM_INT);
             $stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
             $result = $stmt->execute();
-                return new CmdResp(ERR_SERVER, 'Server error'.$uid.$time.$stmt);
             if (!$result)
             {
                 return false;
@@ -156,6 +193,43 @@ class AvRoom
             return false;
         }
         return false;
+    }
+    
+    /* 功能：通过视频的md5码获取用户名和房间号
+     * 说明：后期修订返回uid同时，附带其所在房间号。后台DB的t_av_room维护一份分别由roomnum_uid_aux和roomnum_uid_main
+     *        生成的aux_md5和main_md5字段。当录制完成自动执行回调时，依据传递的channel_id中的md5码查询t_av_room，实现
+     *        反解析roomnum和uid。(channel_id参考CallbackCmd.php)
+     */
+    static public function getUidByMd5($md5)
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            return '';
+        }
+        try
+        {
+            $sql = 'select id, uid from t_av_room where aux_md5 = :aux_md5 or main_md5 = :main_md5';
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':aux_md5', $md5, PDO::PARAM_STR);
+            $stmt->bindParam(':main_md5', $md5, PDO::PARAM_STR);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                return '';
+            }
+            $row = $stmt->fetch();
+            if (empty($row))
+            {
+                return '';
+            }
+            return array('roomnum' => $row['id'], 'uid' => $row['uid']);
+        }
+        catch (PDOException $e)
+        {
+            return '';
+        }
+        return '';
     }
 }
 

@@ -17,28 +17,99 @@ class SaveVideoRecordCmd extends TokenCmd
 
     public function parseInput()
     {
-        if (!isset($this->req['videoid']) && !is_string($this->req['videoid']))
+        $this->videoRecord = new VideoRecord();
+
+        if (!isset($this->req['roomnum']))
         {
-            return new CmdResp(ERR_REQ_DATA, 'Lack of videoid');
+            return new CmdResp(ERR_REQ_DATA, 'lack of roomnum');
         }
-        
-        if (!isset($this->req['playurl']) && !is_string($this->req['playurl']))
+        if(!is_int($this->req['roomnum']))
         {
-            return new CmdResp(ERR_REQ_DATA, 'Lack of playurl');
+            return new CmdResp(ERR_REQ_DATA, 'invalid roomnum');
         }
-        
-        $this->videoRecord = new VideoRecord($this->user, $this->req['videoid'], $this->req['playurl']);
+        $this->videoRecord->setRoomNum($this->req['roomnum']);
+
+        if (!isset($this->req['uid']) || empty($this->req['uid']))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'lack of uid');
+        }
+        if(!is_string($this->req['uid']))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'invalid uid');
+        }
+        $this->videoRecord->setUid($this->req['uid']);
+
+        if (!isset($this->req['name']))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'lack of name');
+        }
+        if(!is_string($this->req['name']))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'invalid video name');
+        }
+        $this->videoRecord->setFileName($this->req['name']);
+
+        if (!isset($this->req['type']))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'Lack of type');
+        }
+        if(!is_int($this->req['type']))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'invalid of type');
+        }
+
+        if (isset($this->req['cover']))
+        {
+            if(!is_string($this->req['cover']))
+            {
+                return new CmdResp(ERR_REQ_DATA, 'invalid cover');
+            }
+            $this->videoRecord->setCover($this->req['cover']);
+        }
+
         return new CmdResp(ERR_SUCCESS, '');
     }
 
     public function handle()
     {
-        $ret = $this->videoRecord->save();
-        if (!$ret)
+        /* //暂时忽略上报请求
+        if($this->req['type'] == 0) 
         {
-            return new CmdResp(ERR_SERVER, 'Server internal error'); 
-        }
- 
+            //只取第一页即可
+            $http_info = '';
+            $fileName = 'sxb_' . $this->req['uid'] . '_' . $this->req['name'];
+            $rsp = VideoRecord::getVideoUrl($fileName, 0, 1, $http_info);
+            if($rsp === false)
+            {
+                return new CmdResp(ERR_SERVER, 'Server internal error: curl_exec fail');
+            }
+
+            if($rsp['code'] != 0) 
+            {
+                return new CmdResp(ERR_SUCCESS, $rsp['message']);
+            }
+
+            $fileSet = array();
+            $fileSet = $rsp['fileSet'];
+            $videos = array();
+            $set = $fileSet[0]; //只存储一个
+            $cover = $this->videoRecord->getCover(); 
+            if(empty($cover))
+                $this->videoRecord->setCover($set['image_url']);
+            $this->videoRecord->setVideoId($set['fileId']);
+            //$fileName = $set['fileName'];
+            //$words = explode("_", $fileName);
+            $this->videoRecord->setFileName($set['fileName']);
+            $playUrl = $set['playSet'][0]['url'];
+            $this->videoRecord->setPlayUrl($playUrl);
+
+            $ret = $this->videoRecord->save();
+            if (!$ret)
+            {
+                return new CmdResp(ERR_SERVER, 'Server internal error'); 
+            }
+        }     
+        */
         return new CmdResp(ERR_SUCCESS, '');
     }    
 }

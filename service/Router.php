@@ -43,6 +43,9 @@ class Router
             'livestreamlist' => 'GetLiveStreamListCmd',
             'getroomplayurl' => 'GetRoomPlayUrlCmd',
 
+			//callback
+			'callback' => 'CallbackCmd',
+
             //old
             'start' => 'LiveStartCmd',
             'list' => 'LiveListCmd',

@@ -9,29 +9,42 @@ require_once LIB_PATH . '/db/DB.php';
 class VideoRecord
 {
     const FIELD_HOST_UID = 'uid';
+    const FIELD_ROOM_NUM = 'room_num';
+    const FIELD_COVER = 'cover';
+    const FIELD_FILE_NAME = 'file_name';
     const FIELD_VIDEO_ID = 'video_id';
+    const FIELD_START_TIME = 'start_time';
+    const FIELD_END_TIME = 'end_time';
     const FIELD_PLAY_URL = 'play_url';
     const FIELD_CREATE_TIME = 'create_time';
     
     // 用户id => string
     private $uid = '';
+    
+    // 录制房间号 => int
+    private $roomNum = 0;
+
+    // 封面 => string
+    private $cover = '';
+
+    // 视频名 => string
+    private $fileName = '';
 
     // 视频id => string
     private $videoId = '';
+
+    // 录制时间 => int
+    private $startTime = 0;
+
+    // 录制时间 => int
+    private $endTime= 0;
 
     // 视频url => string
     private $playUrl = '';
 
     // 创建时间(时间戳) => int
     private $createTime = 0;
-    
-    public function __construct($uid, $videoId, $playUrl)
-    {
-        $this->uid = $uid;
-        $this->videoId = $videoId;
-        $this->playUrl = $playUrl;
-    }
-    
+   
     public function getUid()
     {
         return $this->uid;
@@ -42,6 +55,46 @@ class VideoRecord
         $this->uid = $uid;
     }
  
+    public function setRoomNum($roomNum)
+    {
+        $this->roomNum = $roomNum;
+    }
+
+    public function getCover()
+    {
+        return $this->cover;
+    }
+
+    public function setCover($cover)
+    {
+        $this->cover = $cover;
+    }
+
+    public function setFileName($fileName)
+    {
+        $this->fileName = $fileName;
+    }
+
+    public function setVideoId($videoId)
+    {
+        $this->videoId = $videoId;
+    }
+
+    public function setStartTime($startTime)
+    {
+        $this->startTime = $startTime;
+    }
+
+    public function setEndTime($endTime)
+    {
+        $this->endTime = $endTime;
+    }
+
+    public function setPlayUrl($playUrl)
+    {
+        $this->playUrl = $playUrl;
+    }
+
     public function getCreateTime()
     {
         return $this->createTime;
@@ -50,14 +103,6 @@ class VideoRecord
     public function setCreateTime($createTime)
     {
         $this->createTime = $createTime;
-    }
-
-    private function InitFromDBFields($fields)
-    { 
-        $this->uid = $fields[self::FIELD_HOST_UID];
-        $this->videoId = $fields[self::FIELD_VIDEO_ID];
-        $this->playUrl = $fields[self::FIELD_PLAY_URL];
-        $this->createTime = $fields[self::FIELD_CREATE_TIME];
     }
 
     /* 功能：存储视频记录
@@ -71,9 +116,13 @@ class VideoRecord
             return false;
         }
         $fields = array(
-            
             self::FIELD_HOST_UID => $this->uid,
+            self::FIELD_ROOM_NUM => $this->roomNum,
+            self::FIELD_COVER => $this->cover,
+            self::FIELD_FILE_NAME => $this->fileName,
             self::FIELD_VIDEO_ID => $this->videoId,
+            self::FIELD_START_TIME => $this->startTime,
+            self::FIELD_END_TIME => $this->endTime,
             self::FIELD_PLAY_URL =>  $this->playUrl,
             self::FIELD_CREATE_TIME => date('U'),
         );
@@ -105,7 +154,7 @@ class VideoRecord
      * 说明: 从偏移（offset）处获取N（limit）条APP（appid）的视频信息；
      *      成功返回视频列表，失败返回空
      */
-    public static function getList($offset = 0, $limit = 50, $appid = 0)
+    public static function getList($offset = 0, $limit = 100, $appid = 0)
     {
         if ($appid == 0) {
             $whereSql = "";
@@ -120,6 +169,8 @@ class VideoRecord
         }
         $fields = array(
             self::FIELD_HOST_UID,
+            self::FIELD_COVER,
+            self::FIELD_FILE_NAME,
             self::FIELD_VIDEO_ID,
             self::FIELD_PLAY_URL
         );
@@ -142,7 +193,12 @@ class VideoRecord
             $list = array();
             foreach ($rows as $row)
             {
-                $record = new VideoRecord($row['uid'], $row['video_id'], $row['play_url']);
+                $record = new VideoRecord();
+                $record->setUid($row['uid']);
+                $record->setFileName($row['file_name']);
+                $record->setVideoId($row['video_id']);
+                $record->setPlayUrl($row['play_url']);
+                $record->setCover($row['cover']);
                 $list[] = $record;
             }
             return $list;
@@ -219,64 +275,162 @@ class VideoRecord
         return 0;
     }
 
-    /* 功能：生成Json数组
+    /* 功能：生成Json数组,返回前端
      */
     public function toJsonArray()
     {
         return array(
             'uid' => $this->uid,
+            'cover' => $this->cover,
+            'name' => $this->fileName,
             'videoId' => $this->videoId,
-            'playurl' => $this->playUrl,
+            'playurl' => array(0 => $this->playUrl),//兼容已有版本
         );
     }
 
-	static	public function getVideoUrl($index, $size, &$http_info)
-	{
-		$domain = 'vod.api.qcloud.com';
-		$Action = 'DescribeVodPlayInfo';
-		$Nonce = rand(10000, 100000000);
-		$Region = 'gz';
-		$SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';
-		$Timestamp = date('U');
-		$fileName = 'sxb';
-		$pageNo = $index;
-		$pageSize = $size;
+    /* 功能：http方式获取点播url地址
+     * 说明：filename指定搜索前缀，index，size是http请求参数。成功则返回记录信息，失败则错误信息通过http_info返回
+     * 参考：https://www.qcloud.com/document/product/266/1373
+     */
+    static    public function getVideoUrl($fileName, $index, $size, &$http_info)
+    {
+        $domain = 'vod.api.qcloud.com';
+        $Action = 'DescribeVodPlayInfo';
+        $Nonce = rand(10000, 100000000);
+        $Region = 'gz';
+        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';
+        $Timestamp = date('U');
+        //$fileName = 'sxb';
+        $pageNo = $index;
+        $pageSize = $size;
 
-		$Signature = '';
-		$https = 'https://';
-		$url = $domain . '/v2/index.php?'
-			. 'Action=' . $Action . '&'
-			. 'Nonce=' . $Nonce . '&'
-			. 'Region=' . $Region . '&'
-			. 'SecretId=' . $SecretId . '&'
-			. 'Timestamp=' . $Timestamp . '&'
-			. 'fileName=' . $fileName . '&'
-			. 'pageNo=' . $pageNo . '&'
-			. 'pageSize=' . $pageSize;
-		$srcStr = 'GET' . $url;
-		$secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';
-		$Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
-		$Signature = urlencode($Signature);
+        $Signature = '';
+        $https = 'https://';
+        $url = $domain . '/v2/index.php?'
+            . 'Action=' . $Action . '&'
+            . 'Nonce=' . $Nonce . '&'
+            . 'Region=' . $Region . '&'
+            . 'SecretId=' . $SecretId . '&'
+            . 'Timestamp=' . $Timestamp . '&'
+            . 'fileName=' . $fileName . '&'
+            . 'pageNo=' . $pageNo . '&'
+            . 'pageSize=' . $pageSize;
+        $srcStr = 'GET' . $url;
+        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';
+        $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
+        $Signature = urlencode($Signature);
 
-		$url = $https . $url . '&Signature=' . $Signature;
-		$timeout = 3000;
+        $url = $https . $url . '&Signature=' . $Signature;
+        $timeout = 3000;
 
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout);
-		$ret = curl_exec($ch);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout);
+        $ret = curl_exec($ch);
 
-		if ($ret === false) 
-		{
-			return false;
-		}
-		$http_info = curl_getinfo($ch);
-		curl_close($ch);
-		$input = iconv('UTF-8', 'UTF-8//IGNORE', $ret);
-		$rsp = json_decode($input, 12);
-		return $rsp;
-	}
+        if ($ret === false) 
+        {
+            return false;
+        }
+        $http_info = curl_getinfo($ch);
+        curl_close($ch);
+        $input = iconv('UTF-8', 'UTF-8//IGNORE', $ret);
+        $rsp = json_decode($input, 12);
+        return $rsp;
+    }
+
+    /* 功能：http方式获取video信息
+     * 参考：https://www.qcloud.com/document/product/266/1302
+     */
+    static    public function getVideoInfo($videoId, &$http_info)
+    {
+        $domain = 'vod.api.qcloud.com';
+        $Action = 'DescribeRecordPlayInfo';
+        $Nonce = rand(10000, 100000000);
+        $Region = 'gz';
+        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';
+        $Timestamp = date('U');
+
+        $Signature = '';
+        $https = 'https://';
+        $url = $domain . '/v2/index.php?'
+            . 'Action=' . $Action . '&'
+            . 'Nonce=' . $Nonce . '&'
+            . 'Region=' . $Region . '&'
+            . 'SecretId=' . $SecretId . '&'
+            . 'Timestamp=' . $Timestamp . '&'
+            . 'vid=' . $videoId;
+        $srcStr = 'GET' . $url;
+        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';
+        $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
+        $Signature = urlencode($Signature);
+
+        $url = $https . $url . '&Signature=' . $Signature;
+        $timeout = 3000;
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout);
+        $ret = curl_exec($ch);
+
+        if ($ret === false) 
+        {
+            return false;
+        }
+        $http_info = curl_getinfo($ch);
+        curl_close($ch);
+        $input = iconv('UTF-8', 'UTF-8//IGNORE', $ret);
+        $rsp = json_decode($input, 12);
+        return $rsp;
+    }
+
+    /* 功能：http方式获取文件信息
+     * 参考：https://www.qcloud.com/document/product/266/1302
+     */
+    static    public function getFileInfo($fileId, &$http_info)
+    {
+        $domain = 'vod.api.qcloud.com';
+        $Action = 'DescribeVodInfo';
+        $Nonce = rand(10000, 100000000);
+        $Region = 'gz';
+        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';
+        $Timestamp = date('U');
+
+        $Signature = '';
+        $https = 'https://';
+        $url = $domain . '/v2/index.php?'
+            . 'Action=' . $Action . '&'
+            . 'Nonce=' . $Nonce . '&'
+            . 'Region=' . $Region . '&'
+            . 'SecretId=' . $SecretId . '&'
+            . 'Timestamp=' . $Timestamp . '&'
+            . 'fileId.1=' . $fileId;
+        $srcStr = 'GET' . $url;
+        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';
+        $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
+        $Signature = urlencode($Signature);
+
+        $url = $https . $url . '&Signature=' . $Signature;
+        $timeout = 3000;
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout);
+        $ret = curl_exec($ch);
+
+        if ($ret === false) 
+        {
+            return false;
+        }
+        $http_info = curl_getinfo($ch);
+        curl_close($ch);
+        $input = iconv('UTF-8', 'UTF-8//IGNORE', $ret);
+        $rsp = json_decode($input, 12);
+        return $rsp;
+    }
 }
 
 
