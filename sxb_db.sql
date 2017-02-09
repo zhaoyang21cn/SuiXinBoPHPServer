@@ -43,8 +43,8 @@ CREATE TABLE IF NOT EXISTS `t_live_record` (
   `admire_count` int(11) NOT NULL DEFAULT 0 COMMENT '点赞人数',
   `watch_count` int(11) NOT NULL DEFAULT 0 COMMENT '观看人数',
   `time_span` int(11) NOT NULL DEFAULT 0 COMMENT '直播时长',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime COMMENT '创建日期',
+  `modify_time` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `appid` int(11) NOT NULL DEFAULT 0 COMMENT 'appid',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_host_uid` (`host_uid`),
@@ -72,8 +72,8 @@ CREATE TABLE IF NOT EXISTS `t_user_av_room` (
 
 CREATE TABLE IF NOT EXISTS `t_new_live_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  `modify_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime COMMENT '创建日期',
+  `modify_time` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间',
   `appid` int(11) NOT NULL DEFAULT 0 COMMENT 'appid',
   `title` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标题',
   `cover` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '封面URL',
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `t_interact_av_room` (
 -- 版本2.0 互动成员表的结构 `t_video_record`
 --
 
-CREATE TABLE IF NOT EXISTS `t_video_record_test` (
+CREATE TABLE IF NOT EXISTS `t_video_record` (
  `id`           int(11)       NOT  NULL   AUTO_INCREMENT  COMMENT '视频id',
  `uid`          varchar(50)   NOT  NULL   DEFAULT ''  COMMENT '视频的拥有者',                
  `video_id`     varchar(50)   NOT  NULL   DEFAULT ''  COMMENT '视频id',                            
@@ -163,7 +163,6 @@ CREATE TABLE IF NOT EXISTS `t_video_record_test` (
 )AUTO_INCREMENT=10001;
 
 -- --------------------------------------------------------
-
 
 -- 录制推流 新增字段
 alter table `t_av_room` add column `aux_md5` varchar(128) comment 'groupid_userid_aux' after `uid`;
