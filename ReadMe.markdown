@@ -25,7 +25,7 @@
 	$handler = new FileLogHandler('/data/log/sxb/sxb_' . date('Y-m-d') . '.log');
 ```
 
-* 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig
+* 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig；32位OS请用tls_licence_tools_32替换tls_licence_tools（名字不变）
 * 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录，将用于生成和校验sig的公私钥放置于此目录。<br/>
 如果用户自定义置于其他目录，则需要修改service/account/AccountLoginCmd.php为自定义路径，保证这些文件至少具有可读权限。
 
