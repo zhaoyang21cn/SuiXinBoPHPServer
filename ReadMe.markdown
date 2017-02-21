@@ -6,6 +6,7 @@
 
 #### 服务器环境要求 
 
+* Linux OS
 * PHP >= 5.4
 * MySQL >= 5.5.3
 
@@ -13,21 +14,27 @@
 
 * 下载代码，部署到php目录中
 * 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码
-* 调整server/account/AccountLoginCmd.php为自己互动直播的SDKAPPID：
+* 调整service/account/AccountLoginCmd.php为自己互动直播的SDKAPPID：
 
 ```php
 	const SDKAPPID = '1400019352';
 ```
+* 修改service/service/Server.php的这句代码为自己的日志路径
+
+```php
+	$handler = new FileLogHandler('/data/log/sxb/sxb_' . date('Y-m-d') . '.log');
+```
+
 * 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig
 * 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录，将用于生成和校验sig的公私钥放置于此目录。<br/>
-如果用户自定义置于其他目录，则需要修改server/account/AccountLoginCmd.php为自定义路径，保证这些文件至少具有可读权限。
+如果用户自定义置于其他目录，则需要修改service/account/AccountLoginCmd.php为自定义路径，保证这些文件至少具有可读权限。
 
 ```php
 	$private_key = DEPS_PATH . '/sig/private_key';
 	$public_key = DEPS_PATH . '/sig/public_key';
 ```
 
-* 如果您在使用直播码进行旁路推流，调整server/live/ReportLiveRoomInfoCmd.php代码的BIZID。
+* 如果您在使用直播码进行旁路推流，调整service/live/ReportLiveRoomInfoCmd.php代码的BIZID。
 
 ```php
 	const BIZID = '123456';
