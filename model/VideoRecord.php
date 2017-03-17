@@ -298,7 +298,7 @@ class VideoRecord
         $Action = 'DescribeVodPlayInfo';
         $Nonce = rand(10000, 100000000);
         $Region = 'gz';
-        $SecretId = '******'; //请填写用户自己的SecretId
+        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO'; //请填写用户自己的SecretId
         $Timestamp = date('U');
         //$fileName = 'sxb';
         $pageNo = $index;
@@ -316,7 +316,7 @@ class VideoRecord
             . 'pageNo=' . $pageNo . '&'
             . 'pageSize=' . $pageSize;
         $srcStr = 'GET' . $url;
-        $secretKey = '******';//请填写用户自己的secretKey
+        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';//请填写用户自己的secretKey
         $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
         $Signature = urlencode($Signature);
 
@@ -349,7 +349,7 @@ class VideoRecord
         $Action = 'DescribeRecordPlayInfo';
         $Nonce = rand(10000, 100000000);
         $Region = 'gz';
-        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';
+        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';//请填写用户自己的SecretId
         $Timestamp = date('U');
 
         $Signature = '';
@@ -362,7 +362,7 @@ class VideoRecord
             . 'Timestamp=' . $Timestamp . '&'
             . 'vid=' . $videoId;
         $srcStr = 'GET' . $url;
-        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';
+        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';//请填写用户自己的secretKey
         $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
         $Signature = urlencode($Signature);
 
@@ -395,7 +395,7 @@ class VideoRecord
         $Action = 'DescribeVodInfo';
         $Nonce = rand(10000, 100000000);
         $Region = 'gz';
-        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';
+        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';//请填写用户自己的SecretId
         $Timestamp = date('U');
 
         $Signature = '';
@@ -408,7 +408,7 @@ class VideoRecord
             . 'Timestamp=' . $Timestamp . '&'
             . 'fileId.1=' . $fileId;
         $srcStr = 'GET' . $url;
-        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';
+        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';//请填写用户自己的secretKey
         $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
         $Signature = urlencode($Signature);
 

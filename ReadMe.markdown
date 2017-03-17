@@ -42,12 +42,12 @@
 
 * 如果想使用图片上传功能，需要开通腾讯云COS服务，并在deps/cos-php-sdk/Conf.php填写对应APPID、SecretKey和SecretID。
 
-* 拉取视频列表，需要在model/VideoRecord.php的getVideoUrl()模块中填写自己的secretKey和secretID
+* 拉取视频列表，需要在model/VideoRecord.php的模块中填写自己的secretKey和secretID
 
 ```php
-	$secretId = '******';
+	$SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO'; //请填写用户自己的SecretId
 	//...
-	$secretKey = '******';
+	$secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';//请填写用户自己的secretKey
 ```
 
 ### 1.3 数据库建表建库
