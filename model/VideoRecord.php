@@ -298,7 +298,7 @@ class VideoRecord
         $Action = 'DescribeVodPlayInfo';
         $Nonce = rand(10000, 100000000);
         $Region = 'gz';
-        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';
+        $SecretId = '******'; //请填写用户自己的SecretId
         $Timestamp = date('U');
         //$fileName = 'sxb';
         $pageNo = $index;
@@ -316,7 +316,7 @@ class VideoRecord
             . 'pageNo=' . $pageNo . '&'
             . 'pageSize=' . $pageSize;
         $srcStr = 'GET' . $url;
-        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';
+        $secretKey = '******';//请填写用户自己的secretKey
         $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
         $Signature = urlencode($Signature);
 
