@@ -5,7 +5,7 @@
  * Date: 2016/11/15
  */
 
-require_once dirname(__FILE__) . '/../../Path.php';
+require_once dirname(__FILE__) . '/../../Config.php';
 require_once SERVICE_PATH . '/Cmd.php';
 require_once SERVICE_PATH . '/CmdResp.php';
 require_once ROOT_PATH . '/ErrorNo.php';
@@ -15,7 +15,6 @@ class AccountLoginCmd extends Cmd
 {
     // 用户账号对象
     private $account;
-    const SDKAPPID = '1400019352';
     
     public function __construct()
     {
@@ -67,22 +66,19 @@ class AccountLoginCmd extends Cmd
         }
         
         // 获取sig
-        // 开发人员调整1400019352为自己的appid,秘钥和公钥
-        $private_key = DEPS_PATH . '/sig/private_key';
-        $public_key = DEPS_PATH . '/sig/public_key';
         $userSig = $account->getUserSig();
         if(empty($userSig))
         {
-            $userSig = $account->genUserSig(self::SDKAPPID, $private_key);
+            $userSig = $account->genUserSig(SDK_APP_ID, PRIVATE_KEY);
             // 更新对象account的成员userSig
             $account->setUserSig($userSig);
         } 
         else 
         {
-            $ret = $account->verifyUserSig(self::SDKAPPID, $public_key);
+            $ret = $account->verifyUserSig(SDK_APP_ID, PUBLIC_KEY);
             if($ret == 1) //过期重新生成
             {
-                $userSig = $account->genUserSig(self::SDKAPPID, $private_key);
+                $userSig = $account->genUserSig(SDK_APP_ID, PRIVATE_KEY);
                 // 更新对象account的成员userSig
                 $account->setUserSig($userSig);
             }
