@@ -458,6 +458,8 @@ class Account
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
             $result = $stmt->execute();
+			//$result = $stmt->fetch();
+			//if($result['num'] == 1)
             if ($stmt->fetch()['num'] == 1)
             {
                 $error_msg = 'Register user id existed';
@@ -573,6 +575,87 @@ class Account
             $error_msg = 'Server inner error';
             return ERR_SERVER;
         }
+        $error_msg = '';
+        return ERR_SUCCESS;
+    }
+
+    /* 功能：踢出用户
+     * 说明：成功返回ERR_SUCCESS，error_msg为空；失败则返回错误码，设置错误信息error_msg。
+     *        使sig马上失效并删除sig
+     */
+    public function kickout(&$error_msg, $sdkappid, $admin_uid, $admin_sig, $hold_sig)
+    {
+        //使sig马上失效
+        $domain = 'console.tim.qq.com';
+        $https = 'https://';
+        $url = $domain . '/v4/im_open_login_svc/kick?'
+            . 'sdkappid=' . $sdkappid . '&'
+            . 'identifier=' . $admin_uid . '&'
+            . 'usersig=' . $admin_sig . '&'
+            . 'apn=1&'
+            . 'contenttype=json&';
+
+        $url = $https . $url;
+
+        $payload = json_encode( array( "Identifier"=> $this->uid ) );
+        $timeout = 3000;
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, $timeout);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        $ret = curl_exec($ch);
+
+        if ($ret === false)
+        {
+            $error_msg = 'Server internal error: curl_exec fail!';
+            return ERR_SERVER;
+        }
+        $http_info = curl_getinfo($ch);
+        curl_close($ch);
+        $input = iconv('UTF-8', 'UTF-8//IGNORE', $ret);
+        $rsp = json_decode($input, 12);
+
+        if($rsp === false)
+        {
+            $error_msg = 'Server internal error: curl_exec return null!';
+            return ERR_SERVER;
+        }
+
+        if($rsp['ErrorCode'] != 0)
+        {
+            $error_msg = 'Server internal error: ' . $rsp['ErrorInfo'];
+            return ERR_SERVER;
+        }
+
+        //删除sig
+        if($hold_sig === false){
+            $dbh = DB::getPDOHandler();
+            if (is_null($dbh))
+            {
+                $error_msg = 'Server inner error';
+                return ERR_SERVER;
+            }
+            try
+            {
+                $sql = 'UPDATE t_account SET user_sig=null WHERE uid=:uid';
+                $stmt = $dbh->prepare($sql);
+                $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
+                $result = $stmt->execute();
+                if (!$result)
+                {
+                    $error_msg = 'Server inner error, Invalidate user sig fail!';
+                    return ERR_SERVER;
+                }
+            }
+            catch (PDOException $e)
+            {
+                $error_msg = 'Server inner error';
+                return ERR_SERVER;
+            }
+        }
+
         $error_msg = '';
         return ERR_SUCCESS;
     }

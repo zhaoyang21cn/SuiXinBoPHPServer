@@ -15,6 +15,7 @@ class Router
             'regist' => 'AccountRegisterCmd',
             'login' => 'AccountLoginCmd',
             'logout' => 'AccountLogoutCmd',
+            'kickout' => 'AccountKickoutCmd',
         ),
         
         'live' => array(

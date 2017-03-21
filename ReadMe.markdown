@@ -14,10 +14,12 @@
 
 * 下载代码，部署到php目录中
 * 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码
-* 调整service/account/AccountLoginCmd.php为自己互动直播的SDKAPPID：
+* 在Config.php中修改SDKAppID及用于生成了校验sig的公私钥文件路径（公私钥文件必须具有可读权限）：
 
 ```php
-	const SDKAPPID = '1400019352';
+	define('SDK_APP_ID', '1400019352');
+	define('PRIVATE_KEY', DEPS_PATH . '/sig/private_key');
+	define('PUBLIC_KEY', DEPS_PATH . '/sig/public_key');
 ```
 * 修改service/service/Server.php的这句代码为自己的日志路径
 
@@ -26,13 +28,7 @@
 ```
 
 * 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig；32位OS请用tls_licence_tools_32替换tls_licence_tools（tls_licence_tools名字不变）
-* 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录，将用于生成和校验sig的公私钥放置于此目录。<br/>
-如果用户自定义置于其他目录，则需要修改service/account/AccountLoginCmd.php为自定义路径，保证这些文件至少具有可读权限。
-
-```php
-	$private_key = DEPS_PATH . '/sig/private_key';
-	$public_key = DEPS_PATH . '/sig/public_key';
-```
+* 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录。<br/>
 
 * 如果您在使用直播码进行旁路推流，调整service/live/ReportLiveRoomInfoCmd.php代码的BIZID。
 
