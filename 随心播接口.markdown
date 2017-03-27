@@ -825,11 +825,13 @@ holdsig|Bool|可选|是否保留数据库中的userSig
 
 `保留数据库中的userSig会导致在该userSig过期之前用户都无法再次正常登录`
 
+`必须在APP中处理被踢事件，才能保证用户被踢后马上退出直播间，详情参照:`[直播被中断事件的处理](https://www.qcloud.com/document/product/268/7648) 
+
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
+｛	"errorCode": 0,
 	"errorInfo": "",
- }
+	}
 
 ```
