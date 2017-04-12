@@ -3,7 +3,7 @@
  * 视频记录表
  * Date: 2016/11/18
  */
-require_once dirname(__FILE__) . '/../Path.php';
+require_once dirname(__FILE__) . '/../Config.php';
 require_once LIB_PATH . '/db/DB.php';
 
 class VideoRecord
@@ -298,7 +298,7 @@ class VideoRecord
         $Action = 'DescribeVodPlayInfo';
         $Nonce = rand(10000, 100000000);
         $Region = 'gz';
-        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO'; //请填写用户自己的SecretId
+        $SecretId = VIDEO_RECORD_SECRET_ID;
         $Timestamp = date('U');
         //$fileName = 'sxb';
         $pageNo = $index;
@@ -316,7 +316,7 @@ class VideoRecord
             . 'pageNo=' . $pageNo . '&'
             . 'pageSize=' . $pageSize;
         $srcStr = 'GET' . $url;
-        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';//请填写用户自己的secretKey
+        $secretKey = VIDEO_RECORD_SECRET_KEY;
         $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
         $Signature = urlencode($Signature);
 
@@ -349,7 +349,7 @@ class VideoRecord
         $Action = 'DescribeRecordPlayInfo';
         $Nonce = rand(10000, 100000000);
         $Region = 'gz';
-        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';//请填写用户自己的SecretId
+        $SecretId = VIDEO_RECORD_SECRET_ID;
         $Timestamp = date('U');
 
         $Signature = '';
@@ -362,7 +362,7 @@ class VideoRecord
             . 'Timestamp=' . $Timestamp . '&'
             . 'vid=' . $videoId;
         $srcStr = 'GET' . $url;
-        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';//请填写用户自己的secretKey
+        $secretKey = VIDEO_RECORD_SECRET_KEY;
         $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
         $Signature = urlencode($Signature);
 
@@ -395,7 +395,7 @@ class VideoRecord
         $Action = 'DescribeVodInfo';
         $Nonce = rand(10000, 100000000);
         $Region = 'gz';
-        $SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO';//请填写用户自己的SecretId
+        $SecretId = VIDEO_RECORD_SECRET_ID;
         $Timestamp = date('U');
 
         $Signature = '';
@@ -408,7 +408,7 @@ class VideoRecord
             . 'Timestamp=' . $Timestamp . '&'
             . 'fileId.1=' . $fileId;
         $srcStr = 'GET' . $url;
-        $secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';//请填写用户自己的secretKey
+        $secretKey = VIDEO_RECORD_SECRET_KEY;
         $Signature = base64_encode(hash_hmac('sha1', $srcStr, $secretKey, true));
         $Signature = urlencode($Signature);
 

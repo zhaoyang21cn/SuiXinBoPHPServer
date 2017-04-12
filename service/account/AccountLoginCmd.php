@@ -90,14 +90,14 @@ class AccountLoginCmd extends Cmd
         if(empty($userSig))
             return new CmdResp(ERR_SERVER, 'Server error: gen sig fail');
 
-        $ret = $account->getState();
-        if($ret == 1) //已登录
-        {
-            $data = array();
-            $data['userSig'] = $account->getUserSig();
-            $data['token'] = $account->getToken();
-            return new CmdResp(ERR_SUCCESS, '', $data);
-        }
+//        $ret = $account->getState();
+//        if($ret == 1) //已登录
+//        {
+//            $data = array();
+//            $data['userSig'] = $account->getUserSig();
+//            $data['token'] = $account->getToken();
+//            return new CmdResp(ERR_SUCCESS, '', $data);
+//        }
         
         //获取token
         $token = $account->genToken();
