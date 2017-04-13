@@ -34,6 +34,7 @@
 * 下线
 * 推流和录制回调接口
 * 踢人
+* 跨房连麦
 
 #### 需自行实现的功能点
 
@@ -94,7 +95,7 @@ index.php?svc=account&cmd=regist
 * request字段示例
 
 ```json
-｛ "id":"user000", "pwd": "密码",}
+ { "id":"user000", "pwd": "密码"}
 ```
 
 字段  | 类型  | 选项 | 说明
@@ -105,7 +106,7 @@ pwd|String|必填|密码(采用base64加密)
 * response字段示例
 
 ```json
-｛"errorCode": 0,"errorInfo": "",}
+ {"errorCode": 0,"errorInfo": ""}
 ```
 
 ### 二 登录
@@ -120,7 +121,7 @@ index.php?svc=account&cmd=login
 * request字段示例
 
 ```json
-｛ "id":"user000", "pwd": "密码",}
+ { "id":"user000", "pwd": "密码"}
 ```
 
 字段  | 类型  | 选项 | 说明
@@ -131,13 +132,13 @@ pwd|String|必填|密码(采用base64加密)
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
+ {  "errorCode": 0,
 	"errorInfo": "",
 	"data":{
-		"userSig":[usersig]
-		"token":[token]
+		"userSig":"[usersig]",
+		"token":"[token]"
 	}
-}
+ }
 ```
 
 字段  | 类型  | 选项 | 说明
@@ -158,7 +159,7 @@ index.php?svc=live&cmd=create
 * request字段示例
 
 ```json
-｛  "token":"[token]"
+ {  "token":"[token]",
 	"type":"live"
  }
 ```
@@ -171,7 +172,7 @@ type|String|必填|房间类型(live:直播)
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
+ {  "errorCode": 0,
 	"errorInfo": "",
 	"data":{
    		"roomnum": 123,
@@ -201,7 +202,7 @@ index.php?svc=live&cmd=reportroom
 * request字段示例
 
 ```json
-｛  "token": "[token]",
+ {  "token": "[token]",
 	"room":{
    		"title": "标题",
    		"roomnum":18,
@@ -237,8 +238,8 @@ appid|Integer|必填|appid
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
-	"errorInfo": "",
+ {  "errorCode": 0,
+	"errorInfo": ""
  }
 
 ```
@@ -255,10 +256,10 @@ index.php?svc=live&cmd=roomlist
 * request字段示例
 
 ```json
-｛  "token":"[token]",
-	"type":live
+ {  "token":"[token]",
+	"type":"live",
 	"index":0,
-	"size":10
+	"size":10,
 	"appid": 1400019352
  }
 ```
@@ -274,12 +275,12 @@ appid|Integer|选填|app标示
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
+ {  "errorCode": 0,
 	"errorInfo": "",
 	"data":{
 	"total":100,
  	"rooms":[{
-		  "uid":"[uid]"
+		  "uid":"[uid]",
           "info":{
           	 "title": "标题",
              "roomnum":18,
@@ -291,7 +292,7 @@ appid|Integer|选填|app标示
           }
         },
         {
-		  "uid":"[uid]"
+		  "uid":"[uid]",
           "info":{
             "title": "标题",
             "roomnum":19,
@@ -302,7 +303,6 @@ appid|Integer|选填|app标示
             "memsize":23
           }      
         }
-      },
     ]}
  }
 ```
@@ -341,9 +341,9 @@ index.php?svc=live&cmd=reportmemid
 * request字段示例
 
 ```json
-｛  "token":"[token]",
+ {  "token":"[token]",
 	"id": "willguo",
-	"roomnum":18
+	"roomnum":18,
 	"role":1
  }
 ```
@@ -358,8 +358,8 @@ role|int|必填| 主播 1 成员 0 上麦成员 2
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
-	"errorInfo": "",
+ {  "errorCode": 0,
+	"errorInfo": ""
  }
 
 ```
@@ -376,8 +376,8 @@ index.php?svc=live&cmd=roomidlist
 * request字段示例
 
 ```json
-｛  "token":"[token]",
-	"roomnum":18
+ {  "token":"[token]",
+	"roomnum":18,
 	"index":0,
 	"size":10
  }
@@ -393,15 +393,15 @@ size|Integer|必填|列表长度
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
+ {  "errorCode": 0,
 	"errorInfo": "",
 	"data":{
    		"total":100,
    		"idlist":[
        	{
            "id":"willduo",
-           "role":1,
-       	},
+           "role":1
+       	}
     	]
 	}
  }
@@ -432,7 +432,7 @@ index.php?svc=live&cmd=heartbeat
 * request字段示例
 
 ```json
-｛  "token":"[token]",
+ {  "token":"[token]",
 	"roomnum":123,
 	"role":1
  }
@@ -448,8 +448,8 @@ role|int|必填|1 主播 0 观众 2 上麦观众
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
-	"errorInfo": "",
+ {  "errorCode": 0,
+	"errorInfo": ""
  }
 
 ```
@@ -466,7 +466,7 @@ index.php?svc=live&cmd=request
 * request字段示例
 
 ```json
-｛  "token":"[token]",
+ {  "token":"[token]",
 	"roomnum":123
  }
 ```
@@ -479,8 +479,8 @@ roomnum|Integer|必填|房间id
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
-	"errorInfo": "",
+ {  "errorCode": 0,
+	"errorInfo": ""
  }
 
 ```
@@ -497,7 +497,7 @@ index.php?svc=live&cmd=reportstatus
 * request字段示例
 
 ```json
-｛  "token":"[token]",
+ {  "token":"[token]",
 	"roomnum":123,
 	"status":"on"
  }
@@ -512,8 +512,8 @@ status|String|必填|状态:on-上麦，off-下麦
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
-	"errorInfo": "",
+ {  "errorCode": 0,
+	"errorInfo": ""
  }
 
 ```
@@ -530,10 +530,10 @@ index.php?svc=live&cmd=reportrecord
 * request字段示例
 
 ```json
-｛  "token":"[token]",
+ {  "token":"[token]",
 	"roomnum":10007,
 	"uid":"wilder4",
-	"name":"我的录制"
+	"name":"我的录制",
 	"type":0,
 	"cover":"http://cover.png"
  }
@@ -551,8 +551,8 @@ cover|String|选填|封面地址
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
-	"errorInfo": "",
+ {  "errorCode": 0,
+	"errorInfo": ""
  }
 
 ```
@@ -569,7 +569,7 @@ index.php?svc=live&cmd=exitroom
 * request字段示例
 
 ```json
-｛  "token":"[token]",
+ {  "token":"[token]",
 	"roomnum":18,
 	"type":"live"
  }
@@ -582,8 +582,8 @@ token|String|必填|用户token
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
-	"errorInfo": "",
+ {  "errorCode": 0,
+	"errorInfo": ""
  }
 
 ```
@@ -600,7 +600,7 @@ index.php?svc=live&cmd=recordlist
 * request字段示例
 
 ```json
-｛  "token":"[token]",
+ {  "token":"[token]",
 	"type":0,
 	"index":0,
 	"size":10
@@ -618,21 +618,21 @@ size|Integer|必填|列表长度
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
+ {  "errorCode": 0,
 	"errorInfo": "",
 	"data":{
     "total":100,
     	"videos":[
-        {
+    	{
            "uid":"[uid]",
-	   "name":"我的录制",
+           "name":"我的录制",
            "cover":"http://cover.png",
            "videoId":"[videoid]",
            "playurl":[
 	         "playurl1",
-		 "playurl2"
-	   ]
-        },
+	         "playurl2"
+	         ]
+        }
     	]
 	}
 }
@@ -665,7 +665,7 @@ index.php?svc=live&cmd=livestreamlist
 * request字段示例
 
 ```json
-｛  "token":"[token]",
+ {  "token":"[token]",
 	"index":0,
 	"size":10
  }
@@ -681,18 +681,18 @@ size|Integer|必填|列表长度
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
+ {  "errorCode": 0,
 	"errorInfo": "",
 	"data":{
-    "total":100,
+        "total":100,
     	"videos":[
         {
            "uid":"[uid]",
            "cover":"http://cover.png",
            "address":"拼接地址",
            "address2":"拼接地址",
-           "address3":"拼接地址",
-        },
+           "address3":"拼接地址"
+        }
     	]
 	}
 }
@@ -726,8 +726,8 @@ http://服务器地址/sxb/index.php?svc=live&cmd=getroomplayurl
 * request字段示例
 
 ```json
-｛  "token":"[token]",
-	"roomnum":1234,
+ {  "token":"[token]",
+	"roomnum":1234
  }
 ```
 
@@ -739,13 +739,13 @@ room|Integer|必填|房间id
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
+ {  "errorCode": 0,
 	"errorInfo": "",
 	"data":{
        "cover":"http://cover.png",
        "address":"拼接地址",
        "address2":"拼接地址",
-       "address3":"拼接地址",
+       "address3":"拼接地址"
     }
 }
 
@@ -770,7 +770,7 @@ index.php?svc=account&cmd=logout
 * request字段示例
 
 ```json
-｛ "token":"[token]" }
+ { "token":"[token]" }
 ```
 
 字段  | 类型  | 选项 | 说明
@@ -780,8 +780,8 @@ token|String|必填|用户token
 * response字段示例
 
 ```json
-｛  "errorCode": 0,
-	"errorInfo": "",
+ {  "errorCode": 0,
+	"errorInfo": ""
  }
 
 ```
@@ -809,10 +809,10 @@ index.php?svc=account&cmd=kickout
 * request字段示例
 
 ```json
-｛ "id":"admin",
+ { "id":"admin",
    "pwd": "管理员密码",
    "kickid": "user1",
-   "holdsig": false,
+   "holdsig": false
  }
 ```
 
@@ -830,8 +830,44 @@ holdsig|Bool|可选|是否保留数据库中的userSig
 * response字段示例
 
 ```json
-｛	"errorCode": 0,
+ {	"errorCode": 0,
+	"errorInfo": ""
+ }
+
+```
+
+### 十九 跨房连麦
+
+* 使用TEA加密算法生成跨房连麦密钥
+* 请求URL
+
+```php
+index.php?svc=live&cmd=linksig
+```
+
+* request字段示例
+
+```json
+ { "id":"user",
+   "roomnum": 10001,
+   "token": "[token]"
+ }
+```
+
+字段  | 类型  | 选项 | 说明
+:-----: | :-----: | :-----: | :-----: 
+id|String|必填|要连麦的目标用户ID
+roomnum|Integer|必填|要连麦的目标用户房间号
+token|String|必填|用户token
+
+* response字段示例
+
+```json
+ {	"errorCode": 0,
 	"errorInfo": "",
+	"data":{
+	  "linksig": "[linksig]"
 	}
+ }
 
 ```

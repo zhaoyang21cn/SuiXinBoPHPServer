@@ -15,36 +15,32 @@
 * 下载代码，部署到php目录中
 * 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码
 * 在Config.php中修改SDKAppID及用于生成了校验sig的公私钥文件路径（公私钥文件必须具有可读权限）：
-
 ```php
-	define('SDK_APP_ID', '1400019352');
-	define('PRIVATE_KEY', DEPS_PATH . '/sig/private_key');
-	define('PUBLIC_KEY', DEPS_PATH . '/sig/public_key');
+	define('SDK_APP_ID', 'Your_SDK_APP_ID'); //APPID
+	define('PRIVATE_KEY', DEPS_PATH . '/sig/private_key'); //私钥文件
+	define('PUBLIC_KEY', DEPS_PATH . '/sig/public_key'); //公钥文件
+```
+* 在Config.php中修改secretID和SecretKey用于拉取视频列表：
+```php
+    define('VIDEO_RECORD_SECRET_ID', 'Your_Video_Secret_ID'); //录像Secret ID
+    define('VIDEO_RECORD_SECRET_KEY', 'Your_Video_Secret_Key'); //录像Secret Key
+```
+* 在Config.php中修改权限密钥用于跨房连麦：
+```php
+    define('AUTHORIZATION_KEY', 'Your_Authrization_Key'); //权限密钥
 ```
 * 修改service/service/Server.php的这句代码为自己的日志路径
-
 ```php
 	$handler = new FileLogHandler('/data/log/sxb/sxb_' . date('Y-m-d') . '.log');
 ```
-
 * 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig；32位OS请用tls_licence_tools_32替换tls_licence_tools（tls_licence_tools名字不变）
-* 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录。<br/>
-
+* 修改deps/bin/linksig具有可执行权限，用于生成跨房连麦sig
+* 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录。
 * 如果您在使用直播码进行旁路推流，调整service/live/ReportLiveRoomInfoCmd.php代码的BIZID。
-
 ```php
 	const BIZID = '123456';
 ```
-
 * 如果想使用图片上传功能，需要开通腾讯云COS服务，并在deps/cos-php-sdk/Conf.php填写对应APPID、SecretKey和SecretID。
-
-* 拉取视频列表，需要在model/VideoRecord.php的模块中填写自己的secretKey和secretID
-
-```php
-	$SecretId = 'AKIDlnkbPqucPuUgJmkMnaocUEBhZzBa5bpO'; //请填写用户自己的SecretId
-	//...
-	$secretKey = 'yw2nqIhlWkCmw7xZQaHUITMspCkatqsU';//请填写用户自己的secretKey
-```
 
 ### 1.3 数据库建表建库
 
@@ -97,4 +93,5 @@
  
  * sig目录其他用户一定要有读写可执行权限
  * deps/bin/tls_licence_tools签名程序一定可执行权限
+ * deps/bin/linksig程序一定可执行权限
  * 调整为自己的SDKAPPID和私钥公钥路径

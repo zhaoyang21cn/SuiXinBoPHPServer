@@ -44,6 +44,9 @@ class Router
             'livestreamlist' => 'GetLiveStreamListCmd',
             'getroomplayurl' => 'GetRoomPlayUrlCmd',
 
+			//获取跨房连麦密钥
+            'linksig' => 'GetLinkSigCmd',
+
 			//callback
 			'callback' => 'CallbackCmd',
 
