@@ -16,9 +16,9 @@
 * 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码
 * 在Config.php中修改SDKAppID及用于生成了校验sig的公私钥文件路径（公私钥文件必须具有可读权限）：
 ```php
-	define('SDK_APP_ID', 'Your_SDK_APP_ID'); //APPID
-	define('PRIVATE_KEY', DEPS_PATH . '/sig/private_key'); //私钥文件
-	define('PUBLIC_KEY', DEPS_PATH . '/sig/public_key'); //公钥文件
+    define('SDK_APP_ID', 'Your_SDK_APP_ID'); //APPID
+    define('PRIVATE_KEY', DEPS_PATH . '/sig/private_key'); //私钥文件
+    define('PUBLIC_KEY', DEPS_PATH . '/sig/public_key'); //公钥文件
 ```
 * 在Config.php中修改secretID和SecretKey用于拉取视频列表：
 ```php
@@ -31,14 +31,14 @@
 ```
 * 修改service/service/Server.php的这句代码为自己的日志路径
 ```php
-	$handler = new FileLogHandler('/data/log/sxb/sxb_' . date('Y-m-d') . '.log');
+    $handler = new FileLogHandler('/data/log/sxb/sxb_' . date('Y-m-d') . '.log');
 ```
 * 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig；32位OS请用tls_licence_tools_32替换tls_licence_tools（tls_licence_tools名字不变）
 * 修改deps/bin/linksig具有可执行权限，用于生成跨房连麦sig
 * 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录。
 * 如果您在使用直播码进行旁路推流，调整service/live/ReportLiveRoomInfoCmd.php代码的BIZID。
 ```php
-	const BIZID = '123456';
+    const BIZID = '123456';
 ```
 * 如果想使用图片上传功能，需要开通腾讯云COS服务，并在deps/cos-php-sdk/Conf.php填写对应APPID、SecretKey和SecretID。
 
