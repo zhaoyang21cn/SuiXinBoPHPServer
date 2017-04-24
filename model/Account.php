@@ -167,6 +167,10 @@ class Account
                 return ERR_USER_NOT_EXIST;
             }
             $row = $stmt->fetch();
+            if(strcmp($this->uid, $row["uid"]) != 0){
+                $error_msg = 'User not exist';
+                return ERR_USER_NOT_EXIST;
+            }
             $this->pwd= $row['pwd'];
             $this->state = $row['state'];
             $this->token = $row['token'];
