@@ -170,13 +170,14 @@ class AvRoom
 
     /**
      * 生成跨房连麦密钥
+     * @param $key          权限密钥
      * @param $uid          要连接的用户ID
      * @param $roomnum      要连接的用户房间号
      * @param $link_sig     用于接收生成的sig
      * @param $error_msg    接收错误码
      * @return int          成功返回ERR_SUCCESS
      */
-    public function getLinkSig($uid, $roomnum, &$link_sig, &$error_msg)
+    public function getLinkSig($key, $uid, $roomnum, &$link_sig, &$error_msg)
     {
         $sig = '';
         // 生成sig
@@ -185,7 +186,7 @@ class AvRoom
             . ' ' . escapeshellarg($this->id)
             . ' ' . escapeshellarg($uid)
             . ' ' . escapeshellarg($roomnum)
-            . ' ' . escapeshellarg(md5(AUTHORIZATION_KEY));
+            . ' ' . escapeshellarg(md5($key));
         $ret = exec($cmd, $sig, $status);
         if($status != 0)
         {

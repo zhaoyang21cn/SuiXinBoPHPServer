@@ -15,6 +15,9 @@ class AccountLoginCmd extends Cmd
 {
     // 用户账号对象
     private $account;
+    private $appid;
+    private $privatekey;
+    private $publickey;
     
     public function __construct()
     {
@@ -41,13 +44,27 @@ class AccountLoginCmd extends Cmd
         {
             return new CmdResp(ERR_REQ_DATA, 'Invalid pwd');
         }
+
+        if (isset($this->req['appid']) && is_int($this->req['appid']))
+        {
+            $this->appid = strval($this->req['appid']);
+        }
+        else
+        {
+            $this->appid = DEFAULT_SDK_APP_ID;
+        }
+
+        $this->privatekey = KEYS_PATH . '/' . $this->appid . '/private_key';
+        $this->publickey = KEYS_PATH . '/' . $this->appid . '/public_key';
+        if(!file_exists($this->privatekey) || !file_exists($this->publickey)){
+            return new CmdResp(ERR_REQ_DATA, 'Invalid appid');
+        }
         
         return new CmdResp(ERR_SUCCESS, '');
     }
 
     public function handle()
     {
-        $result = array();
         $account = $this->account;
         $errorMsg = '';
         
@@ -69,16 +86,16 @@ class AccountLoginCmd extends Cmd
         $userSig = $account->getUserSig();
         if(empty($userSig))
         {
-            $userSig = $account->genUserSig(SDK_APP_ID, PRIVATE_KEY);
+            $userSig = $account->genUserSig($this->appid, $this->privatekey);
             // 更新对象account的成员userSig
             $account->setUserSig($userSig);
         } 
         else 
         {
-            $ret = $account->verifyUserSig(SDK_APP_ID, PUBLIC_KEY);
+            $ret = $account->verifyUserSig($this->appid, $this->publickey);
             if($ret == 1) //过期重新生成
             {
-                $userSig = $account->genUserSig(SDK_APP_ID, PRIVATE_KEY);
+                $userSig = $account->genUserSig($this->appid, $this->privatekey);
                 // 更新对象account的成员userSig
                 $account->setUserSig($userSig);
             }

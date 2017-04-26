@@ -14,20 +14,18 @@
 
 * 下载代码，部署到php目录中
 * 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码
-* 在Config.php中修改SDKAppID及用于生成了校验sig的公私钥文件路径（公私钥文件必须具有可读权限）：
+* 在Config.php中填写默认的SDKAppID及对应用于跨房连麦的权限密钥：
 ```php
-    define('SDK_APP_ID', 'Your_SDK_APP_ID'); //APPID
-    define('PRIVATE_KEY', DEPS_PATH . '/sig/private_key'); //私钥文件
-    define('PUBLIC_KEY', DEPS_PATH . '/sig/public_key'); //公钥文件
+    define('DEFAULT_SDK_APP_ID', 'Your_SDK_APP_ID'); //默认APPID
+    define('AUTHORIZATION_KEY', [
+        'Your_SDK_APP_ID' => 'Your_Authrization_Key'
+    ]); //权限密钥表
 ```
-* 在Config.php中修改secretID和SecretKey用于拉取视频列表：
+* 上传SDKAppID对应的公私钥到deps/keys/[SDKAppID]目录下，使其具有可读权限
+* 在Config.php中填写secretID和SecretKey用于拉取视频列表：
 ```php
     define('VIDEO_RECORD_SECRET_ID', 'Your_Video_Secret_ID'); //录像Secret ID
     define('VIDEO_RECORD_SECRET_KEY', 'Your_Video_Secret_Key'); //录像Secret Key
-```
-* 在Config.php中修改权限密钥用于跨房连麦：
-```php
-    define('AUTHORIZATION_KEY', 'Your_Authrization_Key'); //权限密钥
 ```
 * 修改service/service/Server.php的这句代码为自己的日志路径
 ```php
@@ -94,4 +92,4 @@
  * sig目录其他用户一定要有读写可执行权限
  * deps/bin/tls_licence_tools签名程序一定可执行权限
  * deps/bin/linksig程序一定可执行权限
- * 调整为自己的SDKAPPID和私钥公钥路径
+ * 上传需要支持的SDKAppID对应的公私钥到deps/keys/[SDKAppID]目录

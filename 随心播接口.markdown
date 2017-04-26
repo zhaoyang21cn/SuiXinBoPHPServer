@@ -10,6 +10,7 @@
 1.3|2016.12.28|调整上报接口<br/>增加拉流接口
 1.4|2017.03.21|增加踢人接口
 1.5|2017.04.13|增加跨房连麦接口
+1.6|2017.04.26|增加多appid支持
 
 ### 功能说明
 
@@ -122,13 +123,14 @@ index.php?svc=account&cmd=login
 * request字段示例
 
 ```json
- { "id":"user000", "pwd": "密码"}
+ { "id":"user000", "pwd": "密码", "appid": 12345678}
 ```
 
 字段  | 类型  | 选项 | 说明
 :-----: | :-----: | :-----: | :-----: 
 id|String|必填|用户id
 pwd|String|必填|密码(采用base64加密)
+appid|Integer|可选|要使用的AppID
 
 * response字段示例
 
@@ -813,7 +815,8 @@ index.php?svc=account&cmd=kickout
  { "id":"admin",
    "pwd": "管理员密码",
    "kickid": "user1",
-   "holdsig": false
+   "holdsig": false,
+   "appid": 12345678
  }
 ```
 
@@ -823,6 +826,8 @@ id|String|必填|管理员账号
 pwd|String|必填|管理员密码
 kickid|String|必填|被踢账号
 holdsig|Bool|可选|是否保留数据库中的userSig
+appid|Integer|可选|要使用的AppID
+
 
 `保留数据库中的userSig会导致在该userSig过期之前用户都无法再次正常登录`
 
@@ -851,7 +856,8 @@ index.php?svc=live&cmd=linksig
 ```json
  { "id":"user",
    "roomnum": 10001,
-   "token": "[token]"
+   "token": "[token]",
+   "appid": 12345678
  }
 ```
 
@@ -860,6 +866,7 @@ index.php?svc=live&cmd=linksig
 id|String|必填|要连麦的目标用户ID
 roomnum|Integer|必填|要连麦的目标用户房间号
 token|String|必填|用户token
+appid|Integer|可选|要使用的AppID
 
 * response字段示例
 
