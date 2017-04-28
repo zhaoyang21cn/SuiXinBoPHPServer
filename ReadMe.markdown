@@ -1,4 +1,6 @@
 # 随心播 Server QuickStart
+该后台演示了在互动直播 [独立账号模式](https://www.qcloud.com/document/product/268/7654) 下如何为App提供用户管理接口，作为开发者后台，该后台与开发者App及互动直播server的关系如下图所示：
+![](https://mc.qcloudimg.com/static/img/4094feaf383cf1e3c5714bd3f9dbfc8e/hudongzhibo.png)
 
 ## 1. 代码部署
 
