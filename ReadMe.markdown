@@ -78,6 +78,34 @@ QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 manager->post(request, data);
 ```
 
+### 2.2.2 Android发送登录请求
+
+* 参考随心播中的 [UserServerHelper](https://github.com/zhaoyang21cn/ILiveSDK_Android_Demos/blob/master/app/src/main/java/com/tencent/qcloud/suixinbo/presenters/UserServerHelper.java)类
+* 将类中 `SERVER` 字段的域名替换为自己的服务器域名
+* 调用类方法进行服务器接口访问
+```java
+UserServerHelper.getInstance().loginId("username", "password");
+```
+
+### 2.2.3 iOS发送登录请求
+
+* 参考随心播中的 [WebService](https://github.com/zhaoyang21cn/ILiveSDK_iOS_Demos/blob/master/suixinbo/TILLiveSDKShow/WebService) 工具类
+* 将类 `BaseRequest` 中 `- (NSString *)hostUrl` 接口返回值的域名替换为自己的服务器域名
+* 调用工具类进行服务器接口访问
+```ObjectiveC
+LoginRequest *sigReq = [[LoginRequest alloc] initWithHandler:^(BaseRequest *request) {
+    LoginResponceData *responseData = (LoginResponceData *)request.response.data;
+    //登录成功
+    //responseData.token 返回token
+    //responseData.userSig 返回userSig
+} failHandler:^(BaseRequest *request) {
+    //登录失败    
+}];
+sigReq.identifier = @"username";
+sigReq.pwd = @"password";
+[[WebServiceEngine sharedEngine] asyncRequest:sigReq];
+```
+
 ## 3. 代码目录结构
 
 ![](https://mc.qcloudimg.com/static/img/0413205b36b65645ef4a5ddd8135198c/2.png)
