@@ -50,7 +50,7 @@ mysql -u root -p #此处可能需要输入mysql密码
 
 ### 1.4 确定服务器已正常运行
 
-* 在浏览器中访问 `http://your.server.hostname//index.php`，若显示以下json数据说明服务器已正常运行：
+* 在浏览器中访问 `http://your.server.hostname/index.php`，若显示以下json数据说明服务器已正常运行：
 ```json
 {"errorCode":10001,"errorInfo":"Invalid request."}
 ```
@@ -59,7 +59,7 @@ mysql -u root -p #此处可能需要输入mysql密码
 
 ## 2.1 HTTP请求格式
 * HTTP请求的类型为 `POST`
-* HTTP请求的URL格式为 `http://your.server.hostname//index.php?svc=*&cmd=*`
+* HTTP请求的URL格式为 `http://your.server.hostname/index.php?svc=*&cmd=*`
 * HTTP请求的 `Content-Type` 为 `application/json; charset=utf-8`
 * HTTP请求的内容为json格式的参数描述
 * HTTP请求的URL中的 `svc`、`cmd` 取值及内容中的参数格式详见[接口文档](https://github.com/zhaoyang21cn/SuiXinBoPHPServer/blob/StandaloneAuth/%E9%9A%8F%E5%BF%83%E6%92%AD%E6%8E%A5%E5%8F%A3.markdown)
