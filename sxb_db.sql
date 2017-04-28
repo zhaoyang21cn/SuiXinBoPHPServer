@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `t_new_live_record` (
   `av_room_id` int(11) NOT NULL DEFAULT 0 COMMENT 'av房间ID',
   `chat_room_id` varchar(50) NOT NULL COMMENT '聊天室ID',
   `room_type`    varchar(30) NOT NULL DEFAULT 'live',
-  `admire_count` int(11) NOT NULL DEFAULT 0 COMMENT '点赞人数',                    
+  `admire_count` int(11) NOT NULL DEFAULT 0 COMMENT '点赞人数',
   `longitude` double NOT NULL DEFAULT 0 COMMENT '经度',
   `latitude` double NOT NULL DEFAULT 0 COMMENT '纬度',
   `address` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '地址',

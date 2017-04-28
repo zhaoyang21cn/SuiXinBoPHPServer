@@ -16,6 +16,7 @@ class Router
             'login' => 'AccountLoginCmd',
             'logout' => 'AccountLogoutCmd',
             'kickout' => 'AccountKickoutCmd',
+            'verify' => 'AccountVerifyCmd',
         ),
         
         'live' => array(

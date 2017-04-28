@@ -38,7 +38,6 @@ class AccountLogoutCmd extends Cmd
 
     public function handle()
     {
-        $result = array();
         $errorMsg = '';
         $ret = $this->account->logout($errorMsg);        
         return new CmdResp($ret, $errorMsg);
