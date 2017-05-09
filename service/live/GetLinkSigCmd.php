@@ -17,6 +17,7 @@ class GetLinkSigCmd extends TokenCmd
 {
     private $avRoom;
     private $appid;
+    private $authorizationKey;
 
     public function parseInput()
     {
@@ -49,8 +50,13 @@ class GetLinkSigCmd extends TokenCmd
             $this->appid = DEFAULT_SDK_APP_ID;
         }
 
-        if(empty(AUTHORIZATION_KEY[$this->appid]) || !is_string(AUTHORIZATION_KEY[$this->appid])){
+        $keys = unserialize(AUTHORIZATION_KEY);
+
+        if(empty($keys[$this->appid]) || !is_string($keys[$this->appid])){
             return new CmdResp(ERR_REQ_DATA, 'Invalid appid');
+        }
+        else{
+            $this->authorizationKey = $keys[$this->appid];
         }
 
         return new CmdResp(ERR_SUCCESS, '');
@@ -67,7 +73,7 @@ class GetLinkSigCmd extends TokenCmd
             return new CmdResp(ERR_SERVER, 'User av room not exists');
         }
 
-        $ret = $this->avRoom->getLinkSig(AUTHORIZATION_KEY[$this->appid], $this->req['id'], $this->req['roomnum'], $linkSig, $errorMsg);
+        $ret = $this->avRoom->getLinkSig($this->authorizationKey, $this->req['id'], $this->req['roomnum'], $linkSig, $errorMsg);
         if($ret != ERR_SUCCESS)
         {
             return new CmdResp($ret, $errorMsg);

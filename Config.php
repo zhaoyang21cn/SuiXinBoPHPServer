@@ -10,8 +10,8 @@ require_once dirname(__FILE__) . '/Path.php';
 define('DEFAULT_SDK_APP_ID', 'Your_SDK_APP_ID'); //默认APPID
 define('VIDEO_RECORD_SECRET_ID', 'Your_Video_Secret_ID'); //录像Secret ID
 define('VIDEO_RECORD_SECRET_KEY', 'Your_Video_Secret_Key'); //录像Secret Key
-define('AUTHORIZATION_KEY', [
+define('AUTHORIZATION_KEY', serialize([
     'Your_SDK_APP_ID' => 'Your_Authrization_Key'
-]); //权限密钥表
+])); //权限密钥表
 
 ?>
