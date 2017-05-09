@@ -27,9 +27,9 @@ mysql -u root -p #此处可能需要输入mysql密码
 * 在Config.php中填写默认的SDKAppID及对应用于跨房连麦的权限密钥：
 ```php
     define('DEFAULT_SDK_APP_ID', 'Your_SDK_APP_ID'); //默认APPID
-    define('AUTHORIZATION_KEY', [
+    define('AUTHORIZATION_KEY', serialize([
         'Your_SDK_APP_ID' => 'Your_Authrization_Key'
-    ]); //权限密钥表
+    ])); //权限密钥表
 ```
 * 上传SDKAppID对应的公私钥到deps/keys/[SDKAppID]目录下，使其具有可读权限（[SDKAppID]替换为你所使用的SDKAppID）
 * 在Config.php中填写secretID和SecretKey用于拉取视频列表：
