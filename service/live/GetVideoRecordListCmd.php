@@ -60,15 +60,13 @@ class GetVideoRecordListCmd extends TokenCmd
         return new CmdResp(ERR_SUCCESS, '', $rsp);
         */
         
-        //获取视频列表
-        $offset = $this->pageIndex;
-        $limit = $this->pageSize;
-        
         $data = array();    
 
         //获取后台DB中自动录制时回调生成的记录
         if($this->req['type'] == 0) 
         {
+            $offset = ($this->pageIndex - 1) * $this->pageSize;
+            $limit = $this->pageSize;
             $recordList = VideoRecord::getList($offset, $limit);
             if (is_null($recordList))
             {
@@ -95,7 +93,7 @@ class GetVideoRecordListCmd extends TokenCmd
         {
             $http_info = '';
             $fileName = 'sxb_';
-            $rsp = VideoRecord::getVideoUrl($fileName, $offset, $limit, $http_info);
+            $rsp = VideoRecord::getVideoUrl($fileName, $this->pageIndex, $this->pageSize, $http_info);
             if($rsp === false)
             {
                 return new CmdResp(ERR_SERVER, 'Server internal error: curl_exec fail-' . $http_info);
