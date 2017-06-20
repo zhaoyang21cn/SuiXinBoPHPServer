@@ -20,7 +20,7 @@ class GetLiveRoomListCmd extends TokenCmd
 
     public function parseInput()
     {
-        if (isset($this->req['appid']) && is_int($this->req['appid']))
+        if (isset($this->req['appid']) && (is_int($this->req['appid']) || is_string($this->req['appid'])))
         {
             $this->appid = $this->req['appid'];
         }

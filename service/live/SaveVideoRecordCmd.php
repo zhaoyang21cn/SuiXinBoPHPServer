@@ -19,49 +19,43 @@ class SaveVideoRecordCmd extends TokenCmd
     {
         $this->videoRecord = new VideoRecord();
 
-        if (!isset($this->req['roomnum']))
-        {
+        if (!isset($this->req['roomnum'])) {
             return new CmdResp(ERR_REQ_DATA, 'lack of roomnum');
         }
-        if(!is_int($this->req['roomnum']))
-        {
-            return new CmdResp(ERR_REQ_DATA, 'invalid roomnum');
+        if (!is_int($this->req['roomnum'])) {
+            if (is_string($this->req['roomnum'])) {
+                $this->req['roomnum'] = intval($this->req['roomnum']);
+            } else {
+                return new CmdResp(ERR_REQ_DATA, 'Invalid roomnum');
+            }
         }
         $this->videoRecord->setRoomNum($this->req['roomnum']);
 
-        if (!isset($this->req['uid']) || empty($this->req['uid']))
-        {
+        if (!isset($this->req['uid']) || empty($this->req['uid'])) {
             return new CmdResp(ERR_REQ_DATA, 'lack of uid');
         }
-        if(!is_string($this->req['uid']))
-        {
+        if (!is_string($this->req['uid'])) {
             return new CmdResp(ERR_REQ_DATA, 'invalid uid');
         }
         $this->videoRecord->setUid($this->req['uid']);
 
-        if (!isset($this->req['name']))
-        {
+        if (!isset($this->req['name'])) {
             return new CmdResp(ERR_REQ_DATA, 'lack of name');
         }
-        if(!is_string($this->req['name']))
-        {
+        if (!is_string($this->req['name'])) {
             return new CmdResp(ERR_REQ_DATA, 'invalid video name');
         }
         $this->videoRecord->setFileName($this->req['name']);
 
-        if (!isset($this->req['type']))
-        {
+        if (!isset($this->req['type'])) {
             return new CmdResp(ERR_REQ_DATA, 'Lack of type');
         }
-        if(!is_int($this->req['type']))
-        {
+        if (!is_int($this->req['type'])) {
             return new CmdResp(ERR_REQ_DATA, 'invalid of type');
         }
 
-        if (isset($this->req['cover']))
-        {
-            if(!is_string($this->req['cover']))
-            {
+        if (isset($this->req['cover'])) {
+            if (!is_string($this->req['cover'])) {
                 return new CmdResp(ERR_REQ_DATA, 'invalid cover');
             }
             $this->videoRecord->setCover($this->req['cover']);
@@ -111,5 +105,5 @@ class SaveVideoRecordCmd extends TokenCmd
         }     
         */
         return new CmdResp(ERR_SUCCESS, '');
-    }    
+    }
 }

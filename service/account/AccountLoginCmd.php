@@ -45,7 +45,7 @@ class AccountLoginCmd extends Cmd
             return new CmdResp(ERR_REQ_DATA, 'Invalid pwd');
         }
 
-        if (isset($this->req['appid']) && is_int($this->req['appid']))
+        if (isset($this->req['appid']) && (is_int($this->req['appid']) || is_string($this->req['appid'])))
         {
             $this->appid = strval($this->req['appid']);
         }

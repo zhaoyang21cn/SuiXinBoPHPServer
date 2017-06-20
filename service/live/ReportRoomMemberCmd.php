@@ -22,10 +22,13 @@ class ReportRoomMemberCmd extends TokenCmd
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of roomnum');
         }
-        
-        if (!is_int($this->req['roomnum']))
-        {
-             return new CmdResp(ERR_REQ_DATA, ' Invalid roomnum');
+
+        if (!is_int($this->req['roomnum'])) {
+            if (is_string($this->req['roomnum'])) {
+                $this->req['roomnum'] = intval($this->req['roomnum']);
+            } else {
+                return new CmdResp(ERR_REQ_DATA, ' Invalid roomnum');
+            }
         }
         
         if (!isset($this->req['role']))

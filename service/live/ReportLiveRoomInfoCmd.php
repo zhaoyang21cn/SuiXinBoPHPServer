@@ -67,9 +67,14 @@ class ReportLiveRoomInfoCmd extends TokenCmd
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of av room id.');
         }
-        if ($room['roomnum'] !== (int)$room['roomnum'])
+        if (!is_string($room['roomnum']))
         {
-            return new CmdResp(ERR_REQ_DATA, 'AV room id should be integer.');
+            if(!is_int($room['roomnum'])) {
+                return new CmdResp(ERR_REQ_DATA, 'AV room id should be integer or string.');
+            }
+        }
+        else{
+            $room['roomnum'] = intval($room['roomnum']);
         }
         $liveRecord->setAvRoomId($room['roomnum']);
 
@@ -108,9 +113,17 @@ class ReportLiveRoomInfoCmd extends TokenCmd
         }
         $liveRecord->setVideoType($videotype);
 
-        if (!isset($room['appid']) && !is_int($room['appid']))
+        if (!isset($room['appid']))
         {
             return new CmdResp(ERR_REQ_DATA, 'Lack of appid.');
+        }
+        if(!is_string($room['appid'])){
+            if(!is_int($room['appid'])){
+                return new CmdResp(ERR_REQ_DATA, 'appid should be integer or string.');
+            }
+        }
+        else{
+            $room['appid'] = intval($room['appid']);
         }
         $liveRecord->setAppid($room['appid']);
     

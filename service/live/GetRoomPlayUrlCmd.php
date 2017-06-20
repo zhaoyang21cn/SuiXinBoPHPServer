@@ -14,15 +14,17 @@ class GetRoomPlayUrlCmd extends TokenCmd
 {
     public function parseInput()
     {
-        if (!isset($this->req['roomnum']))
-        {
+        if (!isset($this->req['roomnum'])) {
             return new CmdResp(ERR_REQ_DATA, 'Lack of roomnum');
         }
-        if (!is_int($this->req['roomnum']))
-        {
-             return new CmdResp(ERR_REQ_DATA, ' Invalid roomnum');
+        if (!is_int($this->req['roomnum'])) {
+            if (is_string($this->req['roomnum'])) {
+                $this->req['roomnum'] = intval($this->req['roomnum']);
+            } else {
+                return new CmdResp(ERR_REQ_DATA, 'Invalid roomnum');
+            }
         }
-        
+
         return new CmdResp(ERR_SUCCESS, '');
     }
 
@@ -30,11 +32,10 @@ class GetRoomPlayUrlCmd extends TokenCmd
     {
         //获取url
         $data = NewLiveRecord::getLiveStreamByRoomID(0, $this->req['roomnum']);
-        if (is_null($data))
-        {
+        if (is_null($data)) {
             return new CmdResp(ERR_SERVER, 'Server internal error');
         }
-        
+
         return new CmdResp(ERR_SUCCESS, '', $data);
-    }    
+    }
 }

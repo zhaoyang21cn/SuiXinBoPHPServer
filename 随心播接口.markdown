@@ -345,7 +345,6 @@ index.php?svc=live&cmd=reportmemid
 
 ```json
  {  "token":"[token]",
-	"id": "willguo",
 	"roomnum":18,
 	"role":1,
 	"operate":0
@@ -355,7 +354,6 @@ index.php?svc=live&cmd=reportmemid
 字段  | 类型  | 选项 | 说明
 :-----: | :-----: | :-----: | :-----: 
 token|String|必填|用户token
-id|String|必填|自己id
 roomnum|int|必填|房间号
 role|int|必填| 主播 1 成员 0 上麦成员 2
 operate|int|必填| 进入房间 0 离开房间 1
