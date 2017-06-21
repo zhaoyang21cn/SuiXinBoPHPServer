@@ -29,8 +29,7 @@ class CallbackCmd extends Cmd
     {
         if (isset($this->req['event_type']))
             $this->eventType = $this->req['event_type'];
-        if($this->eventType == 100)
-        {
+        if ($this->eventType == 100) {
             if (isset($this->req['channel_id']))
                 $this->channelId = $this->req['channel_id'];
             if (isset($this->req['start_time']))
@@ -57,14 +56,13 @@ class CallbackCmd extends Cmd
 
     public function handle()
     {
-        if($this->eventType == 100) //100标示录制完成处理
+        if ($this->eventType == 100) //100标示录制完成处理
         {
             $streamMd5 = explode("_", $this->channelId)[1];
             $rsp = AvRoom::getUidByMd5($streamMd5);
-            
+
             //MD5映射uid
-            if(empty($rsp))
-            {
+            if (empty($rsp)) {
                 return new CmdResp(ERR_SERVER, 'search uid by md5 error');
             }
 
@@ -78,12 +76,11 @@ class CallbackCmd extends Cmd
             $videoRecord->setEndTime($this->endTime);
             $videoRecord->setPlayUrl($this->videoUrl);
             $result = $videoRecord->save();
-            if($result == false)
-            {
+            if ($result == false) {
                 return new CmdResp(ERR_SERVER, 'server error');
             }
         }
-        
+
         return new CmdResp(ERR_SUCCESS, '');
     }
 }

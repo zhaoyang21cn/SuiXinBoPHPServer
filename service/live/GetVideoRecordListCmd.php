@@ -45,7 +45,7 @@ class GetVideoRecordListCmd extends TokenCmd
             return new CmdResp(ERR_REQ_DATA, 'invalid of type');
         }
 
-        $this->pageIndex = $pageIndex;
+        $this->pageIndex = $pageIndex > 0 ? $pageIndex : 1;
         $this->pageSize = $pageSize;
         return new CmdResp(ERR_SUCCESS, '');
     }
