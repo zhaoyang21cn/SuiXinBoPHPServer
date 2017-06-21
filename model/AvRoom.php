@@ -97,7 +97,7 @@ class AvRoom
         }
         try
         {
-            $sql = 'SELECT top 1 id, aux_md5, main_md5 FROM t_av_room WHERE uid = :uid ORDER BY id DESC';
+            $sql = 'SELECT id, aux_md5, main_md5 FROM t_av_room WHERE uid = :uid ORDER BY id DESC LIMIT 1';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
             $result = $stmt->execute();
