@@ -186,7 +186,7 @@ class AvRoom
             . ' ' . escapeshellarg($this->id)
             . ' ' . escapeshellarg($uid)
             . ' ' . escapeshellarg($roomnum)
-            . ' ' . escapeshellarg($key);
+            . ' ' . escapeshellarg(md5($key));
         $ret = exec($cmd, $sig, $status);
         if($status != 0)
         {

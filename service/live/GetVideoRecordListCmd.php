@@ -33,7 +33,7 @@ class GetVideoRecordListCmd extends TokenCmd
         $pageSize = $this->req['size'];
         if ($pageSize !== (int)$pageSize || $pageSize < 0 || $pageSize > 100)
         {
-            return new CmdResp(ERR_REQ_DATA, 'Page size should be a positive integer(not larger than 50)');
+            return new CmdResp(ERR_REQ_DATA, 'Page size should be a positive integer(not larger than 100)');
         }
         
         if (!isset($this->req['type']))

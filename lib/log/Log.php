@@ -78,13 +78,13 @@ class Log
         {
             if (isset($row[$field]))
             {
-                $msg .= '[' . $field . ': ' . $row[$field] . ']';
+                $msg .= '|' . $field . ':' . $row[$field];
             }
         }
-        $msg .= $content;
+        $msg .= ">\n" . $content;
         if(($level & $this->level) == $level )
         {
-            $msg = '[' . date('Y-m-d H:i:s') . ']['. LogLevel::toString($level).'] '. $msg . "\n";
+            $msg = '<' . date('Y-m-d H:i:s') . '|'. LogLevel::toString($level) . str_replace("\n", "\n\t", $msg) . "\n";
             $this->handler->write($msg);
         }
     }

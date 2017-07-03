@@ -13,15 +13,6 @@ require_once LIB_PATH . '/log/Log.php';
  */
 class Server
 {
-    
-    private function sendResp($reply)
-    {
-        header('Content-Type: application/json');
-        $str = json_encode($reply);
-        Log::info('response data: ' . $str);
-        echo $str;
-    }
-
     public function handle()
     {
         $handler = new FileLogHandler(LOG_PATH . '/sxb_' . date('Y-m-d') . '.log');
@@ -51,14 +42,16 @@ class Server
 
 
         $str = file_get_contents('php://input');
-        Log::info('request data: '. $str);
+        Log::info('request svc = ' . $svc . ', cmd = ' . $cmd . ", data:\n" . $str);
         $start = time();
         require_once SERVICE_PATH . '/' . $svc . '/' . $className . '.php';
         $handler = new $className();
         $resp = $handler->execute();
         $reply = $resp->toArray();
         $end = time();
-        Log::info('response time: ' . ($end - $start) . ' secs, svc = ' . $svc . ', cmd = ' . $cmd);
-        $this->sendResp($reply);
+        header('Content-Type: application/json');
+        $str = json_encode($reply);
+        Log::info('response svc = ' . $svc . ', cmd = ' . $cmd . ', time = ' . ($end - $start) . " secs, data:\n" . $str);
+        echo $str;
     }
 }

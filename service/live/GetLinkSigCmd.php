@@ -81,6 +81,8 @@ class GetLinkSigCmd extends TokenCmd
 
         $data = array(
             'linksig' => $linkSig,
+//            'appid' => $this->appid,
+//            'key' => $this->authorizationKey,
         );
         return new CmdResp(ERR_SUCCESS, '', $data);
     }
