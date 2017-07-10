@@ -22,6 +22,10 @@ class AvRoom
         $this->uid = $uid;
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
     /*
      * 生成旁路推流直播的MD5码
      */
@@ -199,6 +203,42 @@ class AvRoom
         return ERR_SUCCESS;
     }
 
+    /**
+     * @param $uid 用户id
+     * @param $id roomnum房价号
+     * @param $title 直播名称
+     * @param $cover 封面
+     * @return bool 是否更新成功
+     */
+    static public function updateRoomInfoById($uid, $id, $title, $cover)
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            return false;
+        }
+        try
+        {
+            $sql = 'update t_av_room set title=:title,cover=:cover where uid=:uid and id=:id';
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+            $stmt->bindParam(':cover', $cover, PDO::PARAM_STR);
+            $stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                return false;
+            }
+            return true;
+        }
+        catch (PDOException $e)
+        {
+            return false;
+        }
+        return false;
+    }
+
     static public function updateLastUpdateTimeByUid($uid, $time)
     {
         $dbh = DB::getPDOHandler();
@@ -225,7 +265,43 @@ class AvRoom
         }
         return false;
     }
-    
+
+    static public function getRoomById($id)
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            return '';
+        }
+        try
+        {
+            $sql = 'select id, uid, title, cover from t_av_room where id = :id';
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                return '';
+            }
+            $row = $stmt->fetch();
+            if (empty($row))
+            {
+                return '';
+            }
+            return array(
+                'roomnum' => $row['id'],
+                'uid' => $row['uid'],
+                'title' => $row['title'],
+                'cover' => $row['cover']
+            );
+        }
+        catch (PDOException $e)
+        {
+            return '';
+        }
+        return '';
+    }
+
     /* 功能：通过视频的md5码获取用户名和房间号
      * 说明：后期修订返回uid同时，附带其所在房间号。后台DB的t_av_room维护一份分别由roomnum_uid_aux和roomnum_uid_main
      *        生成的aux_md5和main_md5字段。当录制完成自动执行回调时，依据传递的channel_id中的md5码查询t_av_room，实现

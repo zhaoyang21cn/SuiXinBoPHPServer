@@ -132,6 +132,13 @@ CREATE TABLE IF NOT EXISTS `t_av_room` (
   UNIQUE KEY `uid` (`uid`)
 )AUTO_INCREMENT=10001;
 
+--
+-- 增加字段 title, cover
+--
+ALTER TABLE `t_av_room` ADD COLUMN `title` VARCHAR(128) AFTER `uid`;
+ALTER TABLE `t_av_room` ADD COLUMN `cover` VARCHAR(128) AFTER `title`;
+ALTER TABLE `t_av_room` DROP INDEX `uid`;
+
 -- --------------------------------------------------------
 
 --
@@ -169,6 +176,7 @@ alter table `t_av_room` add column `aux_md5` varchar(128) comment 'groupid_useri
 alter table `t_av_room` add column `main_md5` varchar(128) comment 'groupid_userid_main' after `aux_md5`;
 
 alter table `t_video_record` add column cover varchar(100) after `uid`;
+alter table `t_video_record` add column title varchar(100) comment '名称' after `uid`;
 alter table `t_video_record` add column room_num int(11) comment '房间号' after `uid`;
 alter table `t_video_record` add column file_name varchar(100) comment '视频名' after `cover`;
 alter table `t_video_record` add column start_time int(11)  not null default 0  comment '录制时间' after `video_id`;

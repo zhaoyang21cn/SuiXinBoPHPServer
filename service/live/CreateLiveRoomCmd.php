@@ -9,8 +9,12 @@ require_once SERVICE_PATH . '/TokenCmd.php';
 require_once SERVICE_PATH . '/CmdResp.php';
 require_once ROOT_PATH . '/ErrorNo.php';
 require_once MODEL_PATH . '/AvRoom.php';
+require_once MODEL_PATH . '/NewLiveRecord.php';
 require_once MODEL_PATH . '/InteractAvRoom.php';
 require_once MODEL_PATH . '/Account.php';
+
+require_once LIB_PATH . '/log/FileLogHandler.php';
+require_once LIB_PATH . '/log/Log.php';
 
 class CreateLiveRoomCmd extends TokenCmd
 {
@@ -34,11 +38,11 @@ class CreateLiveRoomCmd extends TokenCmd
 
     public function handle()
     {
-        $ret = $this->avRoom->load();
+        /*$ret = $this->avRoom->load();
         // 加载房间出错
         if ($ret < 0)
         {
-            return new CmdResp(ERR_SERVER, 'Server internal error'); 
+            return new CmdResp(ERR_SERVER, 'Server internal error');
         }
 
         //房间不存在，执行创建
@@ -47,9 +51,31 @@ class CreateLiveRoomCmd extends TokenCmd
             $ret = $this->avRoom->create();
             if (!$ret)
             {
-                return new CmdResp(ERR_SERVER, 'Server internal error: create av room fail'); 
+                return new CmdResp(ERR_SERVER, 'Server internal error: create av room fail');
             }
-        } 
+        }*/
+
+        // 创建房间之前先清空数据
+        $ret = $this->avRoom->load();
+        // 存在旧房间
+        if ($ret > 0)
+        {
+            //Log::info('uid '.$this->user.' has old room '.$this->avRoom->getId().' to delete');
+            //删除直播记录
+            NewLiveRecord::delete($this->user);
+            //清空房间成员
+            InteractAvRoom::ClearRoomByRoomNum($this->avRoom->getId());
+        }
+
+        //Log::info('uid '.$this->user.' create room now');
+
+        // 每次请求都创建一个新的房间出来
+        $ret = $this->avRoom->create();
+        if (!$ret)
+        {
+            //Log::error('uid '.$this->user.' create room failed');
+            return new CmdResp(ERR_SERVER, 'Server internal error: create av room fail');
+        }
 
         //房间id
         $id = $this->avRoom->getId();

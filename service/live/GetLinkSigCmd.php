@@ -13,6 +13,9 @@ require_once SERVICE_PATH . '/CmdResp.php';
 require_once ROOT_PATH . '/ErrorNo.php';
 require_once MODEL_PATH . '/AvRoom.php';
 
+require_once LIB_PATH . '/log/FileLogHandler.php';
+require_once LIB_PATH . '/log/Log.php';
+
 class GetLinkSigCmd extends TokenCmd
 {
     private $avRoom;
@@ -39,7 +42,18 @@ class GetLinkSigCmd extends TokenCmd
             return new CmdResp(ERR_REQ_DATA, ' Invalid roomnum');
         }
 
+        if (!isset($this->req['current_roomnum']))
+        {
+            return new CmdResp(ERR_REQ_DATA, 'Lack of current_roomnum');
+        }
+        if (!is_int($this->req['current_roomnum']))
+        {
+            return new CmdResp(ERR_REQ_DATA, ' Invalid current_roomnum');
+        }
+
         $this->avRoom = new AvRoom($this->user);
+        //Log::info('get link sig, set current roomnum:'.$this->req['current_roomnum']);
+        $this->avRoom->setId($this->req['current_roomnum']);
 
         if (isset($this->req['appid']) && is_int($this->req['appid']))
         {
@@ -67,9 +81,10 @@ class GetLinkSigCmd extends TokenCmd
         $linkSig = '';
         $errorMsg = '';
 
-        $ret = $this->avRoom->load();
-        if ($ret < 0)// 加载房间出错
+        $ret = AvRoom::getRoomById($this->avRoom->getId());
+        if (empty($ret))// 加载房间出错
         {
+            //Log::error('get link sig get room by id '.$this->avRoom->getId().' failed');
             return new CmdResp(ERR_SERVER, 'User av room not exists');
         }
 

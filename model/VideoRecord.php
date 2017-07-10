@@ -6,6 +6,9 @@
 require_once dirname(__FILE__) . '/../Config.php';
 require_once LIB_PATH . '/db/DB.php';
 
+require_once LIB_PATH . '/log/FileLogHandler.php';
+require_once LIB_PATH . '/log/Log.php';
+
 class VideoRecord
 {
     const FIELD_HOST_UID = 'uid';
@@ -17,6 +20,7 @@ class VideoRecord
     const FIELD_END_TIME = 'end_time';
     const FIELD_PLAY_URL = 'play_url';
     const FIELD_CREATE_TIME = 'create_time';
+    const FIELD_TITLE = 'title';
     
     // 用户id => string
     private $uid = '';
@@ -44,6 +48,9 @@ class VideoRecord
 
     // 创建时间(时间戳) => int
     private $createTime = 0;
+
+    // 直播名称 => string
+    private $title = '';
    
     public function getUid()
     {
@@ -105,6 +112,16 @@ class VideoRecord
         $this->createTime = $createTime;
     }
 
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
     /* 功能：存储视频记录
      * 说明: 成功返回 true, 失败返回false
      */
@@ -125,6 +142,7 @@ class VideoRecord
             self::FIELD_END_TIME => $this->endTime,
             self::FIELD_PLAY_URL =>  $this->playUrl,
             self::FIELD_CREATE_TIME => date('U'),
+            self::FIELD_TITLE => $this->title,
         );
         try
         {
@@ -165,6 +183,7 @@ class VideoRecord
         $list = array();
         if (is_null($dbh))
         {
+            //Log::error('video record getList. dbh null');
             return null;
         }
         $fields = array(
@@ -172,7 +191,9 @@ class VideoRecord
             self::FIELD_COVER,
             self::FIELD_FILE_NAME,
             self::FIELD_VIDEO_ID,
-            self::FIELD_PLAY_URL
+            self::FIELD_PLAY_URL,
+            self::FIELD_TITLE,
+            self::FIELD_CREATE_TIME,
         );
         try
         {
@@ -199,6 +220,8 @@ class VideoRecord
                 $record->setVideoId($row['video_id']);
                 $record->setPlayUrl($row['play_url']);
                 $record->setCover($row['cover']);
+                $record->setTitle($row['title']);
+                $record->setCreateTime($row['create_time']);
                 $list[] = $record;
             }
             return $list;
@@ -282,9 +305,10 @@ class VideoRecord
         return array(
             'uid' => $this->uid,
             'cover' => $this->cover,
-            'name' => $this->fileName,
+            'name' => $this->title,
             'videoId' => $this->videoId,
             'playurl' => array(0 => $this->playUrl),//兼容已有版本
+            'createTime' => $this->createTime,
         );
     }
 

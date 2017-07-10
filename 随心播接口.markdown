@@ -858,7 +858,8 @@ index.php?svc=live&cmd=linksig
  { "id":"user",
    "roomnum": 10001,
    "token": "[token]",
-   "appid": 12345678
+   "appid": 12345678,
+   "current_roomnum": 10000
  }
 ```
 
@@ -868,6 +869,7 @@ id|String|必填|要连麦的目标用户ID
 roomnum|Integer|必填|要连麦的目标用户房间号
 token|String|必填|用户token
 appid|Integer|可选|要使用的AppID
+current_roomnum|Integer|必填|用户发起连麦的当前房间号
 
 * response字段示例
 

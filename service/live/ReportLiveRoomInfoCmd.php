@@ -9,12 +9,18 @@ require_once SERVICE_PATH . '/TokenCmd.php';
 require_once SERVICE_PATH . '/CmdResp.php';
 require_once ROOT_PATH . '/ErrorNo.php';
 require_once MODEL_PATH . '/NewLiveRecord.php';
+require_once MODEL_PATH . '/AvRoom.php';
+
+require_once LIB_PATH . '/log/FileLogHandler.php';
+require_once LIB_PATH . '/log/Log.php';
 
 
 class ReportLiveRoomInfoCmd extends TokenCmd
 {
     //NewLiveRecord
     private $record;
+    //AvRoom
+    private $av_room;
     const URL = 'liveplay.myqcloud.com/live/';
     const BIZID = '123456';
 
@@ -137,6 +143,21 @@ class ReportLiveRoomInfoCmd extends TokenCmd
         $ret = $this->record->genPlayUrl(self::BIZID, self::URL);
         if ($ret != true) {
             return new CmdResp(ERR_SERVER, 'Server internal error: gen play url fail');
+        }
+
+        //Log::info('update room info by room id '.$this->record->getAvRoomId());
+        //Log::info('room uid '.$this->user);
+        //Log::info('room title '.$this->record->getTitle());
+        //Log::info('room cover '.$this->record->getCover());
+        $up_res = AvRoom::updateRoomInfoById(
+            $this->user,
+            $this->record->getAvRoomId(),
+            $this->record->getTitle(),
+            $this->record->getCover()
+        );
+        if (!$up_res) {
+            Log::error('update room info failed. room id '.$this->record->getAvRoomId());
+            return new CmdResp(ERR_SERVER, 'av room info update error');
         }
 
         $id = $this->record->save();
