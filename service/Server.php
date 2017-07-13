@@ -57,6 +57,5 @@ class Server
         $resp = $handler->execute();
         $reply = $resp->toArray();
         $this->sendResp($reply, $svc, $cmd, $start, time());
-        echo $str;
     }
 }
