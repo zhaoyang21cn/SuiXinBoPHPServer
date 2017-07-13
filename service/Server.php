@@ -13,6 +13,14 @@ require_once LIB_PATH . '/log/Log.php';
  */
 class Server
 {
+    private function sendResp($reply, $svc = "Unknown", $cmd = "Unknown", $start = 0, $end = 0)
+    {
+        header('Content-Type: application/json');
+        $str = json_encode($reply);
+        Log::info('response svc = ' . $svc . ', cmd = ' . $cmd . ', time = ' . ($end - $start) . " secs, data:\n" . $str);
+        echo $str;
+    }
+
     public function handle()
     {
         $handler = new FileLogHandler(LOG_PATH . '/sxb_' . date('Y-m-d') . '.log');
@@ -36,10 +44,10 @@ class Server
                     'errorCode' => ERR_INVALID_REQ, 
                     'errorInfo' => 'Invalid request.'
                 )
+                , $svc, $cmd
             );
             return;
         }
-
 
         $str = file_get_contents('php://input');
         Log::info('request svc = ' . $svc . ', cmd = ' . $cmd . ", data:\n" . $str);
@@ -48,10 +56,7 @@ class Server
         $handler = new $className();
         $resp = $handler->execute();
         $reply = $resp->toArray();
-        $end = time();
-        header('Content-Type: application/json');
-        $str = json_encode($reply);
-        Log::info('response svc = ' . $svc . ', cmd = ' . $cmd . ', time = ' . ($end - $start) . " secs, data:\n" . $str);
+        $this->sendResp($reply, $svc, $cmd, $start, time());
         echo $str;
     }
 }

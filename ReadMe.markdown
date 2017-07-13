@@ -43,7 +43,7 @@ mysql -u root -p #此处可能需要输入mysql密码
 ```
 * 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig；32位OS请用tls_licence_tools_32替换tls_licence_tools（tls_licence_tools名字不变）
 * 修改deps/bin/linksig具有可执行权限，用于生成跨房连麦sig
-* 修改deps/sig目录权限，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录。
+* 修改deps/sig目录权限(没有该目录请自行创建)，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录。
 * 如果您在使用直播码进行旁路推流，调整service/live/ReportLiveRoomInfoCmd.php代码的BIZID。
 ```php
     const BIZID = '123456';
