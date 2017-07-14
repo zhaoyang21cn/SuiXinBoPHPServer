@@ -21,6 +21,8 @@ class VideoRecord
     const FIELD_PLAY_URL = 'play_url';
     const FIELD_CREATE_TIME = 'create_time';
     const FIELD_TITLE = 'title';
+    const FIELD_FILE_SIZE = 'file_size';
+    const FIELD_DURATION = 'duration';
     
     // 用户id => string
     private $uid = '';
@@ -51,6 +53,12 @@ class VideoRecord
 
     // 直播名称 => string
     private $title = '';
+
+    // 文件大小
+    private $fileSize = '';
+
+    // 时长
+    private $duration = '';
    
     public function getUid()
     {
@@ -122,6 +130,26 @@ class VideoRecord
         $this->title = $title;
     }
 
+    public function getFileSize()
+    {
+        return $this->fileSize;
+    }
+
+    public function setFileSize($fileSize)
+    {
+        $this->fileSize = $fileSize;
+    }
+
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+    }
+
     /* 功能：存储视频记录
      * 说明: 成功返回 true, 失败返回false
      */
@@ -143,6 +171,8 @@ class VideoRecord
             self::FIELD_PLAY_URL =>  $this->playUrl,
             self::FIELD_CREATE_TIME => date('U'),
             self::FIELD_TITLE => $this->title,
+            self::FIELD_FILE_SIZE => $this->fileSize,
+            self::FIELD_DURATION => $this->duration,
         );
         try
         {
@@ -172,12 +202,20 @@ class VideoRecord
      * 说明: 从偏移（offset）处获取N（limit）条APP（appid）的视频信息；
      *      成功返回视频列表，失败返回空
      */
-    public static function getList($offset = 0, $limit = 100, $appid = 0)
+    public static function getList($offset = 0, $limit = 100, $appid = 0, $s_uid = null)
     {
         if ($appid == 0) {
             $whereSql = "";
         }else{
-            $whereSql = " WHERE appid = $appid ";
+            $whereSql = " WHERE appid = " . $appid . " ";
+        }
+        if ($s_uid !== null) {
+            if ($whereSql === "") {
+                $whereSql = " WHERE uid = '" . $s_uid . "' ";
+            } else {
+                $whereSql = $whereSql." and uid = '" . $s_uid . "' ";
+            }
+            Log::info('search uid:'.$whereSql);
         }
         $dbh = DB::getPDOHandler();
         $list = array();
@@ -194,6 +232,8 @@ class VideoRecord
             self::FIELD_PLAY_URL,
             self::FIELD_TITLE,
             self::FIELD_CREATE_TIME,
+            self::FIELD_FILE_SIZE,
+            self::FIELD_DURATION,
         );
         try
         {
@@ -222,6 +262,8 @@ class VideoRecord
                 $record->setCover($row['cover']);
                 $record->setTitle($row['title']);
                 $record->setCreateTime($row['create_time']);
+                $record->setFileSize($row['file_size']);
+                $record->setDuration($row['duration']);
                 $list[] = $record;
             }
             return $list;
@@ -304,11 +346,13 @@ class VideoRecord
     {
         return array(
             'uid' => $this->uid,
-            'cover' => $this->cover,
-            'name' => $this->title,
-            'videoId' => $this->videoId,
+            'cover' => $this->cover?$this->cover:'',
+            'name' => $this->title?$this->title:'',
+            'videoId' => $this->videoId?$this->videoId:'',
             'playurl' => array(0 => $this->playUrl),//兼容已有版本
-            'createTime' => $this->createTime,
+            'createTime' => $this->createTime?$this->createTime:0,
+            'fileSize' => $this->fileSize?$this->fileSize:0,
+            'duration' => $this->duration?$this->duration:0,
         );
     }
 

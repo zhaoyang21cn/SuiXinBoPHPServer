@@ -14,6 +14,8 @@ class GetVideoRecordListCmd extends TokenCmd
 {
     private $pageIndex;
     private $pageSize;
+    // 用于search的user id
+    private $s_uid = null;
 
     public function parseInput()
     {
@@ -45,6 +47,11 @@ class GetVideoRecordListCmd extends TokenCmd
             return new CmdResp(ERR_REQ_DATA, 'invalid of type');
         }
 
+        if (isset($this->req['s_uid']))
+        {
+            $this->s_uid = $this->req['s_uid'];
+        }
+
         $this->pageIndex = $pageIndex > 0 ? $pageIndex : 1;
         $this->pageSize = $pageSize;
         return new CmdResp(ERR_SUCCESS, '');
@@ -67,7 +74,7 @@ class GetVideoRecordListCmd extends TokenCmd
         {
             $offset = ($this->pageIndex - 1) * $this->pageSize;
             $limit = $this->pageSize;
-            $recordList = VideoRecord::getList($offset, $limit);
+            $recordList = VideoRecord::getList($offset, $limit, 0, $this->s_uid);
             if (is_null($recordList))
             {
                 return new CmdResp(ERR_SERVER, 'Server internal error');

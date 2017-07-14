@@ -48,15 +48,14 @@ class CallbackCmd extends Cmd
                 parse_str($stream_param, $parr);
                 $this->groupId = $parr['groupid'];
             }
-
             /*
             if (isset($this->req['file_id']))
                 $this->fileId = $this->req['file_id'];
+             */
             if (isset($this->req['file_size']))
                 $this->fileSize = $this->req['file_size'];
             if (isset($this->req['duration']))
                 $this->duration = $this->req['duration'];
-             */
             if (isset($this->req['video_id']))
                 $this->videoId = $this->req['video_id'];
             if (isset($this->req['video_url']))
@@ -91,6 +90,8 @@ class CallbackCmd extends Cmd
             $videoRecord->setStartTime($this->startTime);
             $videoRecord->setEndTime($this->endTime);
             $videoRecord->setPlayUrl($this->videoUrl);
+            $videoRecord->setFileSize($this->fileSize);
+            $videoRecord->setDuration($this->duration);
             $result = $videoRecord->save();
             if ($result == false) {
                 return new CmdResp(ERR_SERVER, 'server error');

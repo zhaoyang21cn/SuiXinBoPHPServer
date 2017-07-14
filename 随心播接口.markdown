@@ -607,7 +607,8 @@ index.php?svc=live&cmd=recordlist
  {  "token":"[token]",
 	"type":0,
 	"index":0,
-	"size":10
+	"size":10,
+	"s_uid": "green"
  }
 ```
 
@@ -617,7 +618,7 @@ token|String|必填|用户token
 type|Integer|必填|类型过滤
 index|Integer|必填|起始房间位置(从0开始)
 size|Integer|必填|列表长度
-
+s_uid|String|选填|用于检索的用户id
 
 * response字段示例
 

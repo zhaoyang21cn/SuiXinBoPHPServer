@@ -181,3 +181,5 @@ alter table `t_video_record` add column room_num int(11) comment '房间号' aft
 alter table `t_video_record` add column file_name varchar(100) comment '视频名' after `cover`;
 alter table `t_video_record` add column start_time int(11)  not null default 0  comment '录制时间' after `video_id`;
 alter table `t_video_record` add column end_time int(11)  not null default 0  comment '录制时间' after `start_time`;
+alter table `t_video_record` add column file_size int(11) comment '文件大小' after `end_time`;
+alter table `t_video_record` add column duration int(11) comment '时长' after `file_size`;
