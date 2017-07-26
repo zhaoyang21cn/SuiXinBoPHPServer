@@ -12,6 +12,7 @@ function clear()
 {
    // 删除10秒没有收到心跳包（HearBeat）的房间成员记录 0-观众
    InteractAvRoom::deleteDeathRoomMember(10, 0);
+    InteractAvRoom::deleteDeathRoomMember(10, 2);
 }
 
 ini_set('date.timezone','Asia/Shanghai');
