@@ -10,7 +10,7 @@ require_once MODEL_PATH . '/InteractAvRoom.php';
 
 function clear()
 {
-   // 删除10秒没有收到心跳包（HearBeat）的房间成员记录 0-观众
+   // 删除10秒没有收到心跳包（HearBeat）的房间成员记录 0-观众 2-上麦成员
    InteractAvRoom::deleteDeathRoomMember(10, 0);
     InteractAvRoom::deleteDeathRoomMember(10, 2);
 }
