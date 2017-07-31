@@ -61,9 +61,10 @@ class AvRoom
         }
         try
         {
-            $sql = 'INSERT INTO t_av_room (uid) VALUES (:uid)';
+            $sql = 'INSERT INTO t_av_room (uid, create_time) VALUES (:uid, :create_time)';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
+            $stmt->bindParam(':create_time', date('U'), PDO::PARAM_INT);
             $result = $stmt->execute();
             if (!$result)
             {
@@ -252,6 +253,33 @@ class AvRoom
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':time', $time, PDO::PARAM_INT);
             $stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                return false;
+            }
+            return true;
+        }
+        catch (PDOException $e)
+        {
+            return false;
+        }
+        return false;
+    }
+
+    static public function updateLastUpdateTimeByRoomNum($roomnum, $time)
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            return false;
+        }
+        try
+        {
+            $sql = 'update t_av_room set last_update_time=:time where id=:id';
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':time', $time, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $roomnum, PDO::PARAM_INT);
             $result = $stmt->execute();
             if (!$result)
             {

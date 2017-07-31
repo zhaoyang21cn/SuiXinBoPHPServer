@@ -11,6 +11,7 @@ require_once ROOT_PATH . '/ErrorNo.php';
 require_once MODEL_PATH . '/Account.php';
 require_once MODEL_PATH . '/InteractAvRoom.php';
 require_once MODEL_PATH . '/NewLiveRecord.php';
+require_once MODEL_PATH . '/AvRoom.php';
 require_once LIB_PATH . '/db/DB.php';
 
 class HeartBeatCmd extends Cmd
@@ -87,6 +88,8 @@ class HeartBeatCmd extends Cmd
         if ($ret == -1) {
             return new CmdResp(ERR_SERVER, 'Server error: update live record time fail');
         }
+
+        AvRoom::updateLastUpdateTimeByRoomNum($this->roomnum, $this->modifyTime);
 
         //更新用户最新请求时间
         $account->setLastRequestTime($this->modifyTime);
