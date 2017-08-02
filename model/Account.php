@@ -697,6 +697,36 @@ class Account
          $error_msg = '';
         return ERR_SUCCESS;
     }
+
+    public function updateCurrentAppid(&$error_msg, $sdkappid)
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            $error_msg = 'Server inner error';
+            return ERR_SERVER;
+        }
+        try
+        {
+            $sql = 'UPDATE t_account SET current_appid=:current_appid WHERE token=:token';
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':current_appid', $sdkappid, PDO::PARAM_INT);
+            $stmt->bindParam(':token', $this->token, PDO::PARAM_STR);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                $error_msg = 'Server inner error';
+                return ERR_SERVER;
+            }
+        }
+        catch (PDOException $e)
+        {
+            $error_msg = 'Server inner error';
+            return ERR_SERVER;
+        }
+        $error_msg = '';
+        return ERR_SUCCESS;
+    }
 }
 
 ?>

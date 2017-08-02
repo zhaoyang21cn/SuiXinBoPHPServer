@@ -117,6 +117,10 @@ CREATE TABLE IF NOT EXISTS `t_account` (
  `last_request_time`  int(11)       NOT  NULL DEFAULT  0   COMMENT '最新请求时间戳',          
   PRIMARY KEY (`uid`)
 );
+--
+-- 用户表对登陆时的sdk app id 进行 暂存
+--
+ALTER TABLE `t_account` ADD COLUMN `current_appid` int(11) NOT NULL DEFAULT 0 COMMENT '当前appid';
 
 -- --------------------------------------------------------
 

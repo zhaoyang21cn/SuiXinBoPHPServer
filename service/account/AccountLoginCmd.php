@@ -133,6 +133,14 @@ class AccountLoginCmd extends Cmd
         {
             return new CmdResp($ret, $errorMsg);
         }
+
+        //更新 app id
+        $ret = $account->updateCurrentAppid($errorMsg, $this->appid);
+
+        if ($ret != ERR_SUCCESS)
+        {
+            return new CmdResp($ret, $errorMsg);
+        }
         else
         {
             $data['userSig'] = $userSig;
