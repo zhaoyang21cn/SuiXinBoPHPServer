@@ -53,6 +53,10 @@ class ExitLiveRoomCmd extends TokenCmd
         if (!$ret) {
             return new CmdResp(ERR_SERVER, 'Server internal error: Delete member list fail');
         }
+
+        //更新 以该uid为主播的room num房间结束时间
+        AvRoom::finishRoomByUidAndRoomNum($this->user, $this->req['roomnum']);
+
         return new CmdResp(ERR_SUCCESS, '');
     }
 }

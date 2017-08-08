@@ -179,6 +179,7 @@ CREATE TABLE IF NOT EXISTS `t_video_record` (
 alter table `t_av_room` add column `aux_md5` varchar(128) comment 'groupid_userid_aux' after `uid`;
 alter table `t_av_room` add column `main_md5` varchar(128) comment 'groupid_userid_main' after `aux_md5`;
 alter table `t_av_room` add column `create_time` int(11) not null default 0 comment '创建时间' after `uid`;
+alter table `t_av_room` add column `finish_time` int(11) not null default 0 comment '结束时间' after `create_time`;
 
 alter table `t_video_record` add column cover varchar(100) after `uid`;
 alter table `t_video_record` add column title varchar(100) comment '名称' after `uid`;

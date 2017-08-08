@@ -89,7 +89,7 @@ class HeartBeatCmd extends Cmd
             return new CmdResp(ERR_SERVER, 'Server error: update live record time fail');
         }
 
-        AvRoom::updateLastUpdateTimeByRoomNum($this->roomnum, $this->modifyTime);
+        AvRoom::updateLastUpdateTimeByUidAndRoomNum($uid, $this->roomnum, $this->modifyTime);
 
         //更新用户最新请求时间
         $account->setLastRequestTime($this->modifyTime);

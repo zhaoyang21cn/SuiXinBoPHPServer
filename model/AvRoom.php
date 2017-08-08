@@ -5,7 +5,7 @@ require_once LIB_PATH . '/db/DB.php';
 
 class AvRoom
 {
-
+    const FIELD_MODIFY_TIME = 'last_update_time';
     /**
      * Uid
      * @var string
@@ -240,6 +240,34 @@ class AvRoom
         return false;
     }
 
+    static public function finishRoomByUidAndRoomNum($uid, $id)
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            return false;
+        }
+        try
+        {
+            $sql = 'update t_av_room set finish_time=:finish_time where uid=:uid and id=:id';
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':finish_time', date('U'), PDO::PARAM_INT);
+            $stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                return false;
+            }
+            return true;
+        }
+        catch (PDOException $e)
+        {
+            return false;
+        }
+        return false;
+    }
+
     static public function updateLastUpdateTimeByUid($uid, $time)
     {
         $dbh = DB::getPDOHandler();
@@ -267,7 +295,7 @@ class AvRoom
         return false;
     }
 
-    static public function updateLastUpdateTimeByRoomNum($roomnum, $time)
+    static public function updateLastUpdateTimeByUidAndRoomNum($uid, $roomnum, $time)
     {
         $dbh = DB::getPDOHandler();
         if (is_null($dbh))
@@ -276,9 +304,10 @@ class AvRoom
         }
         try
         {
-            $sql = 'update t_av_room set last_update_time=:time where id=:id';
+            $sql = 'update t_av_room set last_update_time=:time where uid=:uid and id=:id';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':time', $time, PDO::PARAM_INT);
+            $stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
             $stmt->bindParam(':id', $roomnum, PDO::PARAM_INT);
             $result = $stmt->execute();
             if (!$result)
@@ -365,6 +394,36 @@ class AvRoom
             return '';
         }
         return '';
+    }
+
+    static public function finishInactiveRecord($inactiveSeconds)
+    {
+        $dbh = DB::getPDOHandler();
+        if (is_null($dbh))
+        {
+            return false;
+        }
+        try
+        {
+            $sql = 'UPDATE t_av_room SET finish_time = ? WHERE ' .
+                self::FIELD_MODIFY_TIME .  ' < ? '.
+                'AND finish_time = 0';
+            $stmt = $dbh->prepare($sql);
+            $now = date('U');
+            $lastModifyTime = $now - $inactiveSeconds;
+            $stmt->bindParam(1, $now, PDO::PARAM_INT);
+            $stmt->bindParam(2, $lastModifyTime, PDO::PARAM_STR);
+            $result = $stmt->execute();
+            if (!$result)
+            {
+                return false;
+            }
+        }
+        catch (PDOException $e)
+        {
+            return false;
+        }
+        return true;
     }
 }
 
