@@ -273,7 +273,7 @@ class InteractAvRoom
      * 说明：更新用户（uid）的心跳时间（time）；role角色
      *      成功返回true，失败返回false
      */
-    static public function updateLastUpdateTimeByUid($uid, $role, $time)
+    static public function updateLastUpdateTimeByUid($uid, $role, $time, $video_type)
     {
         $dbh = DB::getPDOHandler();
         if (is_null($dbh))
@@ -282,11 +282,12 @@ class InteractAvRoom
         }
         try
         {
-            $sql = 'UPDATE t_interact_av_room SET modify_time=:time, role=:role WHERE uid = :uid';
+            $sql = 'UPDATE t_interact_av_room SET modify_time=:time, role=:role, video_type=:video_type WHERE uid = :uid';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':uid', $uid, PDO::PARAM_STR);
             $stmt->bindParam(':role', $role, PDO::PARAM_INT);
             $stmt->bindParam(':time', $time, PDO::PARAM_INT);
+            $stmt->bindParam(':video_type', $video_type, PDO::PARAM_INT);
             $result = $stmt->execute();
             if (!$result)
             {

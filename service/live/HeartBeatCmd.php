@@ -21,6 +21,7 @@ class HeartBeatCmd extends Cmd
     private $role;
     private $thumbup = 0;
     private $modifyTime;
+    private $video_type = 0;
 
     public function parseInput()
     {
@@ -58,6 +59,10 @@ class HeartBeatCmd extends Cmd
         $this->role = $this->req['role'];
         $this->modifyTime = date('U');
 
+        if (isset($this->req['video_type'])) {
+            $this->video_type = $this->req['video_type'];
+        }
+
         return new CmdResp(ERR_SUCCESS, '');
     }
 
@@ -75,7 +80,7 @@ class HeartBeatCmd extends Cmd
 
         //更新房间成员心跳
         $uid = $account->getUser();
-        $ret = InteractAvRoom::updateLastUpdateTimeByUid($uid, $this->role, $this->modifyTime);
+        $ret = InteractAvRoom::updateLastUpdateTimeByUid($uid, $this->role, $this->modifyTime, $this->video_type);
         if (!$ret) {
             return new CmdResp(ERR_SERVER, 'Server error: update time fail');
         }

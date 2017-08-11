@@ -134,13 +134,14 @@ CREATE TABLE IF NOT EXISTS `t_av_room` (
  `last_update_time`  int(11)      NOT  NULL DEFAULT  0  COMMENT '心跳时间戳',                       
   PRIMARY KEY (`id`),
   UNIQUE KEY `uid` (`uid`)
-)AUTO_INCREMENT=10001;
+)ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=10001;
 
 --
 -- 增加字段 title, cover
 --
 ALTER TABLE `t_av_room` ADD COLUMN `title` VARCHAR(128) AFTER `uid`;
 ALTER TABLE `t_av_room` ADD COLUMN `cover` VARCHAR(128) AFTER `title`;
+ALTER TABLE `t_av_room` ADD COLUMN `device` tinyint not null default 0 AFTER `cover`;
 ALTER TABLE `t_av_room` DROP INDEX `uid`;
 
 -- --------------------------------------------------------
@@ -157,6 +158,8 @@ CREATE TABLE IF NOT EXISTS `t_interact_av_room` (
  `role`         int(11)      NOT  NULL DEFAULT  0   COMMENT '成员角色',                              
   PRIMARY KEY (`uid`)
 );
+
+ALTER TABLE `t_interact_av_room` add column `video_type` tinyint not null default 0 AFTER `role`;
 
 -- --------------------------------------------------------
 

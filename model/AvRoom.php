@@ -211,7 +211,7 @@ class AvRoom
      * @param $cover 封面
      * @return bool 是否更新成功
      */
-    static public function updateRoomInfoById($uid, $id, $title, $cover)
+    static public function updateRoomInfoById($uid, $id, $title, $cover, $device=0)
     {
         $dbh = DB::getPDOHandler();
         if (is_null($dbh))
@@ -220,10 +220,11 @@ class AvRoom
         }
         try
         {
-            $sql = 'update t_av_room set title=:title,cover=:cover where uid=:uid and id=:id';
+            $sql = 'update t_av_room set title=:title,cover=:cover,device=:device where uid=:uid and id=:id';
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':title', $title, PDO::PARAM_STR);
             $stmt->bindParam(':cover', $cover, PDO::PARAM_STR);
+            $stmt->bindParam(':device', $device, PDO::PARAM_INT);
             $stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $result = $stmt->execute();

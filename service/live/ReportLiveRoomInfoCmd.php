@@ -153,7 +153,8 @@ class ReportLiveRoomInfoCmd extends TokenCmd
             $this->user,
             $this->record->getAvRoomId(),
             $this->record->getTitle(),
-            $this->record->getCover()
+            $this->record->getCover(),
+            $this->record->getDevice()
         );
         if (!$up_res) {
             Log::error('update room info failed. room id '.$this->record->getAvRoomId());
