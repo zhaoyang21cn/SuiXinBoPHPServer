@@ -86,7 +86,7 @@ class GetVideoRecordListCmd extends TokenCmd
             }
 
             //获取视频总数
-            $totalCount = VideoRecord::getCount();
+            $totalCount = VideoRecord::getCount(0, $this->s_uid);
             if (!$totalCount)
             {
                 return new CmdResp(ERR_SERVER, 'Server internal error');

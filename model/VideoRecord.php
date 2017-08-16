@@ -309,12 +309,19 @@ class VideoRecord
     /* 功能：获取视频记录总数
      * 说明: 成功返回视频记录总数, 失败返回-1。
      */
-    public static function getCount($appid = 0)
+    public static function getCount($appid = 0, $s_uid = null)
     {
         if ($appid == 0) {
             $whereSql = "";
         }else{
             $whereSql = " WHERE appid = $appid ";
+        }
+        if ($s_uid !== null) {
+            if ($whereSql === "") {
+                $whereSql = " WHERE uid = '$s_uid' ";
+            } else {
+                $whereSql = $whereSql." and uid = '$s_uid' ";
+            }
         }
         $dbh = DB::getPDOHandler();
         $list = array();
