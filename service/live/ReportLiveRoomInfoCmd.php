@@ -3,7 +3,7 @@
  * 房间信息上报接口
  * Date: 2016/11/17
  */
-require_once dirname(__FILE__) . '/../../Path.php';
+require_once dirname(__FILE__) . '/../../Config.php';
 
 require_once SERVICE_PATH . '/TokenCmd.php';
 require_once SERVICE_PATH . '/CmdResp.php';
@@ -22,7 +22,6 @@ class ReportLiveRoomInfoCmd extends TokenCmd
     //AvRoom
     private $av_room;
     const URL = 'liveplay.myqcloud.com/live/';
-    const BIZID = '123456';
 
     public function parseInput()
     {
@@ -140,7 +139,7 @@ class ReportLiveRoomInfoCmd extends TokenCmd
 
     public function handle()
     {
-        $ret = $this->record->genPlayUrl(self::BIZID, self::URL);
+        $ret = $this->record->genPlayUrl(BIZID, self::URL);
         if ($ret != true) {
             return new CmdResp(ERR_SERVER, 'Server internal error: gen play url fail');
         }

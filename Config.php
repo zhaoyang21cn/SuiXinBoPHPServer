@@ -13,5 +13,6 @@ define('CLOUDAPI_SECRET_KEY', '{{.Your_CloudAPI_Secret_Key}}'); //云API Secret 
 define('AUTHORIZATION_KEY', serialize([
     '{{.Your_SDK_APP_ID}}' => '{{.Your_Authrization_Key}}'
 ])); //权限密钥表
+define('BIZID', '{{.Your_Biz_ID}}'); //直播ID
 
 ?>
