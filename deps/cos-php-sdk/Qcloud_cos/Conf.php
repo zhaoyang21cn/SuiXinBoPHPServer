@@ -9,7 +9,7 @@ class Conf
     const API_VIDEO_END_POINT = 'http://web.video.myqcloud.com/videos/v1/';
     const API_COSAPI_END_POINT = 'http://web.file.myqcloud.com/files/v1/';
     //请到http://console.qcloud.com/cos去获取你的appid、sid、skey
-    const APPID = '{{.Your_Cloud_AppID}}';
+    const APPID = '{{.Your_Cloud_App_ID}}';
     const SECRET_ID = '{{.Your_CloudAPI_Secret_ID}}';
     const SECRET_KEY = '{{.Your_CloudAPI_Secret_Key}}';
 
