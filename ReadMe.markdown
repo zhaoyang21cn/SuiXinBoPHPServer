@@ -23,19 +23,19 @@ mysql -u root -p #此处可能需要输入mysql密码
 ### 1.3 修改配置
 
 * 下载代码，部署到php目录中
-* 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码
-* 在Config.php中填写默认的SDKAppID及对应用于跨房连麦的权限密钥：
+* 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码（`{{.}}不需要保留`）
+* 在Config.php中填写默认的SDKAppID及对应用于跨房连麦的权限密钥（`{{.}}不需要保留`）：
 ```php
-    define('DEFAULT_SDK_APP_ID', 'Your_SDK_APP_ID'); //默认APPID
+    define('DEFAULT_SDK_APP_ID', '{{.Your_SDK_APP_ID}}'); //默认APPID
     define('AUTHORIZATION_KEY', serialize([
-        'Your_SDK_APP_ID' => 'Your_Authrization_Key'
+        '{{.Your_SDK_APP_ID}}' => '{{.Your_Authrization_Key}}'
     ])); //权限密钥表
 ```
 * 上传SDKAppID对应的公私钥到deps/keys/[SDKAppID]目录下，使其具有可读权限（[SDKAppID]替换为你所使用的SDKAppID）
-* 在Config.php中填写secretID和SecretKey用于拉取视频列表：
+* 在Config.php中填写secretID和SecretKey用于拉取视频列表（`{{.}}不需要保留`）：
 ```php
-    define('VIDEO_RECORD_SECRET_ID', 'Your_Video_Secret_ID'); //录像Secret ID
-    define('VIDEO_RECORD_SECRET_KEY', 'Your_Video_Secret_Key'); //录像Secret Key
+    define('CLOUDAPI_SECRET_ID', '{{.Your_CloudAPI_Secret_ID}}'); //云API Secret ID
+    define('CLOUDAPI_SECRET_KEY', '{{.Your_CloudAPI_Secret_Key}}'); //云API Secret Key
 ```
 * 修改service/service/Server.php的这句代码为自己的日志路径
 ```php
@@ -44,9 +44,9 @@ mysql -u root -p #此处可能需要输入mysql密码
 * 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig；32位OS请用tls_licence_tools_32替换tls_licence_tools（tls_licence_tools名字不变）
 * 修改deps/bin/linksig具有可执行权限，用于生成跨房连麦sig
 * 修改deps/sig目录权限(没有该目录请自行创建)，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录。
-* 如果您在使用直播码进行旁路推流，调整service/live/ReportLiveRoomInfoCmd.php代码的BIZID。
+* 如果您在使用直播码进行旁路推流，在Config.php中填写BIZID字段（`{{.}}不需要保留`）：
 ```php
-    const BIZID = '123456';
+    define('BIZID', '{{.Your_Biz_ID}}'); //直播ID
 ```
 * 如果想使用图片上传功能，需要开通腾讯云COS服务，并在deps/cos-php-sdk/Conf.php填写对应APPID、SecretKey和SecretID。
 
