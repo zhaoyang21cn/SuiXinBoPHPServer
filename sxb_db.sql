@@ -25,48 +25,6 @@ USE `sxb_db`;
 -- --------------------------------------------------------
 
 --
--- 版本1.0的直播记录表的结构 `t_live_record`
--- 说明：如果不使用版本1.0的接口，那么t_live_record表可以不创建
-
-CREATE TABLE IF NOT EXISTS `t_live_record` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `title` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标题',
-  `cover` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '封面URL',
-  `host_uid` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '主播UID',
-  `host_avatar` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '主播头像',
-  `host_username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '主播用户名',
-  `longitude` double NOT NULL DEFAULT 0 COMMENT '经度',
-  `latitude` double NOT NULL DEFAULT 0 COMMENT '纬度',
-  `address` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '地址',
-  `av_room_id` int(11) NOT NULL DEFAULT 0 COMMENT 'av房间ID',
-  `chat_room_id` varchar(50) NOT NULL COMMENT '聊天室ID',
-  `admire_count` int(11) NOT NULL DEFAULT 0 COMMENT '点赞人数',
-  `watch_count` int(11) NOT NULL DEFAULT 0 COMMENT '观看人数',
-  `time_span` int(11) NOT NULL DEFAULT 0 COMMENT '直播时长',
-  `create_time` datetime COMMENT '创建日期',
-  `modify_time` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `appid` int(11) NOT NULL DEFAULT 0 COMMENT 'appid',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_host_uid` (`host_uid`),
-  KEY `idx_modify_time` (`modify_time`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='直播记录表' AUTO_INCREMENT=14 ;
-
--- --------------------------------------------------------
-
---
--- 版本1.0 表的结构 `t_user_av_room`
---
-
-CREATE TABLE IF NOT EXISTS `t_user_av_room` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'av房间ID',
-  `uid` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户uid',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uid` (`uid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=10001 ;
-
--- --------------------------------------------------------
-
---
 -- 版本2.0的直播记录表的结构 `t_new_live_record`
 -- 说明：相对版本1.0的有字段的删减
 
@@ -116,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `t_account` (
  `logout_time`        int(11)       NOT  NULL DEFAULT  0   COMMENT '退出时间戳',           
  `last_request_time`  int(11)       NOT  NULL DEFAULT  0   COMMENT '最新请求时间戳',          
   PRIMARY KEY (`uid`)
-);
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 --
 -- 用户表对登陆时的sdk app id 进行 暂存
 --
@@ -157,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `t_interact_av_room` (
  `modify_time`  int(11)      NOT  NULL DEFAULT  0   COMMENT '成员心跳时间戳',           
  `role`         int(11)      NOT  NULL DEFAULT  0   COMMENT '成员角色',                              
   PRIMARY KEY (`uid`)
-);
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE `t_interact_av_room` add column `video_type` tinyint not null default 0 AFTER `role`;
 
@@ -174,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `t_video_record` (
  `play_url`     varchar(128)  NOT  NULL   DEFAULT ''  COMMENT '视频url',                            
  `create_time`  int(11)       NOT  NULL   DEFAULT  0  COMMENT '视频创建时间戳',                                     
   PRIMARY KEY (`id`)
-)AUTO_INCREMENT=10001;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=10001;
 
 -- --------------------------------------------------------
 
