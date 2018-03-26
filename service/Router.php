@@ -17,8 +17,9 @@ class Router
             'logout' => 'AccountLogoutCmd',
             'kickout' => 'AccountKickoutCmd',
             'verify' => 'AccountVerifyCmd',
+            'authPrivMap' => 'AccountAuthPrivMapCmd',
         ),
-        
+
         'live' => array(
             //房间
             'create' => 'CreateLiveRoomCmd',
@@ -34,7 +35,7 @@ class Router
             'heartbeat' => 'HeartBeatCmd',
 
             //点播
-            'recordlist' => 'GetVideoRecordListCmd',        
+            'recordlist' => 'GetVideoRecordListCmd',
             'reportrecord' => 'SaveVideoRecordCmd',
 
             //成员
