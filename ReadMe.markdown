@@ -26,7 +26,7 @@ mysql -u root -p #此处可能需要输入mysql密码
 * 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码（`{{.}}不需要保留`）
 * 在Config.php中填写默认的SDKAppID及对应用于跨房连麦的权限密钥（`{{.}}不需要保留`）：
 ```php
-    define('DEFAULT_SDK_APP_ID', '{{.Your_SDK_APP_ID}}'); //默认APPID
+    define('DEFAULT_APP_ID', '{{.Your_APP_ID}}'); //默认APPID
     define('AUTHORIZATION_KEY', serialize([
         '{{.Your_SDK_APP_ID}}' => '{{.Your_Authrization_Key}}'
     ])); //权限密钥表
