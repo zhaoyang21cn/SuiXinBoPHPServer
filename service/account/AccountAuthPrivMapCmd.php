@@ -137,18 +137,18 @@ class AccountAuthPrivMapCmd extends Cmd
         $errorMsg = '';
 
         // 获取用户账号信息
-        $ret = $account->getAccountRecordByUserID($errorMsg);
-        if($ret != ERR_SUCCESS)
-        {
-            return new CmdResp($ret, $errorMsg);
-        }
+        // $ret = $account->getAccountRecordByUserID($errorMsg);
+        // if($ret != ERR_SUCCESS)
+        // {
+        //     return new CmdResp($ret, $errorMsg);
+        // }
 
-        // 密码验证
-        $ret = $account->authentication($this->req['pwd'], $errorMsg);
-        if($ret != ERR_SUCCESS)
-        {
-            return new CmdResp($ret, $errorMsg);
-        }
+        // // 密码验证
+        // $ret = $account->authentication($this->req['pwd'], $errorMsg);
+        // if($ret != ERR_SUCCESS)
+        // {
+        //     return new CmdResp($ret, $errorMsg);
+        // }
 
         // 获取sig
         $userSig = $account->getUserSig();
