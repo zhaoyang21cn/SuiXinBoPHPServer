@@ -26,7 +26,7 @@ mysql -u root -p #此处可能需要输入mysql密码
 * 在lib/db/DBConfig.php填写mysql的数据库url、用户名和密码（`{{.}}不需要保留`）
 * 在Config.php中填写默认的SDKAppID及对应用于跨房连麦的权限密钥（`{{.}}不需要保留`）：
 ```php
-    define('DEFAULT_APP_ID', '{{.Your_APP_ID}}'); //默认APPID
+    define('DEFAULT_SDK_APP_ID', '{{.Your_SDK_APP_ID}}'); //默认APPID
     define('AUTHORIZATION_KEY', serialize([
         '{{.Your_SDK_APP_ID}}' => '{{.Your_Authrization_Key}}'
     ])); //权限密钥表
@@ -41,9 +41,7 @@ mysql -u root -p #此处可能需要输入mysql密码
 ```php
     $handler = new FileLogHandler('/data/log/sxb/sxb_' . date('Y-m-d') . '.log');
 ```
-* 修改deps/bin/tls_licence_tools具有可执行权限，用于生产userSig；32位OS请用tls_licence_tools_32替换tls_licence_tools（tls_licence_tools名字不变）
 * 修改deps/bin/linksig具有可执行权限，用于生成跨房连麦sig
-* 修改deps/sig目录权限(没有该目录请自行创建)，使得其他用户有可读写执行权限（chmod 757 deps/sig），用于生成sig临时文件的目录。
 * 如果您在使用直播码进行旁路推流，在Config.php中填写BIZID字段（`{{.}}不需要保留`）：
 ```php
     define('BIZID', '{{.Your_Biz_ID}}'); //直播ID
@@ -153,7 +151,6 @@ sigReq.pwd = @"password";
 
 ## 4. 再次强调
  
- * sig目录其他用户一定要有读写可执行权限
- * deps/bin/tls_licence_tools签名程序一定可执行权限
  * deps/bin/linksig程序一定可执行权限
  * 上传需要支持的SDKAppID对应的公私钥到deps/keys/[SDKAppID]目录
+
