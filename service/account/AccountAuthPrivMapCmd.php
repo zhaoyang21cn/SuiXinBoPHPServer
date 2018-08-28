@@ -76,7 +76,7 @@ class AccountAuthPrivMapCmd extends Cmd
         try{
             $sdkappid = $this->appid;
             $roomnum = $this->req['roomnum'];
-            $expire_time = isset($this->req['$expire_time']) ? $this->req['$expire_time'] : 600;
+            $expire_time = isset($this->req['expire_time']) ? $this->req['expire_time'] : 600;
             $identifier = $this->req['identifier'];
             $accounttype = intval( isset($this->req['accounttype']) ? $this->req['accounttype'] : 0 );
 
