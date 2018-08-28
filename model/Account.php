@@ -7,6 +7,7 @@
 
 require_once dirname(__FILE__) . '/../Path.php';
 require_once LIB_PATH . '/db/DB.php';
+require_once LIB_PATH . '/tools/TLSSig.php';
 
 class Account
 {
@@ -167,7 +168,7 @@ class Account
                 return ERR_USER_NOT_EXIST;
             }
             $row = $stmt->fetch();
-            if(strcmp($this->uid, $row["uid"]) != 0){
+            if(strcasecmp($this->uid, $row["uid"]) != 0){
                 $error_msg = 'User not exist';
                 return ERR_USER_NOT_EXIST;
             }
@@ -293,51 +294,14 @@ class Account
      */
     public function authentication($pwd, &$error_msg)
     {
-        $pwd_decode = '';
-        $cmd = 'echo "' . $this->pwd . '" | base64 -d ';
-        $ret = exec($cmd, $pwd_decode, $status);
-        if($status != 0)
-        {
-            $error_msg = 'Server inner error';
-            return ERR_SERVER;
-        }
-        
-        if($pwd_decode[0] != $pwd)
+        $pwd_dec = preg_replace('/\s+/', '', base64_decode($this->pwd));
+        if(strcmp($pwd_dec, $pwd) != 0)
         {            
             $error_msg = 'User password error';
             return ERR_PASSWORD;
         }
         $error_msg = '';
         return ERR_SUCCESS;
-    }
-
-    /* 功能：创建临时sig文件
-     * 说明：使用工具mktemp在deps/sig目录下创建临时文件sxb_sig.XXXXXXXXXX
-     *        成功返回临时文件的绝对路径，失败返回null
-     */
-    private function mktemp()
-    {
-        $cmd = 'mktemp -t -p ' . DEPS_PATH . '/sig sxb_sig.XXXXXXXXXX';
-        $ret = exec($cmd, $out, $status);
-        if ($status != 0)
-        {
-            return null;
-        }
-        return $out[0];
-    }
-    
-    /* 功能：删除临时sig文件
-     * 说明：使用工具rm强制删除在deps/sig目录下指定的临时文件        
-     */
-    private function rmtemp($tmp)
-    {
-        $cmd = 'rm -f ' . $tmp;
-        $ret = exec($cmd, $out, $status);
-        if ($status != 0)
-        {
-            return false;
-        }
-        return true;
     }
 
     /* 功能：生成sig
@@ -352,39 +316,12 @@ class Account
      */
     public function genUserSig($sdkappid, $private_key_path)
     {
-        // 创建临时sig文件
-        $sig = $this->mktemp();
-        if(!$sig) {
-            return null;
-        }
-
-        // 生成sig
-        $cmd = DEPS_PATH . '/bin/tls_licence_tools'
-            . ' ' . 'gen'
-            . ' ' . escapeshellarg($private_key_path)
-            . ' ' . escapeshellarg($sig)
-            . ' ' . escapeshellarg($sdkappid)
-            . ' ' . escapeshellarg($this->uid);
-        $ret = exec($cmd, $out, $status);
-        if ($status != 0)
-        {
-            return null;
-        }
-
-        // 读取sig
-        $out=array();
-        $cmd = 'cat ' . ' ' . escapeshellarg($sig);
-        $ret = exec($cmd, $out, $status);
-
-        $this->rmtemp($sig);
-
-        if ($status != 0)
-        {
-            return null;
-        }
-
-        return $out[0];
-    }
+        $private = file_get_contents($private_key_path);
+        $api = new TLSSigAPI();
+        $api->SetAppid($sdkappid);//设置在腾讯云申请的appid
+        $api->SetPrivateKey($private);//生成usersig需要先设置私钥
+        return $api->genSig($this->uid);
+    }        
 
     /* 功能：校验sig
      * 说明：对当前用户使用指定的sdkappid, 和指定的公钥文件路径（public_key_path）使用
@@ -392,41 +329,11 @@ class Account
      */    
     public function verifyUserSig($sdkappid, $public_key_path)
     {
-        $sig = $this->mktemp();
-        if(!$sig) {
-            return -1;
-        }
-
-        $cmd = 'echo ' . $this->userSig . '>'. escapeshellarg($sig);
-        $ret = exec($cmd, $out, $status);
-        if ($status != 0)
-        {
-            $this->rmtemp($sig);
-            return -1;
-        }
-
-        $out=array();
-        $cmd = DEPS_PATH . '/bin/tls_licence_tools'
-            . ' ' . 'verify'
-            . ' ' . escapeshellarg($public_key_path)
-            . ' ' . escapeshellarg($sig)
-            . ' ' . escapeshellarg($sdkappid)
-            . ' ' . escapeshellarg($this->uid);
-        $ret = exec($cmd, $out, $status);
-
-        $this->rmtemp($sig);
-
-        if ($status != 0)
-        {
-            return -1;
-        }
-        //return $out[1]; //校验信息
-        if($out[0] != 'verify sig ok')
-        {
-            return 1;
-        }
-
-        return 0;
+        $public = file_get_contents($public_key_path);
+        $api = new TLSSigAPI();
+        $api->SetAppid($sdkappid);//设置在腾讯云申请的appid
+        $api->SetPublicKey($public);//校验usersig需要先设置公钥
+        return $api->verifySig($this->userSig, $this->uid);
     }
 
     /* 功能：生成用户token
@@ -435,13 +342,7 @@ class Account
      */
     public function genToken()
     {
-        $cmd = 'echo \'' . $this->uid . $this->loginTime . '\'| base64';
-        $ret = exec($cmd, $out, $status);
-        if ($status != 0)
-        {
-            return null;
-        }
-        return $out[0];
+        return base64_encode($this->uid . $this->loginTime);
     }
     
     /* 功能：注册用户
@@ -476,17 +377,10 @@ class Account
             $stmt->bindParam(':uid', $this->uid, PDO::PARAM_STR);
 
             // 加密密码
-            $cmd = "echo $this->pwd | base64";
-            $pwd = '';
-            exec($cmd, $pwd, $ret);
+            $pwd = base64_encode($this->pwd);
 
-            if($ret != 0)
-            {
-                $error_msg = 'Server inner error';
-                return ERR_SERVER;
-            }
             $stmt->bindParam(':registerTime', $this->registerTime, PDO::PARAM_INT);
-            $stmt->bindParam(':pwd', $pwd[0], PDO::PARAM_STR);
+            $stmt->bindParam(':pwd', $pwd, PDO::PARAM_STR);
                         
             $result = $stmt->execute();
             if (!$result)
